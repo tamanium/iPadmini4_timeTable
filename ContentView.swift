@@ -1,70 +1,43 @@
 import SwiftUI
 
 struct ContentView: View {
-    // 時間
-    @State var hour = ""
-    // 分
-    @State var minute = ""
     // 現在時刻
     @State var nowTime = Date()
-    // 表示形式
-    private let dateFormatterHour = DateFormatter()
-    private let dateFormatterMinute = DateFormatter()
-    init(){
-        dateFormatterHour.dateFormat = "HH"
-        dateFormatterHour.locale = Locale(identifier: "en_jp")
-        dateFormatterMinute.dateFormat = "mm"
-        dateFormatterMinute.locale = Locale(identifier: "en_jp")
-    }
+
+    // 時刻更新用タイマー
+    private let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+
+    // 時間のフォーマッター（staticで再利用）
+    private static let hourFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "HH"
+        formatter.locale = Locale(identifier: "en_JP")
+        return formatter
+    }()
+
+    // 分のフォーマッター(staticで再利用)
+    private static let minuteFormatter: DateFormatter  = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "mm"
+        formatter.locale = Locale(identifier: "en_JP")
+        return formatter
+    }()
+    
     var body: some View {
         // タテ配置
         VStack {
             // ヨコ配置
-            HStack{
-                // 時間
-                Text(hour.isEmpty ? "\(dateFormatterHour.string(from: nowTime))" : hour)
-                    .onAppear{
-                        Timer.scheduledTimer(withTimeInterval: 1, repeats: true){ _ in
-                            self.nowTime = Date()
-                            hour = "\(dateFormatterHour.string(from: nowTime))"
-                        }
-                    }
-                    .font(
-                        .system(
-                            size: 30,
-                            weight: .light,
-                            design: .rounded
-                        )
-                    )
+            HStack {
+                Text(Self.hourFormatter.string(from: nowTime))
                 Text(":")
-                    .font(
-                        .system(
-                            size: 30,
-                            weight: .light,
-                            design: .rounded
-                        )
-                    )
-                // 分
-                Text(minute.isEmpty ? "\(dateFormatterHour.string(from: nowTime))" : minute)
-                    .onAppear{
-                        Timer.scheduledTimer(withTimeInterval: 1, repeats: true){ _ in
-                            self.nowTime = Date()
-                            minute = "\(dateFormatterHour.string(from: nowTime))"
-                        }
-                    }
-                    .font(
-                        .system(
-                            size: 30,
-                            weight: .light,
-                            design: .rounded
-                        )
-                    )
+                Text(self.minuteFormatter.string(from: nowTime))
             }
+            .font(.system(size: 30, weight: .light, design: rounded))
             Image(systemName: "globe")
                 .imageScale(.large)
                 .foregroundColor(.accentColor)
             Text("Hello, world!")
         }
-        
+        .onReceive(timer) {input in nowTime = input}
     }
 }
