@@ -58,6 +58,8 @@ struct ContentView: View {
     var body: some View {
         NavigationStack {
             GeometryReader { geometry in
+                let timeFont = Font.system(size: geometry.size.width * 0.3, weight: .light, design: .monospaced)
+                let secondFont = Font.system(size: geometry.size.width * 0.1, weight: .light, design: .monospaced)
                 // タテ配置
                 VStack {
                     // -----時計表示領域-----
@@ -65,14 +67,16 @@ struct ContentView: View {
                     HStack(alignment: .lastTextBaseline, spacing:-1) {
                         // 時間
                         Text(Self.hourFormatter.string(from: nowTime))
-                            .font(.system(size: geometry.size.width * 0.4, weight: .light, design: .monospaced))
+                            .font(timeFont)
                         // コロン
                         Text(":")
-                            .font(.system(size: geometry.size.width * 0.4, weight: .light, design: .monospaced))
+                            .font(timeFont)
                         // 分
                         Text(Self.minuteFormatter.string(from: nowTime))
-                            .font(.system(size: geometry.size.width * 0.4, weight: .light, design: .monospaced))
-                     
+                            .font(timeFont)
+                        // 秒
+                        Text(Self.minuteFormatter.string(from: nowTime))
+                            .font(secondFont)
                     }
                     // 幅：親画面いっぱい、中央寄せ
                     .frame(maxWidth: .infinity, alignment: .center)
@@ -81,16 +85,16 @@ struct ContentView: View {
                     
                     // -----タイムテーブル領域-----
                     Grid(alignment: .leading, horizontalSpacing: 16, verticalSpacing: 8) {
+                        // ヘッダ行
                         GridRow {
-                            Text("時刻").bold().
-                            Text("学校名").bold()
+                            // 2列分セル合体
+                            Text("演奏時刻").gridCellColumns(2)
                         }
                         Divider().gridCellUnsizedAxes([.horizontal, .vertical])
-                        
+                        // データ行
                         ForEach(scheduleRows) { row in
                             GridRow {
-                                Text(row.time)
-                                    .font(.system(design: .monospaced))
+                                Text(row.time).font(.system(design: .monospaced))
                                 Text(row.name)
                             }
                         }
