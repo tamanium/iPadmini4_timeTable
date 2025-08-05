@@ -2,12 +2,9 @@ import SwiftUI
 
 // 構造体：タイムテーブルの行
 struct ScheduleRow: Identifiable {
-    // ID
-    let id = UUID()
-    // 時刻
-    let time: String
-    // 団体名
-    let name: String
+    let id = UUID()  // ID
+    let time: String // 時刻
+    let name: String // 団体名
 }
 
 struct ContentView: View {
