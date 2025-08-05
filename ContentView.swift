@@ -21,7 +21,7 @@ struct ContentView: View {
         VStack {
             // ヨコ配置
             HStack{
-                // 年
+                // 時間
                 Text(hour.isEmpty ? "\(dateFormatterHour.string(from: nowTime))" : hour)
                     .onAppear{
                         Timer.scheduledTimer(withTimeInterval: 1, repeats: true){ _ in
@@ -44,7 +44,7 @@ struct ContentView: View {
                             design: .rounded
                         )
                     )
-                // 年
+                // 分
                 Text(minute.isEmpty ? "\(dateFormatterHour.string(from: nowTime))" : minute)
                     .onAppear{
                         Timer.scheduledTimer(withTimeInterval: 1, repeats: true){ _ in
