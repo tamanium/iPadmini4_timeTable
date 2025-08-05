@@ -65,13 +65,13 @@ struct ContentView: View {
                     HStack(alignment: .lastTextBaseline, spacing:-1) {
                         // 時間
                         Text(Self.hourFormatter.string(from: nowTime))
-                            .font(.system(size: geometry.size.width * 0.4, weight: .light, design: .rounded))
+                            .font(.system(size: geometry.size.width * 0.4, weight: .light, design: .monospaced))
                         // コロン
                         Text(":")
-                            .font(.system(size: geometry.size.width * 0.4, weight: .light, design: .rounded))
+                            .font(.system(size: geometry.size.width * 0.4, weight: .light, design: .monospaced))
                         // 分
                         Text(Self.minuteFormatter.string(from: nowTime))
-                            .font(.system(size: geometry.size.width * 0.4, weight: .light, design: .rounded))
+                            .font(.system(size: geometry.size.width * 0.4, weight: .light, design: .monospaced))
                      
                     }
                     // 幅：親画面いっぱい、中央寄せ
@@ -82,7 +82,7 @@ struct ContentView: View {
                     // -----タイムテーブル領域-----
                     Grid(alignment: .leading, horizontalSpacing: 16, verticalSpacing: 8) {
                         GridRow {
-                            Text("時刻").bold()
+                            Text("時刻").bold().
                             Text("学校名").bold()
                         }
                         Divider().gridCellUnsizedAxes([.horizontal, .vertical])
@@ -90,6 +90,7 @@ struct ContentView: View {
                         ForEach(scheduleRows) { row in
                             GridRow {
                                 Text(row.time)
+                                    .font(.system(design: .monospaced))
                                 Text(row.name)
                             }
                         }
