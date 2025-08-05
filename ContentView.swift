@@ -86,6 +86,9 @@ struct ContentView: View {
                     .frame(maxWidth: .infinity, alignment: .center)
                     // 背景：黒
                     .background(Color.black)
+                    // 1秒ごとに表示時間更新
+                    .onReceive(timer) {input in nowTime = input
+                    }
                     
                     // -------------------------------
                     // -------タイムテーブル領域--------
@@ -139,37 +142,30 @@ struct ContentView: View {
                                 }
                             }
                         }
-                        
-                        // 画像
-                        Image(systemName: "globe")
-                            .imageScale(.large)
-                            .foregroundColor(.accentColor)
-                        // テキスト
-                        Text("Hello, world!")
-                        Spacer()
-                        
-                        // 画面遷移ボタン
-                        NavigationLink(destination: SecondView()) {
-                            Text("Data")
-                                .font(.headline)
-                                .foregroundColor(.white)
-                                .padding()
-                                .frame(maxWidth: .infinity)
-                                .background(Color.blue)
-                                .cornerRadius(10)
-                                .padding(.horizontal)
-                        }
                     }
-                    
-                    
+                    // 画像
+                    Image(systemName: "globe")
+                        .imageScale(.large)
+                        .foregroundColor(.accentColor)
+                    // テキスト
+                    Text("Hello, world!")
+                    Spacer()
+                    // 画面遷移ボタン
+                    NavigationLink(destination: SecondView()) {
+                        Text("Data")
+                            .font(.headline)
+                            .foregroundColor(.white)
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .background(Color.blue)
+                            .cornerRadius(10)
+                            .padding(.horizontal)
+                    }
                 }
                 // 幅：画面いっぱい
                 .frame(maxWidth: .infinity, alignment: .center)
                 // 背景：黒
                 .background(Color.black)
-                // 1秒ごとに表示時間更新
-                .onReceive(timer) {input in nowTime = input
-                }
             }
         }
     }
