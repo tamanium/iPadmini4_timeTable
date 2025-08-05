@@ -29,18 +29,34 @@ struct ContentView: View {
             VStack {
                 // ヨコ配置
                 HStack(spacing:-1) {
+                    // 時間
                     Text(Self.hourFormatter.string(from: nowTime))
+                    // コロン
                     Text(":")
+                    // 分
                     Text(Self.minuteFormatter.string(from: nowTime))
                 }
+                // 幅：親画面いっぱい、中央寄せ
                 .frame(maxWidth: .infinity, alignment: .center)
+                // 背景：黒
+                .background(Color.black)
+                // フォント
+                // サイズ：本画面いっぱい×倍率
+                // 太さ：普通か細いか
+                // デザイン：ラウンデッド？
                 .font(.system(size: geometry.size.width * 0.42, weight: .light, design: .rounded))
+                // 画像
                 Image(systemName: "globe")
                     .imageScale(.large)
                     .foregroundColor(.accentColor)
+                // テキスト
                 Text("Hello, world!")
             }
+            // 幅：画面いっぱい
             .frame(maxWidth: .infinity, alignment: .center)
+            // 背景：黒
+            .background(Color.black)
+            // 1分ごとに表示時間更新
             .onReceive(timer) {input in nowTime = input}
         }
     }
