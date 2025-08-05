@@ -10,6 +10,8 @@ struct ScheduleRow: Identifiable {
 struct ContentView: View {
     // 現在時刻
     @State var nowTime = Date()
+    // 前回時刻の分
+    @State var previousMinute: String = ""
     
     // タイムテーブルデータ
     let scheduleRows: [ScheduleRow] = [
@@ -62,7 +64,9 @@ struct ContentView: View {
                 let secondFont = Font.system(size: geometry.size.width * 0.1, weight: .light, design: .monospaced)
                 // タテ配置
                 VStack {
-                    // -----時計表示領域-----
+                    // -------------------------------
+                    // ----------時計表示領域----------
+                    // -------------------------------
                     // ヨコ配置
                     HStack(alignment: .lastTextBaseline, spacing:-1) {
                         // 時間
@@ -83,26 +87,56 @@ struct ContentView: View {
                     // 背景：黒
                     .background(Color.black)
                     
-                    // -----タイムテーブル領域-----
-                    Grid(alignment: .leading, horizontalSpacing: 16, verticalSpacing: 8) {
-                        // ヘッダ行
-                        GridRow {
-                            // 2列分セル合体
-                            Text("演奏時刻").gridCellColumns(2)
-                        }
-                        Divider().gridCellUnsizedAxes([.horizontal, .vertical])
-                        // データ行
-                        ForEach(scheduleRows) { row in
+                    // -------------------------------
+                    // -------タイムテーブル領域--------
+                    // -------------------------------
+                    ScrollView(.vertical) {
+                        Grid(alignment: .leading, horizontalSpacing: 16, verticalSpacing: 8) {
+                            // ヘッダ行
                             GridRow {
-                                Text(row.time).font(.system(design: .monospaced))
-                                Text(row.name)
+                                // 2列分セル合体
+                                Text("演奏時刻").gridCellColumns(2)
+                            }
+                            Divider().gridCellUnsizedAxes([.horizontal, .vertical])
+                            // データ行
+                            ForEach(scheduleRows) { row in
+                                GridRow {
+                                    Text(row.time).font(.system(design: .monospaced))
+                                    Text(row.name)
+                                }
+                                // スクロール対象のID
+                                .id(row.id)
                             }
                         }
+                        .padding()
+                        .background(Color.black)
+                        .cornerRadius(2)
                     }
-                    .padding()
-                    .background(Color.black)
-                    .cornerRadius(2)
-                    
+                    .frame(maxHeight: geometry.size.height * 0.5)
+                    .onReceive(timer) { currentTime in
+                                       nowTime = currentTime
+                                       // 現在時刻の分を取得
+                                       let currentMinute = Self.minuteFormatter.string(from: currentTime)
+
+                                       // 分が更新された場合
+                                       if currentMinute != previousMinute {
+                                           // 前回時刻の分を更新
+                                           previousMinute = currentMinute
+                                           // 時刻比較
+                                           let formatter = DateFormatter()
+                                           formatter.dateFormat = "HH:mm"
+                                           formatter.locale = Locale(identifier: "en_JP")
+    
+                                           let nowString = formatter.string(from: currentTime)
+    
+                                           for row int scheduleRows {
+                                               if let rowTime = formatter.date(forom: row.time),
+                                               rowTime > currentTime {
+                                                   scrollProxy.scrollTo(row.id, anchor: .top)
+                                                   break;
+                                               }
+                                           }
+                                      }
                     // 画像
                     Image(systemName: "globe")
                         .imageScale(.large)
@@ -124,10 +158,10 @@ struct ContentView: View {
                     }
                 }
                 // 幅：画面いっぱい
-                .frame(maxWidth: .infinity, maxHeight: geometry.size.height * 0.5, alignment: .center)
+                .frame(maxWidth: .infinity, alignment: .center)
                 // 背景：黒
                 .background(Color.black)
-                // 1分ごとに表示時間更新
+                // 1秒ごとに表示時間更新
                 .onReceive(timer) {input in nowTime = input}
             }
         }
