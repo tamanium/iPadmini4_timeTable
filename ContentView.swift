@@ -96,6 +96,19 @@ struct ContentView: View {
                     .foregroundColor(.accentColor)
                 // テキスト
                 Text("Hello, world!")
+                Spacer()
+
+                // 画面遷移ボタン
+                NavigationLink(destination: SecondView()) {
+                    Text("Data")
+                    .font(.headline)
+                    .foregroundColor(.white)
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .background(Color.blue)
+                    .cornerRadius(10)
+                    .padding(.horizontal)
+                }
             }
             // 幅：画面いっぱい
             .frame(maxheight: geometry.size.height * 0.5, maxWidth: .infinity, alignment: .center)
