@@ -11,26 +11,23 @@ struct ContentView: View {
     // 現在時刻
     @State var nowTime = Date()
     // 前回時刻の分
-    @State var previousMinute: String = ""
+    @State var previousMinute: String = Self.minuteFormatter.string(from: Date())
     
     // タイムテーブルデータ
-    let scheduleRows: [ScheduleRow] = [
-        ScheduleRow(time:"12:40", name:"ABC学園"),
-        ScheduleRow(time:"13:50", name:"ABC高校"),
-        ScheduleRow(time:"13:50", name:"ABC高校"),
-        ScheduleRow(time:"13:50", name:"ABC高校"),
-        ScheduleRow(time:"13:50", name:"ABC高校"),
-        ScheduleRow(time:"13:50", name:"ABC高校"),
-        ScheduleRow(time:"13:50", name:"ABC高校"),
-        ScheduleRow(time:"13:50", name:"ABC高校"),
-        ScheduleRow(time:"13:50", name:"ABC高校"),
-        ScheduleRow(time:"13:50", name:"ABC高校"),
-        ScheduleRow(time:"13:50", name:"ABC高校"),
-        ScheduleRow(time:"14:00", name:"abc学校")
-    ]
+    let scheduleRows: [ScheduleRow] = (0..<24*60).map { index in
+        let hour = index / 60
+        let minute = index % 60
+        let timeString = String(format: "%02d:%02d", hour, minute)
+        let nameString = "団体\(index + 1)" // 連番: 1から開始
+        return ScheduleRow(time: timeString, name: nameString)
+    }
     
     // 時刻更新用タイマー
-    private let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+    private let timer = Timer.publish(
+        every: 1, 
+        on: .main, 
+        in: .common)
+        .autoconnect()
     
     // 時間のフォーマッター（staticで再利用）
     private static let hourFormatter: DateFormatter = {
@@ -61,14 +58,14 @@ struct ContentView: View {
         NavigationStack {
             GeometryReader { geometry in
                 let timeFont = Font.system(size: geometry.size.width * 0.3, weight: .light, design: .monospaced)
-                let secondFont = Font.system(size: geometry.size.width * 0.1, weight: .light, design: .monospaced)
+                let secondFont = Font.system(size: geometry.size.width * 0.08, weight: .light, design: .monospaced)
                 // タテ配置
                 VStack {
                     // -------------------------------
                     // ----------時計表示領域----------
                     // -------------------------------
                     // ヨコ配置
-                    HStack(alignment: .lastTextBaseline, spacing:-1) {
+                    HStack(alignment: .lastTextBaseline, spacing: -8) {
                         // 時間
                         Text(Self.hourFormatter.string(from: nowTime))
                             .font(timeFont)
@@ -79,7 +76,7 @@ struct ContentView: View {
                         Text(Self.minuteFormatter.string(from: nowTime))
                             .font(timeFont)
                         // 秒
-                        Text(Self.minuteFormatter.string(from: nowTime))
+                        Text(Self.secondFormatter.string(from: nowTime))
                             .font(secondFont)
                     }
                     // 幅：親画面いっぱい、中央寄せ
@@ -87,7 +84,8 @@ struct ContentView: View {
                     // 背景：黒
                     .background(Color.black)
                     // 1秒ごとに表示時間更新
-                    .onReceive(timer) {input in nowTime = input
+                    .onReceive(timer) {input in
+                        nowTime = input
                     }
                     
                     // -------------------------------
@@ -99,73 +97,77 @@ struct ContentView: View {
                                 // ヘッダ行
                                 GridRow {
                                     // 2列分セル合体
-                                    Text("演奏時刻").gridCellColumns(2)
+                                    Text("演奏時刻")
+                                        .gridCellColumns(2)
                                 }
                                 Divider().gridCellUnsizedAxes([.horizontal, .vertical])
                                 // データ行
                                 ForEach(scheduleRows) { row in
                                     GridRow {
-                                        Text(row.time).font(.system(design: .monospaced))
+                                        Text(row.time)
                                         Text(row.name)
                                     }
                                     // スクロール対象のID
                                     .id(row.id)
                                 }
                             }
-                            .padding()
-                            .background(Color.black)
-                            .cornerRadius(2)
-                        }
-                        .frame(maxHeight: geometry.size.height * 0.5)
-                        .onReceive(timer) { currentTime in
-                            nowTime = currentTime
-                            // 現在時刻の分を取得
-                            let currentMinute = Self.minuteFormatter.string(from: currentTime)
-                            
-                            // 分が更新された場合
-                            if currentMinute != previousMinute {
-                                // 前回時刻の分を更新
-                                previousMinute = currentMinute
-                                // 時刻比較
-                                let formatter = DateFormatter()
-                                formatter.dateFormat = "HH:mm"
-                                formatter.locale = Locale(identifier: "en_JP")
-                                
-                                let nowString = formatter.string(from: currentTime)
-                                
-                                for row in scheduleRows {
-                                    if let rowTime = formatter.date(from: row.time),
-                                       rowTime > currentTime {
-                                        scrollProxy.scrollTo(row.id, anchor: .top)
-                                        break;
+                            .onReceive(timer) { currentTime in
+                                // 現在時刻の分を取得
+                                let currentMinute = Self.minuteFormatter.string(from: currentTime)
+                                // 分が更新された場合
+                                if currentMinute != previousMinute {
+                                    // 前回時刻の分を更新
+                                    previousMinute = currentMinute
+                                    // 時刻比較
+                                    let truncatedFormatter = DateFormatter()
+                                    truncatedFormatter.dateFormat = "HH:mm"
+                                    truncatedFormatter.locale = Locale(identifier: "en_JP")
+                                    
+                                    let formatter = DateFormatter()
+                                    formatter.dateFormat = "HH:mm"
+                                    formatter.locale = Locale(identifier: "en_JP")
+                                    
+                                    
+                                    let truncatedTimeString = truncatedFormatter.string(from: currentTime)
+                                    guard let truncatedCurrentTime = truncatedFormatter.date(from: truncatedTimeString) else { return }
+
+                                    for row in scheduleRows {
+                                        if let rowTime = formatter.date(from: row.time),
+                                           rowTime >= truncatedCurrentTime {
+                                            withAnimation {
+                                                scrollProxy.scrollTo(row.id, anchor: .top)
+                                            }
+                                            break
+                                        }
                                     }
                                 }
                             }
                         }
-                    }
-                    // 画像
-                    Image(systemName: "globe")
-                        .imageScale(.large)
-                        .foregroundColor(.accentColor)
-                    // テキスト
-                    Text("Hello, world!")
-                    Spacer()
-                    // 画面遷移ボタン
-                    NavigationLink(destination: SecondView()) {
-                        Text("Data")
-                            .font(.headline)
-                            .foregroundColor(.white)
-                            .padding()
-                            .frame(maxWidth: .infinity)
-                            .background(Color.blue)
-                            .cornerRadius(10)
-                            .padding(.horizontal)
+                        // 画像
+                        Image(systemName: "globe")
+                            .imageScale(.large)
+                            .foregroundColor(.accentColor)
+                        // テキスト
+                        Text("Hello, world!")
+                        Spacer()
+                        // 画面遷移ボタン
+                        NavigationLink(destination: SecondView()) {
+                            Text("Data")
+                                .font(.headline)
+                                .foregroundColor(.white)
+                                .padding()
+                                .frame(maxWidth: .infinity)
+                                .background(Color.blue)
+                                .cornerRadius(10)
+                                .padding(.horizontal)
+                        }
+                        //}
+                        // 幅：画面いっぱい
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        // 背景：黒
+                        .background(Color.black)
                     }
                 }
-                // 幅：画面いっぱい
-                .frame(maxWidth: .infinity, alignment: .center)
-                // 背景：黒
-                .background(Color.black)
             }
         }
     }
