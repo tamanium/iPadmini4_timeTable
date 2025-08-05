@@ -1,28 +1,45 @@
 import SwiftUI
 
+// 状態
+enum Status {
+    case coming // 移動中
+    case checkIn // 受付
+    case takingIn // 楽器搬入
+    case preparing // 楽器出し
+    case beforeTuning // チューニング室待ち
+    case tuning // チューニング
+    case waitingX // 待機X
+    case waitingY // 待機Y
+    case performing // 演奏
+    case putAway // 楽器片付け
+    case takingOut // 楽器搬出
+    case done // 
+}
+
 // 構造体：タイムテーブルの行
 struct ScheduleRow: Identifiable {
     let id = UUID()  // ID
     let time: String // 時刻
     let name: String // 団体名
+    let status: String // 状態
 }
 
 struct ContentView: View {
     // 現在時刻
     @State var nowTime = Date()
     // 前回時刻の分
-    @State var previousMinute: String = Self.minuteFormatter.string(from: Date())
+    @State var previousMinute = ContentView.formatDate(Date(), format: "mm")
     // 大きさ
     @State private var gridScale: CGFloat = 1.0
     
     
     // タイムテーブルデータ
-    let scheduleRows: [ScheduleRow] = (0..<24*60).map { index in
+    let scheduleRows: [ScheduleRow] = (6*60..<24*60).map { index in
         let hour = index / 60
         let minute = index % 60
         let timeString = String(format: "%02d:%02d", hour, minute)
         let nameString = "団体\(index + 1)" // 連番: 1から開始
-        return ScheduleRow(time: timeString, name: nameString)
+        return ScheduleRow(time: timeString, name: nameString, status: "")
     }
     
     // 時刻更新用タイマー
@@ -31,31 +48,7 @@ struct ContentView: View {
         on: .main, 
         in: .common)
         .autoconnect()
-    
-    // 時間のフォーマッター（staticで再利用）
-    private static let hourFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "HH"
-        formatter.locale = Locale(identifier: "en_JP")
-        return formatter
-    }()
-    
-    // 分のフォーマッター(staticで再利用)
-    private static let minuteFormatter: DateFormatter  = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "mm"
-        formatter.locale = Locale(identifier: "en_JP")
-        return formatter
-    }()
-    
-    // 秒のフォーマッター(staticで再利用)
-    private static let secondFormatter: DateFormatter  = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "ss"
-        formatter.locale = Locale(identifier: "en_JP")
-        return formatter
-    }()
-    
+
     // 表示
     var body: some View {
         NavigationStack {
@@ -70,16 +63,17 @@ struct ContentView: View {
                     // ヨコ配置
                     HStack(alignment: .lastTextBaseline, spacing: -8) {
                         // 時間
-                        Text(Self.hourFormatter.string(from: nowTime))
+                        
+                        Text(Self.formatDate(nowTime, format: "HH"))
                             .font(timeFont)
                         // コロン
                         Text(":")
                             .font(timeFont)
                         // 分
-                        Text(Self.minuteFormatter.string(from: nowTime))
+                        Text(Self.formatDate(nowTime, format: "mm"))
                             .font(timeFont)
                         // 秒
-                        Text(Self.secondFormatter.string(from: nowTime))
+                        Text(Self.formatDate(nowTime, format: "ss"))
                             .font(secondFont)
                     }
                     // 幅：親画面いっぱい、中央寄せ
@@ -126,7 +120,7 @@ struct ContentView: View {
                                 // タイマーイベント
                                 .onReceive(timer) { currentTime in
                                     // 現在時刻の分を取得
-                                    let currentMinute = Self.minuteFormatter.string(from: currentTime)
+                                    let currentMinute = Self.formatDate(currentTime, format: "mm")
                                     // 分が更新された場合
                                     if currentMinute != previousMinute {
                                         // 前回時刻の分を更新
@@ -180,5 +174,11 @@ struct ContentView: View {
                 }
             }
         }
+    }
+    static func formatDate(_ date: Date, format: String) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = format
+        formatter.locale = Locale(identifier: "en_JP")
+        return formatter.string(from: date)
     }
 }
