@@ -1,8 +1,25 @@
 import SwiftUI
 
+// 構造体：タイムテーブルの行
+struct ScheduleRow: Identifiable {
+    // ID
+    let id = UUID()
+    // 時刻
+    let time: String
+    // 団体名
+    let name: String
+}
+
 struct ContentView: View {
     // 現在時刻
     @State var nowTime = Date()
+
+    // タイムテーブルデータ
+    let scheduleRows: [ScheduleRow] = [
+        ScheduleRow(time:"12:40", name:"ABC学園"),
+        ScheduleRow(time:"13:50", name:"ABC高校"),
+        ScheduleRow(time:"14:00", name:"abc学校")
+    ]
     
     // 時刻更新用タイマー
     private let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
@@ -35,6 +52,7 @@ struct ContentView: View {
         GeometryReader { geometry in
             // タテ配置
             VStack {
+                // -----時計表示領域-----
                 // ヨコ配置
                 HStack(alignment: .lastTextbaseline, spacing:-1) {
                     // 時間
@@ -54,6 +72,26 @@ struct ContentView: View {
                 .frame(maxWidth: .infinity, alignment: .center)
                 // 背景：黒
                 .background(Color.black)
+
+                // -----タイムテーブル領域-----
+                Grid(alignment: .leading, horizontalSpacing: 16, verticalSpacing: 8) {
+                    GridRow {
+                        Text("時刻").bold()
+                        Text("学校名").bold()
+                    }
+                    Divider().gridCellUnsizedAxes([.horizontal, .vertical])
+
+                    ForEach(scheduleRows) { row in
+                        GridRow {
+                            Text(row.time)
+                            Text(row.name)
+                        }
+                   }
+                }
+                .padding()
+                .background(Color.black)
+                .cornerRadius(2)
+                
                 // 画像
                 Image(systemName: "globe")
                     .imageScale(.large)
