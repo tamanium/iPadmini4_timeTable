@@ -15,6 +15,15 @@ struct ContentView: View {
     let scheduleRows: [ScheduleRow] = [
         ScheduleRow(time:"12:40", name:"ABC学園"),
         ScheduleRow(time:"13:50", name:"ABC高校"),
+        ScheduleRow(time:"13:50", name:"ABC高校"),
+        ScheduleRow(time:"13:50", name:"ABC高校"),
+        ScheduleRow(time:"13:50", name:"ABC高校"),
+        ScheduleRow(time:"13:50", name:"ABC高校"),
+        ScheduleRow(time:"13:50", name:"ABC高校"),
+        ScheduleRow(time:"13:50", name:"ABC高校"),
+        ScheduleRow(time:"13:50", name:"ABC高校"),
+        ScheduleRow(time:"13:50", name:"ABC高校"),
+        ScheduleRow(time:"13:50", name:"ABC高校"),
         ScheduleRow(time:"14:00", name:"abc学校")
     ]
     
