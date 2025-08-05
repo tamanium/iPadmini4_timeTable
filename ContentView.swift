@@ -47,7 +47,8 @@ struct ContentView: View {
         formatter.locale = Locale(identifier: "en_JP")
         return formatter
     }()
-    
+
+    // 表示
     var body: some View {
         GeometryReader { geometry in
             // タテ配置
@@ -100,7 +101,7 @@ struct ContentView: View {
                 Text("Hello, world!")
             }
             // 幅：画面いっぱい
-            .frame(maxWidth: .infinity, alignment: .center)
+            .frame(maxheight: geometry.size.height * 0.5, maxWidth: .infinity, alignment: .center)
             // 背景：黒
             .background(Color.black)
             // 1分ごとに表示時間更新
