@@ -23,28 +23,37 @@ struct ContentView: View {
         return formatter
     }()
     
+    // 秒のフォーマッター(staticで再利用)
+    private static let secondFormatter: DateFormatter  = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "ss"
+        formatter.locale = Locale(identifier: "en_JP")
+        return formatter
+    }()
+    
     var body: some View {
         GeometryReader { geometry in
             // タテ配置
             VStack {
                 // ヨコ配置
-                HStack(spacing:-1) {
+                HStack(alignment: .lastTextbaseline, spacing:-1) {
                     // 時間
                     Text(Self.hourFormatter.string(from: nowTime))
+                        .font(.system(size: geometry.size.width * 0.42, weight: .light, design: .rounded))
                     // コロン
                     Text(":")
+                        .font(.system(size: geometry.size.width * 0.42, weight: .light, design: .rounded))
                     // 分
                     Text(Self.minuteFormatter.string(from: nowTime))
+                        .font(.system(size: geometry.size.width * 0.42, weight: .light, design: .rounded))
+                    // 分
+                    Text(Self.secondFormatter.string(from: nowTime))
+                        .font(.system(size: geometry.size.width * 0.2, weight: .light, design: .rounded))
                 }
                 // 幅：親画面いっぱい、中央寄せ
                 .frame(maxWidth: .infinity, alignment: .center)
                 // 背景：黒
                 .background(Color.black)
-                // フォント
-                // サイズ：本画面いっぱい×倍率
-                // 太さ：普通か細いか
-                // デザイン：ラウンデッド？
-                .font(.system(size: geometry.size.width * 0.42, weight: .light, design: .rounded))
                 // 画像
                 Image(systemName: "globe")
                     .imageScale(.large)
