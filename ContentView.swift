@@ -5,12 +5,24 @@ struct ContentView: View {
     @State var nowTime = Date()
     // 前回時刻の分
     @State var previousMinute = ContentView.formatDate(Date(), format: "mm")    
-    
+
     // タイムテーブルデータ（仮データ作成）
     let scheduleRows: [ScheduleRow] = (6*60..<24*60).map { minute in
+        let dateComponents = DateComponents()
+        dateComponents.year = Calendar.current.component(.year, from:  Date())
+        dateComponents.month = Calendar.current.component(.month, from:  Date())
+        dateComponents.day = Calendar.current.component(.day, from:  Date())
+        dateComponents.hour = minute / 60
+        dateComponents.minute = minute % 60
         let timeString = String(format: "%02d:%02d", minute / 60, minute % 60)
         let nameString = "団体\(minute + 1)" // 連番: 1から開始
-        return ScheduleRow(timeStr: timeString, name: nameString, status: Status.home)
+        return ScheduleRow(
+            name: nameString, 
+            timeStr: timeString, 
+            nowStatus: Status.home, 
+            date: Calendar.date(from: dateComponents),  // 日付は動的に作成したもの（いずれは入力値）
+            statusDates: nil // ステータス-日時のディクショナリは当分nilで
+        )
     }
     
     // 時刻更新用タイマー
