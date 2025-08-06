@@ -21,9 +21,7 @@ struct ContentView: View {
                 let secondFont = Font.system(size: geometry.size.width * 0.08, weight: .light, design: .monospaced)
                 // タテ配置
                 VStack {
-                    // -------------------------------
                     // ----------時計表示領域----------
-                    // -------------------------------
                     // ヨコ配置
                     HStack(alignment: .lastTextBaseline, spacing: -8) {
                         // 時間
@@ -44,10 +42,7 @@ struct ContentView: View {
                         nowTime = input
                     }
                     
-                    // -------------------------------
                     // -------タイムテーブル領域--------
-                    // -------------------------------
-                    
                     // データテーブル領域
                     VStack(spacing: 0){
                         // ヘッダ行
@@ -103,9 +98,7 @@ struct ContentView: View {
                             }
                         }
                     }
-                    // -------------------------------
                     // -----------ボタン領域-----------
-                    // -------------------------------
                     // 画面遷移ボタン
                     NavigationLink(destination: SecondView()) {
                         Text("Data")
