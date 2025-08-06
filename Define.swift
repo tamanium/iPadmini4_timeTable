@@ -1,7 +1,7 @@
 import Foundation
 
 // ステータス定義
-enum Status: String, Codable {
+enum Status: String, Codable, Hashable {
     
     case home         = "00" // 前日
     case coming       = "01" // 移動中
@@ -18,10 +18,13 @@ enum Status: String, Codable {
     case done         = "12" // 予定完了
 }
 
+
 // スケジュール行
 struct ScheduleRow: Identifiable, Codable {
     let id = UUID()    // ID
-    let time: String   // 時刻
+    let time: String   // 時刻文字列
     let name: String   // 名前
-    let status: Status // ステータス
+    let nowStatus: Status // 現在のステータス
+    let date: Date     // 日時プロパティ
+    let statusDates: [Status: Date]? // ステータスと日時のマッピング
 }
