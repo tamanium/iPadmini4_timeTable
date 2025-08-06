@@ -25,6 +25,6 @@ struct ScheduleRow: Identifiable, Codable {
     let timeStr: String   // 時刻文字列
     let name: String   // 名前
     let nowStatus: Status // 現在のステータス
-    let date: Date     // 日時プロパティ
+    let date: Date?     // 日時プロパティ
     let statusDates: [Status: Date]? // ステータスと日時のマッピング
 }
