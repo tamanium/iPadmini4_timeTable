@@ -1,7 +1,7 @@
 import Foundation
 
 // ステータス定義
-enum Status: String, CaseIterable {
+enum Status: String, Codable {
     case home         = "前日"
     case coming       = "移動中"
     case checkIn      = "受付"
