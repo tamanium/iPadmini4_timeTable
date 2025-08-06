@@ -18,7 +18,7 @@ struct ContentView: View {
         // 連番: 1から開始
         let nameString = "団体\(minute + 1)" 
         // 日付データを取得(失敗した場合はメッセージ)
-        guard let date = Calendar.current.date(form: dateComponents) else {
+        guard let date = Calendar.current.date(from: dateComponents) else {
             fatalError("日付の生成に失敗しました")
         }
         return ScheduleRow(
