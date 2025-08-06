@@ -7,32 +7,6 @@ struct ContentView: View {
     @State var previousMinute = ""
     // スケジュール行配列
     @State private var scheduleRows: [ScheduleRow] = []
-    
-/*
-    // タイムテーブルデータ（仮データ作成）
-    let scheduleRows: [ScheduleRow] = (6*60..<24*60).map { minute in
-        var dateComponents = DateComponents()
-        dateComponents.year = Calendar.current.component(.year, from:  Date())
-        dateComponents.month = Calendar.current.component(.month, from:  Date())
-        dateComponents.day = Calendar.current.component(.day, from:  Date())
-        dateComponents.hour = minute / 60
-        dateComponents.minute = minute % 60
-        let timeString = String(format: "%02d:%02d", minute / 60, minute % 60)
-        // 連番: 1から開始
-        let nameString = "団体\(minute + 1)" 
-        // 日付データを取得(失敗した場合はメッセージ)
-        guard let date = Calendar.current.date(from: dateComponents) else {
-            fatalError("日付の生成に失敗しました")
-        }
-        return ScheduleRow(
-            timeStr: timeString, 
-            name: nameString, 
-            nowStatus: Status.home, 
-            date: date,      // 日付は動的に作成したもの（いずれは入力値）
-            statusDates: nil // ステータス-日時のディクショナリは当分nilで
-        )
-    }
-  */  
     // 時刻更新用タイマー
     private let timer = Timer.publish(every: 1, on: .main, in: .common)
         .autoconnect()
