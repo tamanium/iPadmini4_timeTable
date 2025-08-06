@@ -4,7 +4,7 @@ struct ContentView: View {
     // 現在時刻
     @State var nowTime = Date()
     // 前回時刻の分
-    @State var previousMinute = ContentView.formatDate(Date(), format: "mm")    
+    @State var previousMinute = ""    
 
     // タイムテーブルデータ（仮データ作成）
     let scheduleRows: [ScheduleRow] = (6*60..<24*60).map { minute in
@@ -125,25 +125,28 @@ struct ContentView: View {
                                     .frame(height: 900) // 必要に応じて調整
                                 
                             }
-                            
-                            // 画面遷移ボタン
-                            NavigationLink(destination: SecondView()) {
-                                Text("Data")
-                                    .font(.headline)
-                                    .foregroundColor(.white)
-                                    .padding()
-                                    .frame(maxWidth: .infinity)
-                                    .background(Color.blue)
-                                    .cornerRadius(10)
-                                    .padding(.horizontal)
-                            }
-                            //}
-                            // 幅：画面いっぱい
-                            .frame(maxWidth: .infinity, alignment: .center)
-                            // 背景：黒
-                            .background(Color.black)
                         }
                     }
+                    
+                    // -------------------------------
+                    // -----------ボタン領域-----------
+                    // -------------------------------
+                    // 画面遷移ボタン
+                    NavigationLink(destination: SecondView()) {
+                        Text("Data")
+                            .font(.headline)
+                            .foregroundColor(.white)
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .background(Color.blue)
+                            .cornerRadius(10)
+                            .padding(.horizontal)
+                    }
+                    //}
+                    // 幅：画面いっぱい
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    // 背景：黒
+                    .background(Color.black)
                 }
             }
         }
@@ -152,14 +155,14 @@ struct ContentView: View {
     static func formatDate(_ date: Date, format: String) -> String {
         let formatter = DateFormatter()
         formatter.dateFormat = format
-        formatter.locale = Locale(identifier: "en_JP")
+        formatter.locale = Locale(identifier: "ja_JP")
         return formatter.string(from: date)
     }
     // 文字列から日付データに変換する
     static func dateFromString(_ string: String, format: String) -> Date? {
         let formatter = DateFormatter()
         formatter.dateFormat = format
-        formatter.locale = Locale(identifier: "en_JP")
+        formatter.locale = Locale(identifier: "ja_JP")
         return formatter.date(from: string)
     }
 
