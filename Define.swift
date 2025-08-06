@@ -1,7 +1,7 @@
 import Foundation
 
 // ステータス定義
-enum Status: String, Codable {
+enum Status: String {
     case home         = "前日"
     case coming       = "移動中"
     case checkIn      = "受付"
@@ -18,7 +18,7 @@ enum Status: String, Codable {
 }
 
 // スケジュール行
-struct ScheduleRow: Identifiable {
+struct ScheduleRow: Identifiable, Codable {
     let id = UUID()    // ID
     let time: String   // 時刻
     let name: String   // 名前
