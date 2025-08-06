@@ -6,7 +6,7 @@ struct ContentView: View {
     // 前回時刻の分
     @State var previousMinute = ContentView.formatDate(Date(), format: "mm")    
     
-    // タイムテーブルデータ
+    // タイムテーブルデータ（仮データ作成）
     let scheduleRows: [ScheduleRow] = (6*60..<24*60).map { minute in
         let timeString = String(format: "%02d:%02d", minute / 60, minute % 60)
         let nameString = "団体\(minute + 1)" // 連番: 1から開始
