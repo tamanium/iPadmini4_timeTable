@@ -24,7 +24,7 @@ struct ScheduleRow: Identifiable, Codable {
     var id = UUID()    // ID
     let timeStr: String   // 時刻文字列
     let name: String   // 名前
-    let nowStatus: Status // 現在のステータス
+    var nowStatus: Status // 現在のステータス
     let date: Date?     // 日時プロパティ
     let statusDates: [Status: Date]? // ステータスと日時のマッピング
 }
