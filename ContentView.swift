@@ -1,44 +1,41 @@
 import SwiftUI
 
 // 状態
-enum Status {
-    case home // 前日
-    case coming // 移動中
-    case checkIn // 受付
-    case takingIn // 楽器搬入
-    case preparing // 楽器出し
-    case beforeTuning // チューニング室待ち
-    case tuning // チューニング
-    case waitingX // 待機X
-    case waitingY // 待機Y
-    case performing // 演奏
-    case putAway // 楽器片付け
-    case takingOut // 楽器搬出
-    case done // 完了
+enum Status: String {
+    case home         = "前日"
+    case coming       = "移動中"
+    case checkIn　    = "受付"
+    case takingIn     = "楽器搬入"
+    case preparing    = "楽器出し"
+    case beforeTuning = "チューニング待ち"
+    case tuning       = "チューニング"
+    case waiting1     = "待機1"
+    case waiting2     = "待機2"
+    case performing   = "演奏"
+    case putAway      = "楽器片付け"
+    case takingOut    = "楽器搬出"
+    case done         = "完了"
 }
 
 // 構造体：タイムテーブルの行
 struct ScheduleRow: Identifiable {
-    let id = UUID()  // ID
-    let time: String // 時刻
-    let name: String // 団体名
-    let status: Status // 状態
+    let id = UUID()    // ID
+    let time: String   // 時刻
+    let name: String   // 団体名
+    let status: String // 状態
 }
 
 struct ContentView: View {
     // 現在時刻
     @State var nowTime = Date()
     // 前回時刻の分
-    @State var previousMinute = ContentView.formatDate(Date(), format: "mm")
-    // 大きさ
-    @State private var gridScale: CGFloat = 1.0
-    
+    @State var previousMinute = ContentView.formatDate(Date(), format: "mm")    
     
     // タイムテーブルデータ
     let scheduleRows: [ScheduleRow] = (6*60..<24*60).map { minute in
         let timeString = String(format: "%02d:%02d", minute / 60, minute % 60)
         let nameString = "団体\(minute + 1)" // 連番: 1から開始
-        return ScheduleRow(time: timeString, name: nameString, status: .home)
+        return ScheduleRow(time: timeString, name: nameString, status: Status.home)
     }
     
     // 時刻更新用タイマー
@@ -60,17 +57,13 @@ struct ContentView: View {
                     HStack(alignment: .lastTextBaseline, spacing: -8) {
                         // 時間
                         
-                        Text(Self.formatDate(nowTime, format: "HH"))
-                            .font(timeFont)
+                        Text(Self.formatDate(nowTime, format: "HH")).font(timeFont)
                         // コロン
-                        Text(":")
-                            .font(timeFont)
+                        Text(":").font(timeFont)
                         // 分
-                        Text(Self.formatDate(nowTime, format: "mm"))
-                            .font(timeFont)
+                        Text(Self.formatDate(nowTime, format: "mm")).font(timeFont)
                         // 秒
-                        Text(Self.formatDate(nowTime, format: "ss"))
-                            .font(secondFont)
+                        Text(Self.formatDate(nowTime, format: "ss")).font(secondFont)
                     }
                     // 幅：親画面いっぱい、中央寄せ
                     .frame(maxWidth: .infinity, alignment: .center)
@@ -105,7 +98,7 @@ struct ContentView: View {
                                     ForEach(scheduleRows) { row in
                                         GridRow {
                                             Text(row.time)
-                                                .font(.system(size: 30))
+                                                .font(Font(UIFont.monospacedDigitSystemFont(ofSize: 30, weight: .regular)))
                                             Text(row.name)
                                                 .font(.system(size: 30))
                                         }
@@ -121,13 +114,9 @@ struct ContentView: View {
                                     if currentMinute != previousMinute {
                                         // 前回時刻の分を更新
                                         previousMinute = currentMinute
-                                        // 時刻比較
-                                        let formatter = DateFormatter()
-                                        formatter.dateFormat = "HH:mm"
-                                        formatter.locale = Locale(identifier: "en_JP")
                                         
-                                        let truncatedTimeString = formatter.string(from: currentTime)
-                                        guard let truncatedCurrentTime = formatter.date(from: truncatedTimeString) else { return }
+                                        let truncatedTimeString = Self.formatDate(currentTime, format: "HH:mm")
+                                        guard let truncatedCurrentTime = Self.dateFromString(truncatedTimeString, format: "HH:mm") else { return }
                                         for (i, row) in scheduleRows.enumerated() {
                                             if let rowTime = formatter.date(from: row.time),
                                                rowTime >= truncatedCurrentTime {
@@ -171,10 +160,19 @@ struct ContentView: View {
             }
         }
     }
+    // 日付型の日付データを引数フォーマットで文字列に変換する
     static func formatDate(_ date: Date, format: String) -> String {
         let formatter = DateFormatter()
         formatter.dateFormat = format
         formatter.locale = Locale(identifier: "en_JP")
         return formatter.string(from: date)
     }
+    // 文字列から日付データに変換する
+    static func dateFromString(_ string: String, format: String) -> Date? {
+        let formatter = DateFormatter()
+        formatter.dateFormat = format
+        formatter.locale = Locale(identifier: "en_JP")
+        return formatter.date(from: string)
+    }
+
 }
