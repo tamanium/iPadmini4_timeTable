@@ -10,7 +10,7 @@ struct ContentView: View {
     let scheduleRows: [ScheduleRow] = (6*60..<24*60).map { minute in
         let timeString = String(format: "%02d:%02d", minute / 60, minute % 60)
         let nameString = "団体\(minute + 1)" // 連番: 1から開始
-        return ScheduleRow(time: timeString, name: nameString, status: Status.home)
+        return ScheduleRow(timeStr: timeString, name: nameString, status: Status.home)
     }
     
     // 時刻更新用タイマー
@@ -68,7 +68,7 @@ struct ContentView: View {
                                         GridRow {
                                             Text(row.status.rawValue)
                                                 .font(.system(size: 30))
-                                            Text(row.time)
+                                            Text(row.timeStr)
                                                 .font(Font(UIFont.monospacedDigitSystemFont(ofSize: 30, weight: .regular)))
                                             Text(row.name)
                                                 .font(.system(size: 30))
@@ -89,7 +89,7 @@ struct ContentView: View {
                                         let truncatedTimeString = Self.formatDate(currentTime, format: "HH:mm")
                                         guard let truncatedCurrentTime = Self.dateFromString(truncatedTimeString, format: "HH:mm") else { return }
                                         for (i, row) in scheduleRows.enumerated() {
-                                            if let rowTime = Self.dateFromString(row.time, format: "HH:mm"),
+                                            if let rowTime = Self.dateFromString(row.timeStr, format: "HH:mm"),
                                                rowTime >= truncatedCurrentTime {
                                                 // 1つ前の行が存在するか確認
                                                 let targetIndex = max(i - 1, 0)
