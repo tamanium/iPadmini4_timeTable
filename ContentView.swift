@@ -31,7 +31,6 @@ struct ContentView: View {
                     // ヨコ配置
                     HStack(alignment: .lastTextBaseline, spacing: -8) {
                         // 時間
-                        
                         Text(Self.formatDate(nowTime, format: "HH")).font(timeFont)
                         // コロン
                         Text(":").font(timeFont)
@@ -57,13 +56,16 @@ struct ContentView: View {
                     VStack(spacing: 0){
                         // ヘッダ行
                         Text("演奏時刻")
+                        // スクロール領域
                         ScrollViewReader { scrollProxy in
-                            // スクロール領域
+                            // 縦スクロール領域
                             ScrollView(.vertical) {
                                 Grid(alignment: .leading, horizontalSpacing: 16, verticalSpacing: 8){
                                     // データ行
                                     ForEach(scheduleRows) { row in
                                         GridRow {
+                                            Text(row.status.rawValue)
+                                                .font(.system(size: 30))
                                             Text(row.time)
                                                 .font(Font(UIFont.monospacedDigitSystemFont(ofSize: 30, weight: .regular)))
                                             Text(row.name)
