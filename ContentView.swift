@@ -4,8 +4,11 @@ struct ContentView: View {
     // 現在時刻
     @State var nowTime = Date()
     // 前回時刻の分
-    @State var previousMinute = ""    
-
+    @State var previousMinute = ""
+    // スケジュール行配列
+    @State private var scheduleRows: [ScheduleRow] = []
+    
+/*
     // タイムテーブルデータ（仮データ作成）
     let scheduleRows: [ScheduleRow] = (6*60..<24*60).map { minute in
         var dateComponents = DateComponents()
@@ -29,7 +32,7 @@ struct ContentView: View {
             statusDates: nil // ステータス-日時のディクショナリは当分nilで
         )
     }
-    
+  */  
     // 時刻更新用タイマー
     private let timer = Timer.publish(every: 1, on: .main, in: .common)
         .autoconnect()
@@ -83,10 +86,10 @@ struct ContentView: View {
                                     // データ行
                                     ForEach(scheduleRows) { row in
                                         GridRow {
-                                            Text(row.status.rawValue)
+                                            Text(row.nowStatus.rawValue)
                                                 .font(.system(size: 30))
                                             Text(row.timeStr)
-                                                .font(Font(UIFont.monospacedDigitSystemFont(ofSize: 30, weight: .regular)))
+                                                .font(.system(size: 30, design: .monospaced))
                                             Text(row.name)
                                                 .font(.system(size: 30))
                                         }
@@ -101,8 +104,9 @@ struct ContentView: View {
                                     // 分が更新された場合
                                     if currentMinute != previousMinute {
                                         // 前回時刻の分を更新
-                                        previousMinute = currentMinute
-                                        
+                                        DispatchQueue.main.async {
+                                            previousMinute = currentMinute
+                                        }
                                         let truncatedTimeString = Self.formatDate(currentTime, format: "HH:mm")
                                         guard let truncatedCurrentTime = Self.dateFromString(truncatedTimeString, format: "HH:mm") else { return }
                                         for (i, row) in scheduleRows.enumerated() {
@@ -121,13 +125,10 @@ struct ContentView: View {
                                     }
                                 }
                                 // ScrollView の末尾に追加
-                                Spacer()
-                                    .frame(height: 900) // 必要に応じて調整
-                                
+                                Spacer().frame(height: 900) // 必要に応じて調整
                             }
                         }
                     }
-                    
                     // -------------------------------
                     // -----------ボタン領域-----------
                     // -------------------------------
@@ -147,6 +148,28 @@ struct ContentView: View {
                     .frame(maxWidth: .infinity, alignment: .center)
                     // 背景：黒
                     .background(Color.black)
+                }
+                .onAppear {
+                    scheduleRows = (6*60..<24*60).map { minute in
+                        let timeString = String(format: "%02d:%02d", minute / 60, minute % 60)
+                        let nameString = "団体\(minute + 1)"
+                        let dateComponents = DateComponents(
+                            year: Calendar.current.component(.year, from: Date()),
+                            month: Calendar.current.component(.month, from: Date()),
+                            day: Calendar.current.component(.day, from: Date()),
+                            hour: minute / 60,
+                            minute: minute % 60
+                        )
+                        let date = Calendar.current.date(from: dateComponents)
+                        return ScheduleRow(
+                            id: UUID(),
+                            timeStr: timeString,
+                            name: nameString,
+                            nowStatus: .home,
+                            date: date,
+                            statusDates: nil
+                        )
+                    }
                 }
             }
         }
