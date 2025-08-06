@@ -73,9 +73,7 @@ struct ContentView: View {
                                     // 分が更新された場合
                                     if currentMinute != previousMinute {
                                         // 前回時刻の分を更新
-                                        DispatchQueue.main.async {
-                                            previousMinute = currentMinute
-                                        }
+                                        previousMinute = currentMinute
                                         let truncatedTimeString = Self.formatDate(currentTime, format: "HH:mm")
                                         guard let truncatedCurrentTime = Self.dateFromString(truncatedTimeString, format: "HH:mm") else { return }
                                         for (i, row) in scheduleRows.enumerated() {
