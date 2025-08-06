@@ -80,16 +80,16 @@ struct ContentView: View {
                     
                     // データテーブル領域
                     VStack(spacing: 0){
-                        Grid(alignment: .leading, horizontalSpacing: 16, verticalSpacing: 8) {
+                        //Grid(alignment: .leading, horizontalSpacing: 16, verticalSpacing: 8) {
                             // ヘッダ行
-                            GridRow {
+                            //GridRow {
                                 // 2列分セル合体
                                 Text("演奏時刻")
-                                    .gridCellColumns(2)
-                                    .frame(alignment: .leading)
-                            }
-                            Divider().gridCellUnsizedAxes([.horizontal, .vertical])
-                        }
+                                    //.gridCellColumns(2)
+                                    //.frame(alignment: .leading)
+                            //}
+                            //Divider().gridCellUnsizedAxes([.horizontal, .vertical])
+                        //}
                         ScrollViewReader { scrollProxy in
                             // スクロール領域
                             ScrollView(.vertical) {
