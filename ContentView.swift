@@ -2,6 +2,7 @@ import SwiftUI
 
 // 状態
 enum Status {
+    case home // 前日
     case coming // 移動中
     case checkIn // 受付
     case takingIn // 楽器搬入
@@ -13,7 +14,7 @@ enum Status {
     case performing // 演奏
     case putAway // 楽器片付け
     case takingOut // 楽器搬出
-    case done // 
+    case done // 完了
 }
 
 // 構造体：タイムテーブルの行
@@ -21,7 +22,7 @@ struct ScheduleRow: Identifiable {
     let id = UUID()  // ID
     let time: String // 時刻
     let name: String // 団体名
-    let status: String // 状態
+    let status: Status // 状態
 }
 
 struct ContentView: View {
@@ -34,26 +35,21 @@ struct ContentView: View {
     
     
     // タイムテーブルデータ
-    let scheduleRows: [ScheduleRow] = (6*60..<24*60).map { index in
-        let hour = index / 60
-        let minute = index % 60
-        let timeString = String(format: "%02d:%02d", hour, minute)
-        let nameString = "団体\(index + 1)" // 連番: 1から開始
-        return ScheduleRow(time: timeString, name: nameString, status: "")
+    let scheduleRows: [ScheduleRow] = (6*60..<24*60).map { minute in
+        let timeString = String(format: "%02d:%02d", minute / 60, minute % 60)
+        let nameString = "団体\(minute + 1)" // 連番: 1から開始
+        return ScheduleRow(time: timeString, name: nameString, status: .home)
     }
     
     // 時刻更新用タイマー
-    private let timer = Timer.publish(
-        every: 1, 
-        on: .main, 
-        in: .common)
+    private let timer = Timer.publish(every: 1, on: .main, in: .common)
         .autoconnect()
 
     // 表示
     var body: some View {
         NavigationStack {
             GeometryReader { geometry in
-                let timeFont = Font.system(size: geometry.size.width * 0.3, weight: .light, design: .monospaced)
+                let timeFont = Font.monospacedDigitSystemFont(ofSize: geometry.size.width * 0.3, weight: .black)
                 let secondFont = Font.system(size: geometry.size.width * 0.08, weight: .light, design: .monospaced)
                 // タテ配置
                 VStack {
