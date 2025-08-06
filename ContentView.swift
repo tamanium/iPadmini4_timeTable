@@ -4,7 +4,7 @@ import SwiftUI
 enum Status: String {
     case home         = "前日"
     case coming       = "移動中"
-    case checkIn　    = "受付"
+    case checkIn      = "受付"
     case takingIn     = "楽器搬入"
     case preparing    = "楽器出し"
     case beforeTuning = "チューニング待ち"
@@ -22,7 +22,7 @@ struct ScheduleRow: Identifiable {
     let id = UUID()    // ID
     let time: String   // 時刻
     let name: String   // 団体名
-    let status: String // 状態
+    let status: Status // 状態
 }
 
 struct ContentView: View {
@@ -80,16 +80,8 @@ struct ContentView: View {
                     
                     // データテーブル領域
                     VStack(spacing: 0){
-                        //Grid(alignment: .leading, horizontalSpacing: 16, verticalSpacing: 8) {
-                            // ヘッダ行
-                            //GridRow {
-                                // 2列分セル合体
-                                Text("演奏時刻")
-                                    //.gridCellColumns(2)
-                                    //.frame(alignment: .leading)
-                            //}
-                            //Divider().gridCellUnsizedAxes([.horizontal, .vertical])
-                        //}
+                        // ヘッダ行
+                        Text("演奏時刻")
                         ScrollViewReader { scrollProxy in
                             // スクロール領域
                             ScrollView(.vertical) {
@@ -118,7 +110,7 @@ struct ContentView: View {
                                         let truncatedTimeString = Self.formatDate(currentTime, format: "HH:mm")
                                         guard let truncatedCurrentTime = Self.dateFromString(truncatedTimeString, format: "HH:mm") else { return }
                                         for (i, row) in scheduleRows.enumerated() {
-                                            if let rowTime = formatter.date(from: row.time),
+                                            if let rowTime = Self.dateFromString(row.time, format: "HH:mm"),
                                                rowTime >= truncatedCurrentTime {
                                                 // 1つ前の行が存在するか確認
                                                 let targetIndex = max(i - 1, 0)
