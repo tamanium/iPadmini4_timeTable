@@ -46,7 +46,7 @@ struct ContentView: View {
     var body: some View {
         NavigationStack {
             GeometryReader { geometry in
-                let timeFont = Font.monospacedDigitSystemFont(ofSize: geometry.size.width * 0.3, weight: .black)
+                let timeFont = Font.system(size: geometry.size.width * 0.3, weight: .black, design: .monospaced)
                 let secondFont = Font.system(size: geometry.size.width * 0.08, weight: .light, design: .monospaced)
                 // タテ配置
                 VStack {
