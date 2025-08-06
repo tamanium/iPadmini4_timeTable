@@ -22,7 +22,7 @@ enum Status: String, Codable, Hashable {
 // スケジュール行
 struct ScheduleRow: Identifiable, Codable {
     let id = UUID()    // ID
-    let time: String   // 時刻文字列
+    let timeStr: String   // 時刻文字列
     let name: String   // 名前
     let nowStatus: Status // 現在のステータス
     let date: Date     // 日時プロパティ
