@@ -21,9 +21,7 @@ struct ContentView: View {
                 let secondFont = Font.system(size: geometry.size.width * 0.08, weight: .light, design: .monospaced)
                 // タテ配置
                 VStack {
-                    // -------------------------------
                     // ----------時計表示領域----------
-                    // -------------------------------
                     // ヨコ配置
                     HStack(alignment: .lastTextBaseline, spacing: -8) {
                         // 時間
@@ -35,6 +33,9 @@ struct ContentView: View {
                         // 秒
                         Text(Self.formatDate(nowTime, format: "ss")).font(secondFont)
                     }
+                    .minimumScaleFactor(0.5) // 最小50%まで縮小
+                    .lineLimit(1) // 折り返し防止
+                    .layoutPriority(1) // レイアウト優先
                     // 幅：親画面いっぱい、中央寄せ
                     .frame(maxWidth: .infinity, alignment: .center)
                     // 背景：黒
@@ -44,10 +45,7 @@ struct ContentView: View {
                         nowTime = input
                     }
                     
-                    // -------------------------------
                     // -------タイムテーブル領域--------
-                    // -------------------------------
-                    
                     // データテーブル領域
                     VStack(spacing: 0){
                         // ヘッダ行
@@ -60,10 +58,12 @@ struct ContentView: View {
                                     // データ行
                                     ForEach(scheduleRows) { row in
                                         GridRow {
+                                            Text(row.nowStatus.rawValue)
+                                                .font(.system(size:30))
                                             Text(row.timeStr)
                                                 .font(.system(size: 30, design: .monospaced))
                                             Text(row.name)
-                                                .font(.system(size: 30))
+                                                .font(.system(size:30))
                                         }
                                         // スクロール対象のID
                                         .id(row.id)
@@ -101,9 +101,9 @@ struct ContentView: View {
                             }
                         }
                     }
-                    // -------------------------------
+                    // 背景：黒
+                    .background(Color.black)
                     // -----------ボタン領域-----------
-                    // -------------------------------
                     // 画面遷移ボタン
                     NavigationLink(destination: SecondView()) {
                         Text("Data")
@@ -115,12 +115,12 @@ struct ContentView: View {
                             .cornerRadius(10)
                             .padding(.horizontal)
                     }
-                    //}
-                    // 幅：画面いっぱい
-                    .frame(maxWidth: .infinity, alignment: .center)
                     // 背景：黒
                     .background(Color.black)
+                    // 幅：画面いっぱい
+                    .frame(maxWidth: .infinity, alignment: .center)
                 }
+                // スケジュールデータ初期化
                 .onAppear {
                     scheduleRows = (6*60..<24*60).map { minute in
                         let timeString = String(format: "%02d:%02d", minute / 60, minute % 60)
@@ -139,7 +139,7 @@ struct ContentView: View {
                             id: UUID(),
                             timeStr: timeString,
                             name: nameString,
-                            nowStatus: .home,
+                            nowStatus: .before,
                             //date: data,
                             date:nil,
                             statusDates: nil
