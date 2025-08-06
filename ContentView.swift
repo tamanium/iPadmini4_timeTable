@@ -8,19 +8,24 @@ struct ContentView: View {
 
     // タイムテーブルデータ（仮データ作成）
     let scheduleRows: [ScheduleRow] = (6*60..<24*60).map { minute in
-        let dateComponents = DateComponents()
+        var dateComponents = DateComponents()
         dateComponents.year = Calendar.current.component(.year, from:  Date())
         dateComponents.month = Calendar.current.component(.month, from:  Date())
         dateComponents.day = Calendar.current.component(.day, from:  Date())
         dateComponents.hour = minute / 60
         dateComponents.minute = minute % 60
         let timeString = String(format: "%02d:%02d", minute / 60, minute % 60)
-        let nameString = "団体\(minute + 1)" // 連番: 1から開始
+        // 連番: 1から開始
+        let nameString = "団体\(minute + 1)" 
+        // 日付データを取得(失敗した場合はメッセージ)
+        guard let date = Calendar.current.date(form: dateComponents) else {
+            fatalError("日付の生成に失敗しました")
+        }
         return ScheduleRow(
-            name: nameString, 
             timeStr: timeString, 
+            name: nameString, 
             nowStatus: Status.home, 
-            date: Calendar.date(from: dateComponents),  // 日付は動的に作成したもの（いずれは入力値）
+            date: date,      // 日付は動的に作成したもの（いずれは入力値）
             statusDates: nil // ステータス-日時のディクショナリは当分nilで
         )
     }
