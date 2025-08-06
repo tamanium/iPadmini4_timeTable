@@ -21,7 +21,9 @@ struct ContentView: View {
     var body: some View {
         NavigationStack {
             GeometryReader { geometry in
+                // 時計フォント
                 let timeFont = Font.system(size: geometry.size.width * 0.3, weight: .medium, design: .monospaced)
+                // 秒フォント
                 let secondFont = Font.system(size: geometry.size.width * 0.08, weight: .light, design: .monospaced)
                 // タテ配置
                 VStack {
