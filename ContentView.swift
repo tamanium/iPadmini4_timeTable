@@ -110,7 +110,9 @@ struct ContentView: View {
                                                             let _rowTime = Utils.dateFromString(_row.timeStr, format: "HH:mm")
                                                             // 同じ時刻だった場合
                                                             if(rowTime == _rowTime){
-                                                                scheduleRows[j].nextStatus()
+                                                                var _scheduleRow = scheduleRows[j] 
+                                                                _scheduleRow.nextStatus()
+                                                                scheduleRows[j] = _scheduleRow
                                                             }
                                                             else {
                                                                 break
