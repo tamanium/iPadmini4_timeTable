@@ -36,3 +36,21 @@ struct ScheduleRow: Identifiable, Codable {
     let date: Date?     // 日時プロパティ
     let statusDates: [Status: Date]? // ステータスと日時のマッピング
 }
+
+// メソッド
+struct Utils {
+    // 日付型の日付データを引数フォーマットで文字列に変換する
+    static func formatDate(_ date: Date, format: String) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = format
+        formatter.locale = Locale(identifier: "ja_JP")
+        return formatter.string(from: date)
+    }
+    // 文字列から日付データに変換する
+    static func dateFromString(_ string: String, format: String) -> Date? {
+        let formatter = DateFormatter()
+        formatter.dateFormat = format
+        formatter.locale = Locale(identifier: "ja_JP")
+        return formatter.date(from: string)
+    }
+}
