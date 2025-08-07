@@ -37,7 +37,7 @@ struct ContentView: View {
                     .lineLimit(1)               // 折り返し防止
                     .layoutPriority(1)          // レイアウト優先
                     .frame(
-                           maxWidth: .infinity, // 幅：親画面いっぱい
+                        maxWidth: .infinity, // 幅：親画面いっぱい
                         alignment: .center      // 中央寄せ
                     )
                     .background(Color.black)    // 背景：黒
@@ -64,13 +64,13 @@ struct ContentView: View {
                                             // 時刻
                                             Text(row.timeStr)
                                                 .font(.system(size: 30, design: .monospaced))
-                                                // 演奏後は文字色グレー
-                                                .foregroundColor(row.nowStatus.order < Status.performing.order ? .white : .gray)
+                                            // 演奏後は文字色グレー
+                                                 .foregroundColor(row.nowStatus.order < Status.performing.order ? .white : .gray)
                                             // 名前
                                             Text(row.name)
                                                 .font(.system(size:30))
-                                                // 演奏後は文字色グレー
-                                                .foregroundColor(row.nowStatus.order < Status.performing.order ? .white : .gray)
+                                            // 演奏後は文字色グレー
+                                                .foregroundColor(row.nowStatus.order < Status.performing.order ? .gray : .white)
                                         }
                                         .id(row.id) // スクロール対象のID
                                     }
@@ -95,8 +95,8 @@ struct ContentView: View {
                                                 // 対象行のIDを取得
                                                 let targetID = scheduleRows[iPlus1].id
                                                 // ステータスを変更
-                                                scheduleRows[i].nextStatus()
-                                                scheduleRows[iPlus1].nextStatus()
+                                               // scheduleRows[i].nextStatus()
+                                                //scheduleRows[iPlus1].nextStatus()
                                                 // 対象行へスクロールする
                                                 withAnimation {
                                                     scrollProxy.scrollTo(targetID, anchor: .top)
@@ -139,6 +139,7 @@ struct ContentView: View {
                             timeStr: timeString,
                             name: nameString,
                             nowStatus: .before,
+                            //date:date,
                             date:nil,
                             statusDates: nil
                         )
