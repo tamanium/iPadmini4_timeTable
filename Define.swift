@@ -35,7 +35,7 @@ enum Status: String, Codable, Hashable, CaseIterable {
 }
 // Statusの最初の要素を出力する
 extension Status {
-    static var last: Status {
+    static var first: Status {
         return Status.allCases.first!
     }
 }
