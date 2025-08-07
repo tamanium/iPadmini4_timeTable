@@ -89,7 +89,7 @@ struct ContentView: View {
                                         guard let truncatedCurrentTime = Utils.dateFromString(truncatedTimeStr, format: "HH:mm") else { return }
                                         for (i, row) in scheduleRows.enumerated() {
                                             // スケジュール時刻に対して現在時刻が進んでいる場合
-                                            if let rowTime = Utils.dateFromString(row.timeStr, format: "HH:mm"),　truncatedCurrentTime <= rowTime {
+                                            if let rowTime = Utils.dateFromString(row.timeStr, format: "HH:mm"), truncatedCurrentTime <= rowTime {
                                                 // 1つ上の行を対象行として取得
                                                 let iPlus1 = max(i - 1, 0)
                                                 // 対象行のIDを取得
