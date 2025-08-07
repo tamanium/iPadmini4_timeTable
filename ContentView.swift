@@ -65,7 +65,7 @@ struct ContentView: View {
                                             Text(row.timeStr)
                                                 .font(.system(size: 30, design: .monospaced))
                                             // 演奏後は文字色グレー
-                                                 .foregroundColor(row.nowStatus.order < Status.performing.order ? .white : .gray)
+                                                 .foregroundColor(row.nowStatus.order < Status.performing.order ? .gray : .white)
                                             // 名前
                                             Text(row.name)
                                                 .font(.system(size:30))
