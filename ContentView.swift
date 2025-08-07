@@ -65,12 +65,12 @@ struct ContentView: View {
                                             Text(row.timeStr)
                                                 .font(.system(size: 30, design: .monospaced))
                                                 // 演奏後は文字色グレー
-                                                .foregroundColor(row.nowStatus.order < State.peforming.order ? .white : .gray)
+                                                .foregroundColor(row.nowStatus.order < Status.performing.order ? .white : .gray)
                                             // 名前
                                             Text(row.name)
                                                 .font(.system(size:30))
                                                 // 演奏後は文字色グレー
-                                                .foregroundColor(row.nowStatus.order < State.peforming.order ? .white : .gray)
+                                                .foregroundColor(row.nowStatus.order < Status.performing.order ? .white : .gray)
                                         }
                                         .id(row.id) // スクロール対象のID
                                     }
@@ -134,18 +134,12 @@ struct ContentView: View {
                     scheduleRows = (6*60..<24*60).map { minute in
                         let timeString = String(format: "%02d:%02d", minute / 60, minute % 60)
                         let nameString = "団体\(minute + 1)"
-                         let nowDate = Date()
-                         let calendar = Calendar(identifier: .gregorian)
-                         let dateComponents = calendar.dateComponents([.year, .month, .day], from: nowDate)
-                         dateComponents.hour = minute / 60
-                         dateComponents.minute = minute%60
-                         let date = calendar.date(from: dateComponents)
                         return ScheduleRow(
                             id: UUID(),
                             timeStr: timeString,
                             name: nameString,
                             nowStatus: .before,
-                            date:date,
+                            date:nil,
                             statusDates: nil
                         )
                     }
