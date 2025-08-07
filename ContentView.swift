@@ -25,13 +25,13 @@ struct ContentView: View {
                     // ヨコ配置
                     HStack(alignment: .lastTextBaseline, spacing: -8) {
                         // 時間
-                        Text(Self.formatDate(nowTime, format: "HH")).font(timeFont)
+                        Text(Utils.formatDate(nowTime, format: "HH")).font(timeFont)
                         // コロン
                         Text(":").font(timeFont)
                         // 分
-                        Text(Self.formatDate(nowTime, format: "mm")).font(timeFont)
+                        Text(Utils.formatDate(nowTime, format: "mm")).font(timeFont)
                         // 秒
-                        Text(Self.formatDate(nowTime, format: "ss")).font(secondFont)
+                        Text(Utils.formatDate(nowTime, format: "ss")).font(secondFont)
                     }
                     .minimumScaleFactor(0.5)    // 最小50%まで縮小
                     .lineLimit(1)               // 折り返し防止
@@ -81,17 +81,17 @@ struct ContentView: View {
                                 // タイマーイベント
                                 .onReceive(timer) { currentTime in
                                     // 現在時刻の分を取得
-                                    let nowMinute = Self.formatDate(currentTime, format: "mm")
+                                    let nowMinute = Utils.formatDate(currentTime, format: "mm")
                                     // 分が更新された場合
                                     if nowMinute != prevMinute {
                                         // 前回時刻の分を更新
                                         DispatchQueue.main.async {
                                             prevMinute = nowMinute
                                         }
-                                        let truncatedTimeStr = Self.formatDate(currentTime, format: "HH:mm")
-                                        guard let truncatedCurrentTime = Self.dateFromString(truncatedTimeStr, format: "HH:mm") else { return }
+                                        let truncatedTimeStr = Utils.formatDate(currentTime, format: "HH:mm")
+                                        guard let truncatedCurrentTime = Utils.dateFromString(truncatedTimeStr, format: "HH:mm") else { return }
                                         for (i, row) in scheduleRows.enumerated() {
-                                            if let rowTime = Self.dateFromString(row.timeStr, format: "HH:mm"),
+                                            if let rowTime = Utils.dateFromString(row.timeStr, format: "HH:mm"),
                                                rowTime >= truncatedCurrentTime {
                                                 // 1つ上の行を対象行として取得
                                                 let targetIndex = max(i - 1, 0)
@@ -159,19 +159,5 @@ struct ContentView: View {
                 }
             }
         }
-    }
-    // 日付型の日付データを引数フォーマットで文字列に変換する
-    static func formatDate(_ date: Date, format: String) -> String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = format
-        formatter.locale = Locale(identifier: "ja_JP")
-        return formatter.string(from: date)
-    }
-    // 文字列から日付データに変換する
-    static func dateFromString(_ string: String, format: String) -> Date? {
-        let formatter = DateFormatter()
-        formatter.dateFormat = format
-        formatter.locale = Locale(identifier: "ja_JP")
-        return formatter.date(from: string)
     }
 }
