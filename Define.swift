@@ -24,6 +24,14 @@ enum Status: String, Codable, Hashable, CaseIterable {
     var order: Int {
         return Status.allCases.firstIndex(of: self)!
     }
+    //次のStatusを返す
+    var next: Status {
+        let nextOrder = self.order+1
+        if Status.allCases.count <= nextOrder {
+            return .done
+        }
+        return Status.allCases[nextOrder]
+    }
 }
 
 
