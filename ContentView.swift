@@ -60,20 +60,15 @@ struct ContentView: View {
                                         GridRow {
                                             // ステータス
                                             Text(row.nowStatus.rawValue)
-                                                .font(
-                                                      .system(size:30)
-                                                )
+                                                .font(.system(size:30))
                                             // 時刻
                                             Text(row.timeStr)
-                                                .font(
-                                                      .system(
-                                                          size: 30, 
-                                                          design: .monospaced
-                                                      )
-                                                )
+                                                .font(.system(size: 30, design: .monospaced))
+                                                .foregroundColor(.gray)
                                             // 名前
                                             Text(row.name)
                                                 .font(.system(size:30))
+                                                .foregroundColor(.gray)
                                         }
                                         .id(row.id)　// スクロール対象のID
                                     }
@@ -107,8 +102,7 @@ struct ContentView: View {
                                         }
                                     }
                                 }
-                                // ScrollView の末尾に追加
-                                Spacer().frame(height: 900) // 必要に応じて調整
+                                Spacer().frame(height: 900) // スクロール下部スペース
                             }
                         }
                     }
@@ -151,7 +145,6 @@ struct ContentView: View {
                             timeStr: timeString,
                             name: nameString,
                             nowStatus: .before,
-                            //date: data,
                             date:nil,
                             statusDates: nil
                         )
