@@ -64,11 +64,13 @@ struct ContentView: View {
                                             // 時刻
                                             Text(row.timeStr)
                                                 .font(.system(size: 30, design: .monospaced))
-                                                .foregroundColor(.gray)
+                                                // 演奏後は文字色グレー
+                                                .foregroundColor(row.nowState.order < State.peforming.order ? .white : .gray)
                                             // 名前
                                             Text(row.name)
                                                 .font(.system(size:30))
-                                                .foregroundColor(.gray)
+                                                // 演奏後は文字色グレー
+                                                .foregroundColor(row.nowState.order < State.peforming.order ? .white : .gray)
                                         }
                                         .id(row.id) // スクロール対象のID
                                     }
@@ -86,13 +88,15 @@ struct ContentView: View {
                                         let truncatedTimeStr = Utils.formatDate(currentTime, format: "HH:mm")
                                         guard let truncatedCurrentTime = Utils.dateFromString(truncatedTimeStr, format: "HH:mm") else { return }
                                         for (i, row) in scheduleRows.enumerated() {
-                                            if let rowTime = Utils.dateFromString(row.timeStr, format: "HH:mm"),
-                                               rowTime >= truncatedCurrentTime {
+                                            // スケジュール時刻に対して現在時刻が進んでいる場合
+                                            if let rowTime = Utils.dateFromString(row.timeStr, format: "HH:mm"),　truncatedCurrentTime <= rowTime {
                                                 // 1つ上の行を対象行として取得
-                                                let targetIndex = max(i - 1, 0)
+                                                let iPlus1 = max(i - 1, 0)
                                                 // 対象行のIDを取得
-                                                let targetID = scheduleRows[targetIndex].id
+                                                let targetID = scheduleRows[iPlus1].id
                                                 // ステータスを変更
+                                                scheduleRows[i].nowState = scheduleRows[i].nowState.next
+                                                scheduleRows[iPlus1].nowState = scheduleRows[iPlus1].nowState.next
                                                 // 対象行へスクロールする
                                                 withAnimation {
                                                     scrollProxy.scrollTo(targetID, anchor: .top)
