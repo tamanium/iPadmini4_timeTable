@@ -43,6 +43,11 @@ struct ScheduleRow: Identifiable, Codable {
     var nowStatus: Status // 現在のステータス
     let date: Date?     // 日時プロパティ
     let statusDates: [Status: Date]? // ステータスと日時のマッピング
+
+    //ステータスを進める
+    mutating func nextStatus() {
+        nowStatus = nowStatus.next
+    }
 }
 
 // メソッド
