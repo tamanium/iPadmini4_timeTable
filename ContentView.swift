@@ -97,6 +97,7 @@ struct ContentView: View {
                                                 var _scheduleRow = scheduleRows[i]
                                                 _scheduleRow.nowStatus = Status.first
                                                 scheduleRows[i] = _scheduleRow
+                                            }
                                             // 達していない場合
                                             else {
                                                 /*
