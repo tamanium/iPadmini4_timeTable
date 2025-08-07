@@ -130,22 +130,18 @@ struct ContentView: View {
                     scheduleRows = (6*60..<24*60).map { minute in
                         let timeString = String(format: "%02d:%02d", minute / 60, minute % 60)
                         let nameString = "団体\(minute + 1)"
-                        /*
-                         let dateComponents = DateComponents(
-                         year: Calendar.current.component(.year, from: Date()),
-                         month: Calendar.current.component(.month, from: Date()),
-                         day: Calendar.current.component(.day, from: Date()),
-                         hour: minute / 60,
-                         minute: minute % 60
-                         )
-                         let date = Calendar.current.date(from: dateComponents)
-                         */
+                         let nowDate = Date()
+                         let calendar = Calendar(identifier: .gregorian)
+                         let dateComponents = calendar.dateComponents([.year, .month, .day], from: now)
+                         dateComponents.hour = minute / 60
+                         dateComponents.minute = minute%60
+                         let date = calendar.date(from: dateComponents)
                         return ScheduleRow(
                             id: UUID(),
                             timeStr: timeString,
                             name: nameString,
                             nowStatus: .before,
-                            date:nil,
+                            date:date,
                             statusDates: nil
                         )
                     }
