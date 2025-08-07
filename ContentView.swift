@@ -4,7 +4,7 @@ struct ContentView: View {
     // 現在時刻
     @State var nowTime = Date()
     // 前回時刻の分
-    @State var previousMinute = ""
+    @State var prevMinute = ""
     // スケジュール行配列
     @State private var scheduleRows: [ScheduleRow] = []
     // 時刻更新用タイマー
@@ -33,15 +33,15 @@ struct ContentView: View {
                         // 秒
                         Text(Self.formatDate(nowTime, format: "ss")).font(secondFont)
                     }
-                    .minimumScaleFactor(0.5) // 最小50%まで縮小
-                    .lineLimit(1) // 折り返し防止
-                    .layoutPriority(1) // レイアウト優先
-                    // 幅：親画面いっぱい、中央寄せ
-                    .frame(maxWidth: .infinity, alignment: .center)
-                    // 背景：黒
-                    .background(Color.black)
-                    // 1秒ごとに表示時間更新
-                    .onReceive(timer) {input in
+                    .minimumScaleFactor(0.5)    // 最小50%まで縮小
+                    .lineLimit(1)               // 折り返し防止
+                    .layoutPriority(1)          // レイアウト優先
+                    .frame(
+                           maxWidth: .infinity, // 幅：親画面いっぱい
+                        alignment: .center      // 中央寄せ
+                    )
+                    .background(Color.black)    // 背景：黒
+                    .onReceive(timer) {input in // 1秒ごとに表示時間更新
                         nowTime = input
                     }
                     
@@ -58,36 +58,47 @@ struct ContentView: View {
                                     // データ行
                                     ForEach(scheduleRows) { row in
                                         GridRow {
+                                            // ステータス
                                             Text(row.nowStatus.rawValue)
-                                                .font(.system(size:30))
+                                                .font(
+                                                      .system(size:30)
+                                                )
+                                            // 時刻
                                             Text(row.timeStr)
-                                                .font(.system(size: 30, design: .monospaced))
+                                                .font(
+                                                      .system(
+                                                          size: 30, 
+                                                          design: .monospaced
+                                                      )
+                                                )
+                                            // 名前
                                             Text(row.name)
                                                 .font(.system(size:30))
                                         }
-                                        // スクロール対象のID
-                                        .id(row.id)
+                                        .id(row.id)　// スクロール対象のID
                                     }
                                 }
                                 // タイマーイベント
                                 .onReceive(timer) { currentTime in
                                     // 現在時刻の分を取得
-                                    let currentMinute = Self.formatDate(currentTime, format: "mm")
+                                    let nowMinute = Self.formatDate(currentTime, format: "mm")
                                     // 分が更新された場合
-                                    if currentMinute != previousMinute {
+                                    if nowMinute != prevMinute {
                                         // 前回時刻の分を更新
                                         DispatchQueue.main.async {
-                                            previousMinute = currentMinute
+                                            prevMinute = nowMinute
                                         }
-                                        let truncatedTimeString = Self.formatDate(currentTime, format: "HH:mm")
-                                        guard let truncatedCurrentTime = Self.dateFromString(truncatedTimeString, format: "HH:mm") else { return }
+                                        let truncatedTimeStr = Self.formatDate(currentTime, format: "HH:mm")
+                                        guard let truncatedCurrentTime = Self.dateFromString(truncatedTimeStr, format: "HH:mm") else { return }
                                         for (i, row) in scheduleRows.enumerated() {
                                             if let rowTime = Self.dateFromString(row.timeStr, format: "HH:mm"),
                                                rowTime >= truncatedCurrentTime {
-                                                // 1つ前の行が存在するか確認
+                                                // 1つ上の行を対象行として取得
                                                 let targetIndex = max(i - 1, 0)
+                                                // 対象行のIDを取得
                                                 let targetID = scheduleRows[targetIndex].id
-                                                
+                                            　  // ステータスを変更
+                                                // 対象行へスクロールする
                                                 withAnimation {
                                                     scrollProxy.scrollTo(targetID, anchor: .top)
                                                 }
