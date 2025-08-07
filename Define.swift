@@ -33,6 +33,18 @@ enum Status: String, Codable, Hashable, CaseIterable {
         return Status.allCases[nextOrder]
     }
 }
+// Statusの最初の要素を出力する
+extension Status {
+    static var last: Status {
+        return Status.allCases.first!
+    }
+}
+// Statusの最後の要素を出力する
+extension Status {
+    static var last: Status {
+        return Status.allCases.last!
+    }
+}
 
 
 // スケジュール行
