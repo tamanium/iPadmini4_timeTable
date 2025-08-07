@@ -70,7 +70,7 @@ struct ContentView: View {
                                                 .font(.system(size:30))
                                                 .foregroundColor(.gray)
                                         }
-                                        .id(row.id)　// スクロール対象のID
+                                        .id(row.id) // スクロール対象のID
                                     }
                                 }
                                 // タイマーイベント
@@ -92,7 +92,7 @@ struct ContentView: View {
                                                 let targetIndex = max(i - 1, 0)
                                                 // 対象行のIDを取得
                                                 let targetID = scheduleRows[targetIndex].id
-                                            　  // ステータスを変更
+                                                // ステータスを変更
                                                 // 対象行へスクロールする
                                                 withAnimation {
                                                     scrollProxy.scrollTo(targetID, anchor: .top)
@@ -132,7 +132,7 @@ struct ContentView: View {
                         let nameString = "団体\(minute + 1)"
                          let nowDate = Date()
                          let calendar = Calendar(identifier: .gregorian)
-                         let dateComponents = calendar.dateComponents([.year, .month, .day], from: now)
+                         let dateComponents = calendar.dateComponents([.year, .month, .day], from: nowDate)
                          dateComponents.hour = minute / 60
                          dateComponents.minute = minute%60
                          let date = calendar.date(from: dateComponents)
