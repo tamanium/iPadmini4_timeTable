@@ -95,8 +95,8 @@ struct ContentView: View {
                                                 // 対象行のIDを取得
                                                 let targetID = scheduleRows[iPlus1].id
                                                 // ステータスを変更
-                                               // scheduleRows[i].nextStatus()
-                                                //scheduleRows[iPlus1].nextStatus()
+                                                scheduleRows[i].nextStatus()
+                                                scheduleRows[iPlus1].nextStatus()
                                                 // 対象行へスクロールする
                                                 withAnimation {
                                                     scrollProxy.scrollTo(targetID, anchor: .top)
@@ -138,7 +138,7 @@ struct ContentView: View {
                             id: UUID(),
                             timeStr: timeString,
                             name: nameString,
-                            nowStatus: .before,
+                            nowStatus: Status.first,
                             //date:date,
                             date:nil,
                             statusDates: nil
