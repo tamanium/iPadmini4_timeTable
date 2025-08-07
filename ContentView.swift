@@ -94,7 +94,7 @@ struct ContentView: View {
                                             // スケジュール行の時刻をDate型で取得
                                             let rowTime = Utils.dateFromString(row.timeStr, format: "HH:mm")
                                             // スケジュール時刻に対して現在時刻が進んでいる場合
-                                            if rowTime < truncatedCurrentTime {
+                                            if rowTime <= truncatedCurrentTime {
                                                 var _scheduleRow = scheduleRows[i]
                                                 _scheduleRow.nowStatus = Status.first
                                                 scheduleRows[i] = _scheduleRow
@@ -120,16 +120,10 @@ struct ContentView: View {
                                                         }
                                                     }
                                                 }
-                                                break
-                                            }
-                                            if truncatedCurrentTime <= rowTime {
                                                 // 1つ上の行を対象行として取得
-                                                let iPlus1 = max(i - 1, 0)
+                                                let upperRowIndex = max(i - 1, 0)
                                                 // 対象行のIDを取得
-                                                let targetID = scheduleRows[iPlus1].id
-                                                // ステータスを変更
-                                                scheduleRows[i].nextStatus()
-                                                scheduleRows[iPlus1].nextStatus()
+                                                let targetID = scheduleRows[upperRowIndex].id
                                                 // 対象行へスクロールする
                                                 withAnimation {
                                                     scrollProxy.scrollTo(targetID, anchor: .top)
