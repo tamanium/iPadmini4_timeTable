@@ -85,11 +85,42 @@ struct ContentView: View {
                                         DispatchQueue.main.async {
                                             prevMinute = nowMinute
                                         }
+                                        // 現在時刻をHH:mmの文字列として取得
                                         let truncatedTimeStr = Utils.formatDate(currentTime, format: "HH:mm")
+                                        // HH:mmの文字列からDate型に変換(二度手間か?)
                                         guard let truncatedCurrentTime = Utils.dateFromString(truncatedTimeStr, format: "HH:mm") else { return }
+                                        // スケジュール配列でループ処理
                                         for (i, row) in scheduleRows.enumerated() {
+                                            // スケジュール行の時刻をDate型で取得
+                                            let rowTime = Utils.dateFromString(row.timeStr, format: "HH:mm")
                                             // スケジュール時刻に対して現在時刻が進んでいる場合
-                                            if let rowTime = Utils.dateFromString(row.timeStr, format: "HH:mm"), truncatedCurrentTime <= rowTime {
+                                            if rowTime < truncatedCurrentTime {
+                                                var _scheduleRow = scheduleRows[i]
+                                                _scheduleRow.nowStatus = Status.first
+                                                scheduleRows[i] = _scheduleRow
+                                            }
+                                            // まだスケジュール時刻に達していない場合
+                                            else {
+                                                if 0 < i {
+                                                    // Statusを進める
+                                                    scheduleRows[i-1].nowStatus = scheduleRows[i-1].nextStatus()
+                                                    if 0 < i-1 {
+                                                        for j in stride(from: i-2, through: 0, by: -1) {
+                                                            let _row = scheduleRows[j]
+                                                            let _rowTime = Utils.dateFromString(_row.timeStr, format: "HH:mm")
+                                                            // 同じ時刻だった場合
+                                                            if(rowTime == _rowTime){
+                                                                scheduleRows[j].nextStatus()
+                                                            }
+                                                            else {
+                                                                break
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                break
+                                            }
+                                            if truncatedCurrentTime <= rowTime {
                                                 // 1つ上の行を対象行として取得
                                                 let iPlus1 = max(i - 1, 0)
                                                 // 対象行のIDを取得
