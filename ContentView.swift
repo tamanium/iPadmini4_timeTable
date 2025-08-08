@@ -74,7 +74,6 @@ struct ContentView: View {
                                         .id(row.id) // スクロール対象のID
                                     }
                                 }
-                                /*
                                 // タイマーイベント
                                 .onReceive(timer) { currentTime in
                                     // 現在時刻の分を取得
@@ -102,6 +101,7 @@ struct ContentView: View {
                                                 continue
                                             }
                                             
+                                            /*
                                             // 現在時刻が行の時刻に達していない場合
                                             if truncatedCurrentTime < rowTime {
                                                 // (あれば)一つ上の行のStatusを演奏中とする
@@ -121,10 +121,10 @@ struct ContentView: View {
                                                 }
                                                 break
                                             }
+                                        */
                                         }
                                     }
                                 }
-                                */
                                 Spacer().frame(height: 900) // スクロール下部スペース
                             }
                         }
