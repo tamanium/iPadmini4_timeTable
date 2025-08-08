@@ -101,19 +101,17 @@ struct ContentView: View {
                                                 continue
                                             }
                                             
-                                            /*
                                             // 現在時刻が行の時刻に達していない場合
                                             if truncatedCurrentTime < rowTime {
                                                 // (あれば)一つ上の行のStatusを演奏中とする
                                                 if 0 <= i-1 {
-                                                    var _scheduleRow = scheduleRows[i]
+                                                    var _scheduleRow = scheduleRows[i-1]
                                                     _scheduleRow.nowStatus = Status.performing
-                                                        scheduleRows[i] = _scheduleRow
+                                                        scheduleRows[i-1] = _scheduleRow
                                                 }
 
-                                                // 2つ上までの行からidを取得する
-                                                let indexArr = [0, i-1, i-2]
-                                                let topRowIndex = indexArr.max()
+                                                // 2つ上の行からidを取得する
+                                                let topRowIndex = i-2
                                                 let topRowID = scheduleRows[topRowIndex].id
                                                 // 対象行へスクロールする
                                                 withAnimation {
@@ -121,7 +119,6 @@ struct ContentView: View {
                                                 }
                                                 break
                                             }
-                                        */
                                         }
                                     }
                                 }
