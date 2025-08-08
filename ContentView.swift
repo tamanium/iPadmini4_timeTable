@@ -10,8 +10,8 @@ struct ContentView: View {
     // 時刻更新用タイマー
     private let timer = Timer.publish(every: 1, on: .main, in: .common)
         .autoconnect()
-    // 演奏中の行を基準にスクロール
-    ＠State private var scrollToPerforming: (() -> Void)?
+    // スクロール処理
+     @State private var scrollToPerforming: (() -> Void)?
     
     // 表示
     var body: some View {
@@ -101,7 +101,7 @@ struct ContentView: View {
                                             // 現在時刻が行の時刻に達している場合
                                             if rowTime <= truncatedCurrentTime {
                                                 // その行のStatusを完了とし、次のループ処理を行う
-                                                row.setStatus(.last)
+                                                scheduleRows[i].setStatus(.last)
                                                 continue
                                             }
                                             
@@ -111,22 +111,7 @@ struct ContentView: View {
                                                 if 0 <= i-1 {
                                                     scheduleRows[i-1].setStatus(.performing)
                                                 }
-                                                /*
-                                                // 2つ上の行へスクロールする
-                                                let topRowID: AnyHashable
-                                                switch i {
-                                                    case let x where 2 <= x:
-                                                        topRowID = scheduleRows[i-2].id
-                                                    case 1:
-                                                        topRowID = scheduleRows[i-1].id
-                                                    default:
-                                                        topRowID = scheduleRows[0].id
-                                                }
-                                                withAnimation(.easeInOut(duration: 0.5)) {
-                                                    scrollProxy.scrollTo(topRowID, anchor: .top)
-                                                }
-                                                */
-                                                
+                                                // スクロール処理
                                                 scrollToPerforming?()
                                                 break
                                             }
