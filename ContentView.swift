@@ -50,6 +50,22 @@ struct ContentView: View {
                     VStack(spacing: 0){
                         // ヘッダ行
                         Text("演奏時刻")
+                        // ダブルタップのイベント
+                        .onTapGesture(count:2) {
+                            // 演奏中の行を検索
+                            let topID: AnyHashable
+                            if let index = scheduleRows.firstIndex(where: {$0.nowStatus == .performing}){
+                                // その1つ上の行のインデックスを取得
+                                let topIndex = max(0, index-1)
+                                topID = scheduleRows[topIndex].id
+                            } else {
+                                topID = scheduleRows[0].id
+                            }
+                            // スクロール処理
+                            withAnimation(.easeInOut(duration: 0.5)) {
+                                scrollProxy.scrollTo(topID, anchor: .top)
+                            }
+                        }
                         // スクロール領域
                         ScrollViewReader { scrollProxy in
                             // 縦スクロール領域
@@ -67,7 +83,6 @@ struct ContentView: View {
                                             // 名前
                                             Text(row.name)
                                                 .font(.system(size:50))
-                                            
                                         }
                                         // 演奏後は文字色グレー
                                         .opacity(Status.performing.order < row.nowStatus.order ? 0.3 : 1.0)
@@ -95,7 +110,7 @@ struct ContentView: View {
                                             // 現在時刻が行の時刻に達している場合
                                             if rowTime <= truncatedCurrentTime {
                                                 // その行のStatusを完了とし、次のループ処理を行う
-                                                scheduleRows[i].setStatus(.last)
+                                                row.setStatus(.last)
                                                 continue
                                             }
                                             
