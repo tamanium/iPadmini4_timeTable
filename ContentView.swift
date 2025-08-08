@@ -135,7 +135,8 @@ struct ContentView: View {
                 }
                 // スケジュールデータ初期化
                 .onAppear {
-                    scheduleRows = (6*60..<24*60).map { minute in
+                    let currentHour = Calendar.current.component(.hour, from: Date())
+                    scheduleRows = ((currentHour-1)*60..<(currentHour+1)*60).map { minute in
                         let timeString = String(format: "%02d:%02d", minute / 60, minute % 60)
                         let nameString = "団体\(minute + 1)"
                         return ScheduleRow(
