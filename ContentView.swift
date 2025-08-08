@@ -60,18 +60,17 @@ struct ContentView: View {
                                         GridRow {
                                             // ステータス
                                             Text(row.nowStatus.rawValue)
-                                                .font(.system(size:30))
+                                                .font(.system(size:50))
                                             // 時刻
                                             Text(row.timeStr)
-                                                .font(.system(size: 30, design: .monospaced))
-                                            // 演奏後は文字色グレー
-                                                 .foregroundColor(row.nowStatus.order < Status.performing.order ? .gray : .white)
+                                                .font(.system(size: 50, design: .monospaced))
                                             // 名前
                                             Text(row.name)
-                                                .font(.system(size:30))
-                                            // 演奏後は文字色グレー
-                                                .foregroundColor(row.nowStatus.order < Status.performing.order ? .gray : .white)
+                                                .font(.system(size:50))
+                                            
                                         }
+                                        // 演奏後は文字色グレー
+                                        .opacity(Status.performing.order < row.nowStatus.order ? 0.3 : 1.0)
                                         .id(row.id) // スクロール対象のID
                                     }
                                 }
@@ -92,37 +91,38 @@ struct ContentView: View {
                                         // スケジュール配列でループ処理
                                         for (i, row) in scheduleRows.enumerated() {
                                             // スケジュール行の時刻をDate型で取得し、現在スケジュール時刻に達している場合
-                                            if let rowTime = Utils.dateFromString(row.timeStr, format: "HH:mm"), rowTime <= truncatedCurrentTime {
-                                                // スケジュール時刻に達している場合
+                                            guard let rowTime = Utils.dateFromString(row.timeStr, format: "HH:mm") else { return}
+                                            if rowTime <= truncatedCurrentTime {
+                                                // スケジュール時刻に達している
                                                 var _scheduleRow = scheduleRows[i]
-                                                _scheduleRow.nowStatus = Status.first
-                                                scheduleRows[i] = _scheduleRow
-                                            }
-                                            // 達していない場合
-                                            else {
-                                                /*
+                                                _scheduleRow.nowStatus = Status.last
+                                                    scheduleRows[i] = _scheduleRow
+                                            } else {
+                                                // 達していない場合
                                                 if 0 < i {
                                                     // Statusを進める
-                                                    scheduleRows[i-1].nowStatus = scheduleRows[i-1].nextStatus()
-                                                    if 0 < i-1 {
-                                                        for j in stride(from: i-2, through: 0, by: -1) {
-                                                            let _row = scheduleRows[j]
-                                                            let _rowTime = Utils.dateFromString(_row.timeStr, format: "HH:mm")
-                                                            // 同じ時刻だった場合
-                                                            if(rowTime == _rowTime){
-                                                                var _scheduleRow = scheduleRows[j] 
-                                                                _scheduleRow.nextStatus()
-                                                                scheduleRows[j] = _scheduleRow
-                                                            }
-                                                            else {
-                                                                break
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                                */
+                                                    scheduleRows[i-1].previousStatus()
+                                                        /*
+                                                         if 0 < i-1 {
+                                                         for j in stride(from: i-2, through: 0, by: -1) {
+                                                         let _row = scheduleRows[j]
+                                                         let _rowTime = Utils.dateFromString(_row.timeStr, format: "HH:mm")
+                                                         // 同じ時刻だった場合
+                                                         if(rowTime == _rowTime){
+                                                         var _scheduleRow = scheduleRows[j] 
+                                                         _scheduleRow.nextStatus()
+                                                         scheduleRows[j] = _scheduleRow
+                                                         }
+                                                         else {
+                                                         break
+                                                         }
+                                                         }
+                                                         }
+                                                         }
+                                                         */
+                                                } 
                                                 // 1つ上の行を対象行として取得
-                                                let upperRowIndex = max(i - 1, 0)
+                                                let upperRowIndex = max(i - 2, 0)
                                                 // 対象行のIDを取得
                                                 let targetID = scheduleRows[upperRowIndex].id
                                                 // 対象行へスクロールする
@@ -141,21 +141,6 @@ struct ContentView: View {
                     // 背景：黒
                     .background(Color.black)
                     // -----------ボタン領域-----------
-                    // 画面遷移ボタン
-                    NavigationLink(destination: SecondView()) {
-                        Text("Data")
-                            .font(.headline)
-                            .foregroundColor(.white)
-                            .padding()
-                            .frame(maxWidth: .infinity)
-                            .background(Color.blue)
-                            .cornerRadius(10)
-                            .padding(.horizontal)
-                    }
-                    // 背景：黒
-                    .background(Color.black)
-                    // 幅：画面いっぱい
-                    .frame(maxWidth: .infinity, alignment: .center)
                 }
                 // スケジュールデータ初期化
                 .onAppear {
@@ -177,3 +162,4 @@ struct ContentView: View {
         }
     }
 }
+
