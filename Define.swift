@@ -19,7 +19,7 @@ enum Status: String, Codable, Hashable, CaseIterable {
      */
     case before = "💤"
     case performing   = "🎷" // 演奏本番
-    case done         = "✔️" // 予定完了
+    case done         = "👍" // 予定完了
     // ordinal風プロパティ
     var order: Int {
         return Status.allCases.firstIndex(of: self)!
@@ -46,8 +46,26 @@ extension Status {
     }
 }
 
+// スケジュール行クラス
+class SchedlueRowClass: Identifiable, ObservableObject, Codable {
+    var id = UUID()
+    let name: String
+    let timerStr: String
+    @Published var nowStatus: Status
+    let date: Date?
+    let statusDates: [Status: Date]?
 
-// スケジュール行
+    // イニシャライザ
+    init(timerStr: String, name: String) {
+        self.name = name
+        self.timerStr = timerStr
+        self.nowStatus = Status.first
+        self.date = nil
+        self.statusDates = nil
+    }
+}
+
+// スケジュール行構造体
 struct ScheduleRow: Identifiable, Codable {
     var id = UUID()    // ID
     let timeStr: String   // 時刻文字列
@@ -56,9 +74,13 @@ struct ScheduleRow: Identifiable, Codable {
     let date: Date?     // 日時プロパティ
     let statusDates: [Status: Date]? // ステータスと日時のマッピング
 
-    //ステータスを進める
+    // 【Setter】ステータス
+    mutating func setStatus(_ status: Status) {
+        self.nowStatus = status
+    }
+    // ステータスを進める
     mutating func nextStatus() {
-        nowStatus = nowStatus.next
+        self.nowStatus = nowStatus.next
     }
 }
 
