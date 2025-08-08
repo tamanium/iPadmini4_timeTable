@@ -10,6 +10,8 @@ struct ContentView: View {
     // 時刻更新用タイマー
     private let timer = Timer.publish(every: 1, on: .main, in: .common)
         .autoconnect()
+    // 演奏中の行を基準にスクロール
+    ＠State private var scrollToPerforming: (() -> Void)?
     
     // 表示
     var body: some View {
@@ -52,19 +54,8 @@ struct ContentView: View {
                         Text("演奏時刻")
                         // ダブルタップのイベント
                         .onTapGesture(count:2) {
-                            // 演奏中の行を検索
-                            let topID: AnyHashable
-                            if let index = scheduleRows.firstIndex(where: {$0.nowStatus == .performing}){
-                                // その1つ上の行のインデックスを取得
-                                let topIndex = max(0, index-1)
-                                topID = scheduleRows[topIndex].id
-                            } else {
-                                topID = scheduleRows[0].id
-                            }
-                            // スクロール処理
-                            withAnimation(.easeInOut(duration: 0.5)) {
-                                scrollProxy.scrollTo(topID, anchor: .top)
-                            }
+                            // 演奏中の行を基準にスクロール
+                            scrollToPerforming?()
                         }
                         // スクロール領域
                         ScrollViewReader { scrollProxy in
@@ -120,6 +111,7 @@ struct ContentView: View {
                                                 if 0 <= i-1 {
                                                     scheduleRows[i-1].setStatus(.performing)
                                                 }
+                                                /*
                                                 // 2つ上の行へスクロールする
                                                 let topRowID: AnyHashable
                                                 switch i {
@@ -133,12 +125,32 @@ struct ContentView: View {
                                                 withAnimation(.easeInOut(duration: 0.5)) {
                                                     scrollProxy.scrollTo(topRowID, anchor: .top)
                                                 }
+                                                */
+                                                
+                                                scrollToPerforming?()
                                                 break
                                             }
                                         }
                                     }
                                 }
                                 Spacer().frame(height: 900) // スクロール下部スペース
+                            }
+                            .onAppear{
+                                scrollToPerforming = {
+                                    // 演奏中の行を検索
+                                    let topID: AnyHashable
+                                    if let index = scheduleRows.firstIndex(where: {$0.nowStatus == .performing}){
+                                        // その1つ上の行のインデックスを取得
+                                        let topIndex = max(0, index-1)
+                                        topID = scheduleRows[topIndex].id
+                                    } else {
+                                        topID = scheduleRows[0].id
+                                    }
+                                    // スクロール処理
+                                    withAnimation(.easeInOut(duration: 0.5)) {
+                                        scrollProxy.scrollTo(topID, anchor: .top)
+                                    }
+                                }
                             }
                         }
                     }
