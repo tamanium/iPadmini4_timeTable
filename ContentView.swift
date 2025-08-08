@@ -90,44 +90,33 @@ struct ContentView: View {
                                         guard let truncatedCurrentTime = Utils.dateFromString(truncatedTimeStr, format: "HH:mm") else { return }
                                         // スケジュール配列でループ処理
                                         for (i, row) in scheduleRows.enumerated() {
-                                            // スケジュール行の時刻をDate型で取得し、現在スケジュール時刻に達している場合
+                                            // 行の時刻をDate型で取得
                                             guard let rowTime = Utils.dateFromString(row.timeStr, format: "HH:mm") else { return}
+                                            // 現在時刻が行の時刻に達している場合
                                             if rowTime <= truncatedCurrentTime {
-                                                // スケジュール時刻に達している
+                                                // その行のStatusを完了とし、次のループ処理を行う
                                                 var _scheduleRow = scheduleRows[i]
                                                 _scheduleRow.nowStatus = Status.last
                                                     scheduleRows[i] = _scheduleRow
-                                            } else {
-                                                // 達していない場合
-                                                if 0 < i {
-                                                    // Statusを進める
-                                                    scheduleRows[i-1].previousStatus()
-                                                        /*
-                                                         if 0 < i-1 {
-                                                         for j in stride(from: i-2, through: 0, by: -1) {
-                                                         let _row = scheduleRows[j]
-                                                         let _rowTime = Utils.dateFromString(_row.timeStr, format: "HH:mm")
-                                                         // 同じ時刻だった場合
-                                                         if(rowTime == _rowTime){
-                                                         var _scheduleRow = scheduleRows[j] 
-                                                         _scheduleRow.nextStatus()
-                                                         scheduleRows[j] = _scheduleRow
-                                                         }
-                                                         else {
-                                                         break
-                                                         }
-                                                         }
-                                                         }
-                                                         }
-                                                         */
-                                                } 
-                                                // 1つ上の行を対象行として取得
-                                                let upperRowIndex = max(i - 2, 0)
-                                                // 対象行のIDを取得
-                                                let targetID = scheduleRows[upperRowIndex].id
+                                                continue
+                                            }
+                                            
+                                            // 現在時刻が行の時刻に達していない場合
+                                            if truncatedCurrentTime < rowTime {
+                                                // (あれば)一つ上の行のStatusを演奏中とする
+                                                if 0 <= i-1 {
+                                                    var _scheduleRow = scheduleRows[i]
+                                                    _scheduleRow.nowStatus = Status.performing
+                                                        scheduleRows[i] = _scheduleRow
+                                                }
+
+                                                // 2つ上までの行からidを取得する
+                                                let indexArr = [0, i-1, i-2]
+                                                let topRowIndex = indexArr.max()
+                                                let topRowID = scheduleRows[topRowIndex].id
                                                 // 対象行へスクロールする
                                                 withAnimation {
-                                                    scrollProxy.scrollTo(targetID, anchor: .top)
+                                                    scrollProxy.scrollTo(topRowID, anchor: .top)
                                                 }
                                                 break
                                             }
@@ -162,4 +151,3 @@ struct ContentView: View {
         }
     }
 }
-
