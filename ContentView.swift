@@ -74,6 +74,7 @@ struct ContentView: View {
                                         .id(row.id) // スクロール対象のID
                                     }
                                 }
+                                /*
                                 // タイマーイベント
                                 .onReceive(timer) { currentTime in
                                     // 現在時刻の分を取得
@@ -123,6 +124,7 @@ struct ContentView: View {
                                         }
                                     }
                                 }
+                                */
                                 Spacer().frame(height: 900) // スクロール下部スペース
                             }
                         }
