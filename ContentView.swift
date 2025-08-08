@@ -95,9 +95,7 @@ struct ContentView: View {
                                             // 現在時刻が行の時刻に達している場合
                                             if rowTime <= truncatedCurrentTime {
                                                 // その行のStatusを完了とし、次のループ処理を行う
-                                                var _scheduleRow = scheduleRows[i]
-                                                _scheduleRow.nowStatus = Status.last
-                                                    scheduleRows[i] = _scheduleRow
+                                                scheduleRows[i].setStatus(.last)
                                                 continue
                                             }
                                             
@@ -105,16 +103,19 @@ struct ContentView: View {
                                             if truncatedCurrentTime < rowTime {
                                                 // (あれば)一つ上の行のStatusを演奏中とする
                                                 if 0 <= i-1 {
-                                                    var _scheduleRow = scheduleRows[i-1]
-                                                    _scheduleRow.nowStatus = Status.performing
-                                                        scheduleRows[i-1] = _scheduleRow
+                                                    scheduleRows[i-1].setStatus(.performing)
                                                 }
-
-                                                // 2つ上の行からidを取得する
-                                                let topRowIndex = i-2
-                                                let topRowID = scheduleRows[topRowIndex].id
-                                                // 対象行へスクロールする
-                                                withAnimation {
+                                                // 2つ上の行へスクロールする
+                                                let topRowID: AnyHashable
+                                                switch i {
+                                                    case let x where 2 <= x:
+                                                        topRowID = scheduleRows[i-2].id
+                                                    case 1:
+                                                        topRowID = scheduleRows[i-1].id
+                                                    default:
+                                                        topRowID = scheduleRows[0].id
+                                                }
+                                                withAnimation(.easeInOut(duration: 0.5)) {
                                                     scrollProxy.scrollTo(topRowID, anchor: .top)
                                                 }
                                                 break
