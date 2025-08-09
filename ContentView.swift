@@ -10,17 +10,18 @@ struct ContentView: View {
     // 時刻更新用タイマー
     private let timer = Timer.publish(every: 1, on: .main, in: .common)
         .autoconnect()
-    // スクロール処理
-     @State private var scrollToPerforming: (() -> Void)?
+    // 演奏中の行を基準にスクロール
+    @State private var scrollToPerforming: (() -> Void)?
     
     // 表示
     var body: some View {
         NavigationStack {
             GeometryReader { geometry in
+                let viewWidth = geometry.size.width
                 // 時計フォント
-                let timeFont = Font.system(size: geometry.size.width * 0.3, weight: .medium, design: .monospaced)
+                let timeFont = Font.system(size: viewWidth * 0.3, weight: .medium, design: .monospaced)
                 // 秒フォント
-                let secondFont = Font.system(size: geometry.size.width * 0.08, weight: .light, design: .monospaced)
+                let secondFont = Font.system(size: viewWidth * 0.08, weight: .light, design: .monospaced)
                 // タテ配置
                 VStack {
                     // ----------時計表示領域----------
@@ -37,12 +38,12 @@ struct ContentView: View {
                     }
                     .minimumScaleFactor(0.5)    // 最小50%まで縮小
                     .lineLimit(1)               // 折り返し防止
-                    .layoutPriority(1)          // レイアウト優先
+                    .layoutPriority(1)          // レイアウト優先p
                     .frame(
                         maxWidth: .infinity, // 幅：親画面いっぱい
                         alignment: .center      // 中央寄せ
                     )
-                    .background(Color.black)    // 背景：黒
+                    .background(Color.black) 
                     .onReceive(timer) {input in // 1秒ごとに表示時間更新
                         nowTime = input
                     }
@@ -53,31 +54,18 @@ struct ContentView: View {
                         // ヘッダ行
                         Text("演奏時刻")
                         // ダブルタップのイベント
-                        .onTapGesture(count:2) {
-                            // 演奏中の行を基準にスクロール
-                            scrollToPerforming?()
-                        }
+                            .onTapGesture(count:1) {
+                                // 演奏中の行を基準にスクロール
+                                scrollToPerforming?()
+                            }
                         // スクロール領域
                         ScrollViewReader { scrollProxy in
                             // 縦スクロール領域
                             ScrollView(.vertical) {
-                                Grid(alignment: .leading, horizontalSpacing: 16, verticalSpacing: 8){
+                                Grid(alignment: .leading, horizontalSpacing: 32, verticalSpacing: 16){
                                     // データ行
                                     ForEach(scheduleRows) { row in
-                                        GridRow {
-                                            // ステータス
-                                            Text(row.nowStatus.rawValue)
-                                                .font(.system(size:50))
-                                            // 時刻
-                                            Text(row.timeStr)
-                                                .font(.system(size: 50, design: .monospaced))
-                                            // 名前
-                                            Text(row.name)
-                                                .font(.system(size:50))
-                                        }
-                                        // 演奏後は文字色グレー
-                                        .opacity(Status.performing.order < row.nowStatus.order ? 0.3 : 1.0)
-                                        .id(row.id) // スクロール対象のID
+                                        ScheduleRowView(row: row)
                                     }
                                 }
                                 // タイマーイベント
@@ -90,24 +78,17 @@ struct ContentView: View {
                                         DispatchQueue.main.async {
                                             prevMinute = nowMinute
                                         }
-                                        // 現在時刻をHH:mmの文字列として取得
-                                        let truncatedTimeStr = Utils.formatDate(currentTime, format: "HH:mm")
-                                        // HH:mmの文字列からDate型に変換(二度手間か?)
-                                        guard let truncatedCurrentTime = Utils.dateFromString(truncatedTimeStr, format: "HH:mm") else { return }
                                         // スケジュール配列でループ処理
                                         for (i, row) in scheduleRows.enumerated() {
-                                            // 行の時刻をDate型で取得
-                                            guard let rowTime = Utils.dateFromString(row.timeStr, format: "HH:mm") else { return}
                                             // 現在時刻が行の時刻に達している場合
-                                            if rowTime <= truncatedCurrentTime {
-                                                // その行のStatusを完了とし、次のループ処理を行う
+                                            if row.date <= currentTime {
+                                                // その行のStatusを完了とする
                                                 scheduleRows[i].setStatus(.last)
                                                 continue
                                             }
-                                            
                                             // 現在時刻が行の時刻に達していない場合
-                                            if truncatedCurrentTime < rowTime {
-                                                // (あれば)一つ上の行のStatusを演奏中とする
+                                            else {
+                                                // 一つ上の行のStatusを演奏中とする
                                                 if 0 <= i-1 {
                                                     scheduleRows[i-1].setStatus(.performing)
                                                 }
@@ -143,24 +124,57 @@ struct ContentView: View {
                     .background(Color.black)
                     // -----------ボタン領域-----------
                 }
+                .frame(maxWidth: .infinity) // 幅：親画面いっぱい
                 // スケジュールデータ初期化
                 .onAppear {
-                    let currentHour = Calendar.current.component(.hour, from: Date())
+                    let calendar = Calendar.current
+                    let nowDate = Date()
+                    let currentHour = calendar.component(.hour, from: nowDate)
                     scheduleRows = ((currentHour)*60..<(currentHour+2)*60).map { minute in
-                        let timeString = String(format: "%02d:%02d", minute / 60, minute % 60)
                         let nameString = "団体\(minute + 1)"
+                        let _hour = minute/60
+                        let _minute = minute%60
+                        let date = calendar.date(bySettingHour: _hour, minute: _minute, second: 0, of: nowDate)!
+                        
                         return ScheduleRow(
                             id: UUID(),
-                            timeStr: timeString,
                             name: nameString,
+                            date:date,
                             nowStatus: Status.first,
-                            //date:date,
-                            date:nil,
                             statusDates: nil
                         )
                     }
                 }
             }
+        }
+    }
+}
+ 
+struct ScheduleRowView: View {
+    let row: ScheduleRow
+    var body: some View {
+        let opacity = Utils.setOpacity(row.nowStatus, base: .performing)
+        GridRowView(
+            status: row.nowStatus.rawValue,
+            time: Utils.formatDate(row.date, format: "HH:mm"),
+            name: row.name
+        )
+        .opacity(opacity)
+        .id(row.id)
+    }
+}
+struct GridRowView: View {
+    let status: String
+    let time: String 
+    let name: String
+    var body: some View {
+        GridRow{
+            Text(status)
+                .font(.system(size:50))
+            Text(time)
+                .font(.system(size: 50, design: .monospaced))
+            Text(name)
+                .font(.system(size:50))
         }
     }
 }
