@@ -1,21 +1,23 @@
 import SwiftUI
 
 struct ContentView: View {
+    
+    @StateObject private var model = ScheduleModel()
     // 現在時刻
     @State var nowTime = Date()
     // 前回時刻の分
     @State var prevMinute = ""
-    // スケジュール行配列
-    @State private var scheduleRows: [ScheduleRow] = []
     // 時刻更新用タイマー
     private let timer = Timer.publish(every: 1, on: .main, in: .common)
         .autoconnect()
     // 演奏中の行を基準にスクロール
     @State private var scrollToPerforming: (() -> Void)?
     
+    @State private var path = NavigationPath()
+    
     // 表示
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $path) {
             GeometryReader { geometry in
                 let viewWidth = geometry.size.width
                 // 時計フォント
@@ -47,7 +49,6 @@ struct ContentView: View {
                     .onReceive(timer) {input in // 1秒ごとに表示時間更新
                         nowTime = input
                     }
-                    
                     // -------タイムテーブル領域--------
                     // データテーブル領域
                     VStack(spacing: 0){
@@ -63,39 +64,17 @@ struct ContentView: View {
                             // 縦スクロール領域
                             ScrollView(.vertical) {
                                 Grid(alignment: .leading, horizontalSpacing: 32, verticalSpacing: 16){
-                                    // データ行
-                                    ForEach(scheduleRows) { row in
+                                    // 表示
+                                    ForEach(model.scheduleRows) { row in
                                         ScheduleRowView(row: row)
                                     }
+                                    // データ行
                                 }
                                 // タイマーイベント
                                 .onReceive(timer) { currentTime in
-                                    // 現在時刻の分を取得
-                                    let nowMinute = Utils.formatDate(currentTime, format: "mm")
-                                    // 分が更新された場合
-                                    if nowMinute != prevMinute {
-                                        // 前回時刻の分を更新
-                                        DispatchQueue.main.async {
-                                            prevMinute = nowMinute
-                                        }
-                                        // スケジュール配列でループ処理
-                                        for (i, row) in scheduleRows.enumerated() {
-                                            // 現在時刻が行の時刻に達している場合
-                                            if row.date <= currentTime {
-                                                // その行のStatusを完了とする
-                                                scheduleRows[i].setStatus(.last)
-                                                continue
-                                            }
-                                            // 現在時刻が行の時刻に達していない場合
-                                            else {
-                                                // 一つ上の行のStatusを演奏中とする
-                                                if 0 <= i-1 {
-                                                    scheduleRows[i-1].setStatus(.performing)
-                                                }
-                                                // スクロール処理
-                                                scrollToPerforming?()
-                                                break
-                                            }
+                                    if let scrollID = model.updateStatuses(currentTime: currentTime) {
+                                        withAnimation {
+                                            scrollProxy.scrollTo(scrollID, anchor: .top)
                                         }
                                     }
                                 }
@@ -105,12 +84,12 @@ struct ContentView: View {
                                 scrollToPerforming = {
                                     // 演奏中の行を検索
                                     let topID: AnyHashable
-                                    if let index = scheduleRows.firstIndex(where: {$0.nowStatus == .performing}){
+                                    if let index = model.scheduleRows.firstIndex(where: {$0.nowStatus == .performing}){
                                         // その1つ上の行のインデックスを取得
                                         let topIndex = max(0, index-1)
-                                        topID = scheduleRows[topIndex].id
+                                        topID = model.scheduleRows[topIndex].id
                                     } else {
-                                        topID = scheduleRows[0].id
+                                        topID = model.scheduleRows[0].id
                                     }
                                     // スクロール処理
                                     withAnimation(.easeInOut(duration: 0.5)) {
@@ -120,17 +99,21 @@ struct ContentView: View {
                             }
                         }
                     }
-                    // 背景：黒
                     .background(Color.black)
+                    .frame(maxWidth: .infinity)
+                    //Spacer()
                     // -----------ボタン領域-----------
+                    //NavigationLink("追加画面へ") {
+                    //    SecondView(model: model)
+                    //}
                 }
-                .frame(maxWidth: .infinity) // 幅：親画面いっぱい
+                .frame(maxWidth: .infinity)
                 // スケジュールデータ初期化
                 .onAppear {
                     let calendar = Calendar.current
                     let nowDate = Date()
                     let currentHour = calendar.component(.hour, from: nowDate)
-                    scheduleRows = ((currentHour)*60..<(currentHour+2)*60).map { minute in
+                    model.scheduleRows = ((currentHour)*60..<(currentHour+1)*60).map { minute in
                         let nameString = "団体\(minute + 1)"
                         let _hour = minute/60
                         let _minute = minute%60
@@ -149,32 +132,31 @@ struct ContentView: View {
         }
     }
 }
- 
+
 struct ScheduleRowView: View {
-    let row: ScheduleRow
+    let row: ScheduleRow 
     var body: some View {
         let opacity = Utils.setOpacity(row.nowStatus, base: .performing)
         GridRowView(
             status: row.nowStatus.rawValue,
-            time: Utils.formatDate(row.date, format: "HH:mm"),
-            name: row.name
-        )
+            time: Utils.formatDate(row.date, format: "HH:mm"), 
+            name: row.name ) 
         .opacity(opacity)
-        .id(row.id)
-    }
-}
-struct GridRowView: View {
-    let status: String
-    let time: String 
-    let name: String
-    var body: some View {
-        GridRow{
-            Text(status)
-                .font(.system(size:50))
-            Text(time)
-                .font(.system(size: 50, design: .monospaced))
-            Text(name)
-                .font(.system(size:50))
-        }
-    }
+        .id(row.id) 
+    } 
+} 
+struct GridRowView: View { 
+    let status: String 
+    let time: String
+    let name: String 
+    var body: some View { 
+        GridRow{ 
+            Text(status) 
+                .font(.system(size:50)) 
+            Text(time) 
+                .font(.system(size: 50, design: .monospaced)) 
+            Text(name) 
+                .font(.system(size:50)) 
+        } 
+    } 
 }
