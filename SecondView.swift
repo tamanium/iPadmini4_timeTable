@@ -1,47 +1,63 @@
 import SwiftUI
 
-struct EditSheet: View {
-    @Binding var name: String
-    @Binding var date: Date
-    var onSave: () -> Void
-    var onCancel: () -> Void
-
+struct ScheduleEditView: View {
+    @ObservedObject var model: ScheduleModel
+    @Environment(\.dismiss) var dismiss
+    
+    @State private var editedRows: [EditableRow] = []
+    
+    struct EditableRow: Identifiable {
+        let id: UUID
+        var name: String
+        var timeString: String // "HHmm"形式
+    }
+    
     var body: some View {
-        VStack(spacing: 20) {
-            Text("編集")
+        VStack {
+            Text("全体編集")
                 .font(.title)
                 .padding()
-
-            DatePicker("時刻", selection: $date, displayedComponents: .hourAndMinute)
-                .datePickerStyle(.wheel)
-                .labelsHidden()
-                .font(.system(size: 50, design: .monospaced))
-
-            TextField("団体名", text: $name)
-                .font(.system(size: 50))
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .padding(.horizontal)
-
-            HStack {
-                Button("保存") {
-                    onSave()
+            
+            ScrollView {
+                Grid(alignment: .leading, horizontalSpacing: 32, verticalSpacing: 16) {
+                    ForEach($editedRows) { $row in
+                        GridRow {
+                            TextField("時刻", text: $row.timeString)
+                                .keyboardType(.numberPad)
+                                .frame(width: 80)
+                                .textFieldStyle(.roundedBorder)
+                            
+                            TextField("団体名", text: $row.name)
+                                .textFieldStyle(.roundedBorder)
+                        }
+                    }
                 }
-                .font(.title2)
-                .padding()
-
-                Button("キャンセル") {
-                    onCancel()
-                }
-                .font(.title2)
                 .padding()
             }
+            
+            Button("保存") {
+                for row in editedRows {
+                    if let date = Utils.parseHHmm(row.timeString) {
+                        model.updateRow(id: row.id, name: row.name, date: date)
+                    }
+                }
+                dismiss()
+            }
+            .padding()
         }
-        .padding()
+        .onAppear {
+            editedRows = model.scheduleRows.map {
+                EditableRow(
+                    id: $0.id,
+                    name: $0.name,
+                    timeString: Utils.formatDate($0.date, format: "HHmm")
+                )
+            }
+        }
     }
 }
 
 
-/*
 struct SecondView: View {
     @ObservedObject var model: ScheduleModel
     var row: ScheduleRow
@@ -64,6 +80,13 @@ struct SecondView: View {
             }
         }
         .navigationTitle("編集")
+        /*
+         VStack { 
+         Text("別画面") .font(.title) .padding() 
+         Spacer() 
+         } 
+         .navigationTitle("別画面タイトル") 
+         .background(Color.black)
+         */
     } 
 }
-*/
