@@ -41,6 +41,7 @@ struct EditSheet: View {
 }
 
 
+/*
 struct SecondView: View {
     @ObservedObject var model: ScheduleModel
     var row: ScheduleRow
@@ -63,13 +64,6 @@ struct SecondView: View {
             }
         }
         .navigationTitle("編集")
-        /*
-         VStack { 
-         Text("別画面") .font(.title) .padding() 
-         Spacer() 
-         } 
-         .navigationTitle("別画面タイトル") 
-         .background(Color.black)
-         */
     } 
 }
+*/
