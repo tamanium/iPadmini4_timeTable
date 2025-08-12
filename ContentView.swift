@@ -113,7 +113,7 @@ struct ContentView: View {
                     let nowDate = Date()
                     let currentHour = calendar.component(.hour, from: nowDate)
                     model.scheduleRows = ((currentHour)*60..<(currentHour+1)*60).map { minute in
-                        let nameString = "団体\(minute + 1)"
+                        let nameString = "団体\(minute - currentHour*60)"
                         let _hour = minute/60
                         let _minute = minute%60
                         let date = calendar.date(bySettingHour: _hour, minute: _minute, second: 0, of: nowDate)!
