@@ -80,7 +80,7 @@ struct ContentView: View {
                                 //Spacer().frame(height: 900) // スクロール下部スペース
                             }
                             .onAppear{
-                                scrollToPerforming = {
+                                model.scrollToPerforming = {
                                     // 演奏中の行を検索
                                     let topID: AnyHashable
                                     if let index = model.scheduleRows.firstIndex(where: {$0.nowStatus == .performing}){
