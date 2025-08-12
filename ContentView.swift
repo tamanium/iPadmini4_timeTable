@@ -67,7 +67,6 @@ struct ContentView: View {
                                     ForEach(model.scheduleRows) { row in
                                         ScheduleRowView(row: row, model: model)
                                     }
-                                    // データ行
                                 }
                                 // タイマーイベント
                                 .onReceive(timer) { currentTime in
@@ -83,9 +82,9 @@ struct ContentView: View {
                                 model.scrollToPerforming = {
                                     // 演奏中の行を検索
                                     let topID: AnyHashable
-                                    let topIndex = 0
+                                    var topIndex = 0
+                                    // あれば演奏中行の1つ上の行のインデックスを取得
                                     if let index = model.scheduleRows.firstIndex(where: {$0.nowStatus == .performing}){
-                                        // その1つ上の行のインデックスを取得
                                         topIndex = max(0, index-1)
                                     }
                                     topID = model.scheduleRows[topIndex].id
