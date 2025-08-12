@@ -139,17 +139,20 @@ struct ScheduleRowView: View {
     var body: some View {
         let opacity = Utils.setOpacity(row.nowStatus, base: .performing)
         HStack {
+            Spacer()
             GridRowView(
                 status: row.nowStatus.rawValue,
                 time: Utils.formatDate(row.date, format: "HH:mm"), 
                 name: row.name
             )
             Spacer()
-            NavigationLink("編集") {
-                SecondView(model: model,row: row)
-            }
-            Button("削除") {
-                model.deleteRow(id: row.id)
+            HStack {
+                NavigationLink("編集") {
+                    SecondView(model: model,row: row)
+                }
+                Button("削除") {
+                    model.deleteRow(id: row.id)
+                }
             }
         }
         .opacity(opacity)
