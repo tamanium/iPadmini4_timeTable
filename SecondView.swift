@@ -1,7 +1,7 @@
 import SwiftUI
 struct SecondView: View {
-    @ObservedObject var model: ScheduleModel
     var row: ScheduleRow
+    @ObservedObject var model: ScheduleModel
     @State private var name: String
     @State private var date: Date
 
