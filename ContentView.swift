@@ -64,7 +64,7 @@ struct ContentView: View {
                                 Grid(alignment: .leading, horizontalSpacing: 32, verticalSpacing: 16){
                                     // 表示
                                     ForEach(model.scheduleRows) { row in
-                                        ScheduleRowView(row: row)
+                                        ScheduleRowView(row: row, model: model)
                                     }
                                     // データ行
                                 }
