@@ -1,4 +1,4 @@
-import SwoftUI
+import Foundation
 
 // メソッド
 struct Utils {
