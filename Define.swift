@@ -90,6 +90,12 @@ class ScheduleModel: ObservableObject {
     @Published var scheduleRows: [ScheduleRow] = []
     // 前回時刻(分)
     private var prevMinute = ""
+    // スクロール処理
+    var scrollToPerforming: (() -> Void)? = nil
+    
+    func triggerScroll() {
+        scrollToPerforming?()
+    }
     // 行追加
     func addRow(name: String, date: Date) {
         let newRow = ScheduleRow(
