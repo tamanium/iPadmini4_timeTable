@@ -144,64 +144,39 @@ struct ScheduleRowView: View {
     
     var body: some View {
         let opacity = Utils.setOpacity(row.nowStatus, base: .performing)
-        VStack {
-            if isEditMode {
-                // 編集モード
-                HStack {
-                    DatePicker("", selection: $newDate, displayedComponents: .hourAndMinute)
-                        .labelsHidden()
-                        .datePickerStyle(.compact)
-                        .frame(width: 120)
-                        .font(.system(size: 50, design: .monospaced))
-                        .padding(.horizontal, 8)
-                    TextField("団体名", text: $newName)
-                        .textFieldStyle(PlainTextFieldStyle())
-                        .frame(minWidth: 200)
-                        .padding(.horizontal, 8)
-                    Button("保存") {
-                        model.updateRow(id: row.id, name: newName, date: newDate)
-                        isEditMode = false
-                    }
-                    Button("キャンセル") {
-                        isEditMode = false
-                    }
+        HStack {
+            Spacer()
+            GridRowView(
+                status: row.nowStatus.rawValue,
+                time: Utils.formatDate(row.date, format: "HH:mm"), 
+                name: row.name
+            )
+            Spacer()
+            HStack {
+                Button("編集") {
+                    newName = row.name
+                    newDate = row.date
+                    isEditMode = true
                 }
-            } else {
-                HStack {
-                    Spacer()
-                    GridRowView(
-                        status: row.nowStatus.rawValue,
-                        time: Utils.formatDate(row.date, format: "HH:mm"), 
-                        name: row.name
-                    )
-                    Spacer()
-                    HStack {
-                        Button("編集") {
-                            newName = row.name
-                            newDate = row.date
-                            isEditMode = true
-                        }
-                        .sheet(isPresented: $isEditMode) {
-                            EditSheet(
-                                name: $newName,
-                                date: $newDate,
-                                onSave: {
-                                    model.updateRow(id: row.id, name: newName, date: newDate)
-                                    isEditMode = false
-                                },
-                                onCancel: {
-                                    isEditMode = false
-                                }
-                            )
-                        }
-                        Button("削除") {
-                            model.deleteRow(id: row.id)
-                        }
-                    }
+                Button("削除") {
+                    model.deleteRow(id: row.id)
                 }
-                .opacity(opacity)
-                .id(row.id) 
             }
+        }
+        .opacity(opacity)
+        .id(row.id) 
+        .sheet(isPresented: $isEditMode) {
+            EditSheet(
+                name: $newName,
+                date: $newDate,
+                onSave: {
+                    model.updateRow(id: row.id, name: newName, date: newDate)
+                    isEditMode = false
+                },
+                onCancel: {
+                    isEditMode = false
+                }
+            )
         }
     }
 }
