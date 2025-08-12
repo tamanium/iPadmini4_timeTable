@@ -46,24 +46,24 @@ extension Status {
     }
 }
 /*
-// スケジュール行クラス
-class SchedlueRowClass: Identifiable, ObservableObject, Codable {
-    var id = UUID()
-    let name: String
-    let timerStr: String
-    @Published var nowStatus: Status
-    let date: Date?
-    let statusDates: [Status: Date]?
-    
-    // イニシャライザ
-    init(timerStr: String, name: String) {
-        self.name = name
-        self.timerStr = timerStr
-        self.nowStatus = Status.first
-        self.date = nil
-        self.statusDates = nil
-    }
-}
+ // スケジュール行クラス
+ class SchedlueRowClass: Identifiable, ObservableObject, Codable {
+ var id = UUID()
+ let name: String
+ let timerStr: String
+ @Published var nowStatus: Status
+ let date: Date?
+ let statusDates: [Status: Date]?
+ 
+ // イニシャライザ
+ init(timerStr: String, name: String) {
+ self.name = name
+ self.timerStr = timerStr
+ self.nowStatus = Status.first
+ self.date = nil
+ self.statusDates = nil
+ }
+ }
  */
 
 // スケジュール行構造体
