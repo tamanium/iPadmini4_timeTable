@@ -103,6 +103,10 @@ struct ContentView: View {
                     .frame(maxWidth: .infinity)
                     //Spacer()
                     // -----------ボタン領域-----------
+                    Button("追加") {
+                        let newDate = Calendar.current.date(bySettingHour: 12, minute: 0, second: 0, of: Date())!
+                        model.addRow(name: "新しい団体", date: newDate)
+                    }
                     //NavigationLink("追加画面へ") {
                     //    SecondView(model: model)
                     //}
