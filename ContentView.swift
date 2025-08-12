@@ -38,9 +38,9 @@ struct ContentView: View {
                     }
                     .minimumScaleFactor(0.5)    // 最小50%まで縮小
                     .lineLimit(1)               // 折り返し防止
-                    .layoutPriority(1)          // レイアウト優先p
+                    .layoutPriority(1)          // レイアウト優先
                     .frame(
-                        maxWidth: .infinity, // 幅：親画面いっぱい
+                        maxWidth: .infinity, // 幅：親画面幅
                         alignment: .center      // 中央寄せ
                     )
                     .background(Color.black) 
