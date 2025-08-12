@@ -18,6 +18,7 @@ struct Utils {
     // 文字列から日付に変換
     static func dateFromString(_ string: String, format: String) -> Date? {
         cachedFormatter.dateFormat = format
+        
         return cachedFormatter.date(from: string)
     }
     
@@ -30,5 +31,16 @@ struct Utils {
         } else {
             return 0.3
         }
+    }
+    
+    static func parseHHmm(_ string: String) -> Date? {
+        guard string.count == 4,
+              let hour = Int(string.prefix(2)),
+              let minute = Int(string.suffix(2)),
+              (0..<24).contains(hour),
+              (0..<60).contains(minute)
+        else { return nil }
+        
+        return Calendar.current.date(bySettingHour: hour, minute: minute, second: 0, of: Date())
     }
 }
