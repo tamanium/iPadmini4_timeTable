@@ -103,6 +103,15 @@ struct ContentView: View {
                         let newDate = Calendar.current.date(bySettingHour: 12, minute: 0, second: 0, of: Date())!
                         model.addRow(name: "新しい団体", date: newDate)
                     }
+                    Button("全体編集") {
+                        path.append("edit")
+                    }
+                    .navigationDestination(for: String.self) { value in
+                        if value == "edit" {
+                            ScheduleEditView(model: model)
+                        }
+                    }
+
                 }
                 .frame(maxWidth: .infinity)
                 // スケジュールデータ初期化
@@ -137,7 +146,7 @@ struct ContentView: View {
 struct ScheduleRowView: View {
     let row: ScheduleRow
     @ObservedObject var model: ScheduleModel
-
+    
     @State private var isEditMode = false
     @State private var newName: String = ""
     @State private var newDate: Date = Date()
@@ -145,12 +154,12 @@ struct ScheduleRowView: View {
     var body: some View {
         let opacity = Utils.setOpacity(row.nowStatus, base: .performing)
         HStack {
-            Spacer()
+            //Spacer()
             GridRowView(
                 status: row.nowStatus.rawValue,
                 time: Utils.formatDate(row.date, format: "HH:mm"), 
                 name: row.name
-            )
+            )/*
             Spacer()
             HStack {
                 Button("編集") {
@@ -161,10 +170,10 @@ struct ScheduleRowView: View {
                 Button("削除") {
                     model.deleteRow(id: row.id)
                 }
-            }
+            }*/
         }
         .opacity(opacity)
-        .id(row.id) 
+        .id(row.id) /*
         .sheet(isPresented: $isEditMode) {
             EditSheet(
                 name: $newName,
@@ -177,7 +186,7 @@ struct ScheduleRowView: View {
                     isEditMode = false
                 }
             )
-        }
+        }*/
     }
 }
 
