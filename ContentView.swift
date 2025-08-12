@@ -144,29 +144,60 @@ struct ContentView: View {
 struct ScheduleRowView: View {
     let row: ScheduleRow
     @ObservedObject var model: ScheduleModel
+
+    @State private var isEditMode = false
+    @State private var newName: String = ""
+    @State private var newDate: Date = Date()
+    
     var body: some View {
         let opacity = Utils.setOpacity(row.nowStatus, base: .performing)
-        HStack {
-            Spacer()
-            GridRowView(
-                status: row.nowStatus.rawValue,
-                time: Utils.formatDate(row.date, format: "HH:mm"), 
-                name: row.name
-            )
-            Spacer()
-            HStack {
-                NavigationLink("編集") {
-                    SecondView(model: model,row: row)
+        VStack {
+            if isEditMode {
+                // 編集モード
+                HStack {
+                    DatePicker("", selection: $newDate, displayedComponents: .hourAndMinute)
+                        .labelsHidden()
+                        .frame(width: 120)
+                    TextField("団体名", text: $newName)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .flrame(width:200)
+                    Button("保存") {
+                        model.updateRow(id: row.id, name: newName, date: newDate)
+                        isEditMode = false
+                    }
                 }
-                Button("削除") {
-                    model.deleteRow(id: row.id)
+            } else {
+                HStack {
+                    Spacer()
+                    GridRowView(
+                        status: row.nowStatus.rawValue,
+                        time: Utils.formatDate(row.date, format: "HH:mm"), 
+                        name: row.name
+                    )
+                    Spacer()
+                    HStack {
+                        /*
+                        NavigationLink("編集") {
+                            SecondView(model: model,row: row)
+                        }
+                        */
+                        Button("編集") {
+                            newName = row.name
+                            newDate = row.date
+                            isEditMode = true
+                        }
+                        Button("削除") {
+                            model.deleteRow(id: row.id)
+                        }
+                    }
                 }
+                .opacity(opacity)
+                .id(row.id) 
             }
         }
-        .opacity(opacity)
-        .id(row.id) 
     }
-} 
+}
+
 struct GridRowView: View { 
     let status: String 
     let time: String
