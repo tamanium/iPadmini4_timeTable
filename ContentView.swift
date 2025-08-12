@@ -181,6 +181,19 @@ struct ScheduleRowView: View {
                             newDate = row.date
                             isEditMode = true
                         }
+                        .sheet(isPresented: $isEditMode) {
+                            EditSheet(
+                                name: $newName,
+                                date: $newDate,
+                                onSave: {
+                                    model.updateRow(id: row.id, name: newName, date: newDate)
+                                    isEditMode = false
+                                },
+                                onCancel: {
+                                    isEditMode = false
+                                }
+                            )
+                        }
                         Button("削除") {
                             model.deleteRow(id: row.id)
                         }
