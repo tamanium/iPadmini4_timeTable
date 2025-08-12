@@ -5,8 +5,6 @@ struct ContentView: View {
     @StateObject private var model = ScheduleModel()
     // 現在時刻
     @State var nowTime = Date()
-    // 前回時刻の分
-    @State var prevMinute = ""
     // 時刻更新用タイマー
     private let timer = Timer.publish(every: 1, on: .main, in: .common)
         .autoconnect()
@@ -78,7 +76,8 @@ struct ContentView: View {
                                         }
                                     }
                                 }
-                                Spacer().frame(height: 900) // スクロール下部スペース
+                                .padding(.bottom, geometry.size.height * 0.5)
+                                //Spacer().frame(height: 900) // スクロール下部スペース
                             }
                             .onAppear{
                                 scrollToPerforming = {
