@@ -156,6 +156,9 @@ struct ScheduleRowView: View {
                         model.updateRow(id: row.id, name: newName, date: newDate)
                         isEditMode = false
                     }
+                    Button("キャンセル") {
+                        isEditMode = false
+                    }
                 }
             } else {
                 HStack {
