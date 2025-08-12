@@ -150,8 +150,14 @@ struct ScheduleRowView: View {
                 HStack {
                     DatePicker("", selection: $newDate, displayedComponents: .hourAndMinute)
                         .labelsHidden()
+                        .datePickerStyle(.compact)
+                        .frame(width: 120)
+                        .font(.system(size: 50, design: .monospaced))
+                        .padding(.horizontal, 8)
                     TextField("団体名", text: $newName)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .textFieldStyle(PlainTextFieldStyle())
+                        .frame(minWidth: 200)
+                        .padding(.horizontalm, 8)
                     Button("保存") {
                         model.updateRow(id: row.id, name: newName, date: newDate)
                         isEditMode = false
