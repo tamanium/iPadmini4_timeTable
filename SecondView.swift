@@ -1,4 +1,46 @@
 import SwiftUI
+
+struct EditSheet: View {
+    @Binding var name: String
+    @Binding var date: Date
+    var onSave: () -> Void
+    var onCancel: () -> Void
+
+    var body: some View {
+        VStack(spacing: 20) {
+            Text("編集")
+                .font(.title)
+                .padding()
+
+            DatePicker("時刻", selection: $date, displayedComponents: .hourAndMinute)
+                .datePickerStyle(.wheel)
+                .labelsHidden()
+                .font(.system(size: 50, design: .monospaced))
+
+            TextField("団体名", text: $name)
+                .font(.system(size: 50))
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .padding(.horizontal)
+
+            HStack {
+                Button("保存") {
+                    onSave()
+                }
+                .font(.title2)
+                .padding()
+
+                Button("キャンセル") {
+                    onCancel()
+                }
+                .font(.title2)
+                .padding()
+            }
+        }
+        .padding()
+    }
+}
+
+
 struct SecondView: View {
     @ObservedObject var model: ScheduleModel
     var row: ScheduleRow
