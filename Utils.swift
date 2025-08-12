@@ -8,6 +8,7 @@ struct Utils {
         formatter.locale = Locale(identifier: "ja_JP")
         return formatter
     }()
+    
     // 日付を文字列に変換
     static func formatDate(_ date: Date, format: String) -> String {
         cachedFormatter.dateFormat = format
@@ -19,6 +20,7 @@ struct Utils {
         cachedFormatter.dateFormat = format
         return cachedFormatter.date(from: string)
     }
+    
     // 透明度算出
     static func setOpacity(_ status: Status, base: Status) -> Double {
         if status.order < base.order {
