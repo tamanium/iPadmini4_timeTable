@@ -157,7 +157,7 @@ struct ScheduleRowView: View {
                     TextField("団体名", text: $newName)
                         .textFieldStyle(PlainTextFieldStyle())
                         .frame(minWidth: 200)
-                        .padding(.horizontalm, 8)
+                        .padding(.horizontal, 8)
                     Button("保存") {
                         model.updateRow(id: row.id, name: newName, date: newDate)
                         isEditMode = false
