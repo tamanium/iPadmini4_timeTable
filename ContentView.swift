@@ -78,19 +78,17 @@ struct ContentView: View {
                                     }
                                 }
                                 .padding(.bottom, geometry.size.height * 0.5)
-                                //Spacer().frame(height: 900) // スクロール下部スペース
                             }
                             .onAppear{
                                 model.scrollToPerforming = {
                                     // 演奏中の行を検索
                                     let topID: AnyHashable
+                                    let topIndex = 0
                                     if let index = model.scheduleRows.firstIndex(where: {$0.nowStatus == .performing}){
                                         // その1つ上の行のインデックスを取得
-                                        let topIndex = max(0, index-1)
-                                        topID = model.scheduleRows[topIndex].id
-                                    } else {
-                                        topID = model.scheduleRows[0].id
+                                        topIndex = max(0, index-1)
                                     }
+                                    topID = model.scheduleRows[topIndex].id
                                     // スクロール処理
                                     withAnimation(.easeInOut(duration: 0.5)) {
                                         scrollProxy.scrollTo(topID, anchor: .top)
@@ -101,15 +99,11 @@ struct ContentView: View {
                     }
                     .background(Color.black)
                     .frame(maxWidth: .infinity)
-                    //Spacer()
                     // -----------ボタン領域-----------
                     Button("追加") {
                         let newDate = Calendar.current.date(bySettingHour: 12, minute: 0, second: 0, of: Date())!
                         model.addRow(name: "新しい団体", date: newDate)
                     }
-                    //NavigationLink("追加画面へ") {
-                    //    SecondView(model: model)
-                    //}
                 }
                 .frame(maxWidth: .infinity)
                 // スケジュールデータ初期化
@@ -157,10 +151,8 @@ struct ScheduleRowView: View {
                 HStack {
                     DatePicker("", selection: $newDate, displayedComponents: .hourAndMinute)
                         .labelsHidden()
-                        .frame(width: 120)
                     TextField("団体名", text: $newName)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .flrame(width:200)
                     Button("保存") {
                         model.updateRow(id: row.id, name: newName, date: newDate)
                         isEditMode = false
@@ -176,11 +168,6 @@ struct ScheduleRowView: View {
                     )
                     Spacer()
                     HStack {
-                        /*
-                        NavigationLink("編集") {
-                            SecondView(model: model,row: row)
-                        }
-                        */
                         Button("編集") {
                             newName = row.name
                             newDate = row.date
