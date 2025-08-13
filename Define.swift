@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 
 // ステータス定義
 enum Status: String, Codable, Hashable, CaseIterable, Equatable {
@@ -86,13 +87,21 @@ struct ScheduleRow: Identifiable, Codable {
 
 // スケジュールモデル
 class ScheduleModel: ObservableObject {
-    // スケジュール業
     @Published var scheduleRows: [ScheduleRow] = []
+    @Published var nowTime = Date()
+    private var cancellable: AnyCancellable?
     // 前回時刻(分)
     private var prevMinute = ""
     // スクロール処理
     var scrollToPerforming: (() -> Void)? = nil
-    
+    init() {
+        cancellable = Timer.publish(every: 1, on: .main, in: .common)
+            .autoconnect()
+            .sink{
+                [weak self] time in
+                self?.nowTime = time
+            }
+    }
     func triggerScroll() {
         scrollToPerforming?()
     }
@@ -118,6 +127,18 @@ class ScheduleModel: ObservableObject {
     func deleteRow(id: UUID) {
         scheduleRows.removeAll { $0.id == id }
     }
+    // 引数ステータスの行IDを取得
+    func getIdByStatus(_ status: Status) -> UUID? {
+        scheduleRows.first(where: { $0.nowStatus == status })?.id
+    }
+    // 引数ステータスを基準とする最上位行IDを取得
+    func getTopIdByStatus(_ status: Status) -> UUID? {
+        guard let i = scheduleRows.firstIndex(where: { $0.nowStatus == status }) else {
+            return nil
+        }
+        let topIndex = max(0, i - (i > 1 ? 2 : 1))
+        return scheduleRows[topIndex].id
+    }
     // ステータス更新・最上位行ID取得
     func updateStatuses(currentTime: Date) -> UUID? {
         let nowMinute = Utils.formatDate(currentTime, format: "mm")
@@ -126,21 +147,18 @@ class ScheduleModel: ObservableObject {
         var scrollID: UUID?
         
         for i in scheduleRows.indices {
+            // 経過した行をdoneにする
             if scheduleRows[i].date <= currentTime {
-                scheduleRows[i].nowStatus = .done
+                scheduleRows[i].setStatus(.done)
                 scrollID = scheduleRows[i].id
             } else {
                 // 直前の行を performing にする
                 if i > 0 {
-                    scheduleRows[i - 1].nowStatus = .performing
-                    if i > 1 {
-                        scrollID = scheduleRows[i - 2].id
-                    } else {
-                        scrollID = scheduleRows[i - 1].id
-                    }
-                } else {
-                    scrollID = scheduleRows[0].id
-                }
+                    scheduleRows[i-1].setStatus(.performing)
+                } 
+                // 最上位行IDを取得
+                let topIndex = max(0, i - (i > 1 ? 2 : 1))
+                scrollID = scheduleRows[topIndex].id
                 break
             }
         }
