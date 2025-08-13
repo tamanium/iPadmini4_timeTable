@@ -1,5 +1,4 @@
 import Foundation
-import Combine
 
 // ステータス定義
 enum Status: String, Codable, Hashable, CaseIterable, Equatable {
