@@ -73,7 +73,6 @@ struct ContentView: View {
                                 // ScrollView内
                                 .onChange(of: model.nowTime) {
                                     if let scrollID = model.updateStatuses(currentTime: model.nowTime) {
-                                        print("scrollID: ", scrollID)
                                         DispatchQueue.main.async{
                                             withAnimation {
                                                 scrollProxy.scrollTo(scrollID, anchor: .top)
