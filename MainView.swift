@@ -113,7 +113,7 @@ struct MainView: View {
                     }
                     
                     Button("スケジュール初期化") {
-                        initSchedules()
+                        vm.initSchedules()
                     }
                 }
                 .frame(maxWidth: .infinity)
