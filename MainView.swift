@@ -2,7 +2,7 @@ import SwiftUI
 
 struct MainView: View {
     
-    @StateObject private var vm = ScheduleViewModel()
+    @StateObject private var vm = ViewModel()
     @State var nowTime = Date()
     private let timer = Timer.publish(every: 1, on: .main, in: .common)
         .autoconnect()
@@ -145,7 +145,7 @@ struct MainView: View {
 // 行の表示
 struct ScheduleView: View {
     let schedule: Schedule
-    @ObservedObject var vm: ScheduleViewModel
+    @ObservedObject var vm: ViewModel
     
     @State private var isEditMode = false
     @State private var newName: String = ""
