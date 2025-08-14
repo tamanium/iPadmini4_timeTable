@@ -23,7 +23,7 @@ struct Utils {
     }
     
     // 透明度算出
-    static func setOpacity(_ status: Status, base: Status) -> Double {
+    static func opacity(_ status: Status, base: Status) -> Double {
         if status.order < base.order {
             return 0.7
         } else if status.order == base.order {
