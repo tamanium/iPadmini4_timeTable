@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct EditView: View {
-    @ObservedObject var model: ScheduleModel
+    @ObservedObject var vm: ScheduleViewModel
     @Environment(\.dismiss) var dismiss
     @State private var editedRows: [EditableRow] = []
     
@@ -36,7 +36,7 @@ struct EditView: View {
             Button("保存") {
                 for row in editedRows {
                     if let date = Utils.parseHHmm(row.timeString) {
-                        model.updateRow(id: row.id, name: row.name, date: date)
+                        vm.updateRow(id: row.id, name: row.name, date: date)
                     }
                 }
                 dismiss()
@@ -44,7 +44,7 @@ struct EditView: View {
             .padding()
         }
         .onAppear {
-            editedRows = model.schedules.map {
+            editedRows = vm.schedules.map {
                 EditableRow(
                     id: $0.id,
                     name: $0.name,
