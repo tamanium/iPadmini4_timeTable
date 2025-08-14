@@ -108,7 +108,7 @@ struct MainView: View {
                     }
                     .navigationDestination(for: String.self) { value in
                         if value == "edit" {
-                            ScheduleEditView(model: model)
+                            EditView(model: model)
                         }
                     }
 
