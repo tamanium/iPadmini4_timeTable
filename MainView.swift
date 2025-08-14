@@ -9,7 +9,7 @@ struct MainView: View {
     
     @State private var scrollToPerforming: (() -> Void)?
     @State private var path = NavigationPath()
-    @State private var isInit = false
+    //@State private var isInit = false
     
     var body: some View {
         NavigationStack(path: $path) {
@@ -112,9 +112,13 @@ struct MainView: View {
                         }
                     }
                     
+                    Button("スケジュール初期化") {
+                        initSchedules()
+                    }
                 }
                 .frame(maxWidth: .infinity)
                 // スケジュールデータ初期化
+                /*
                 .onAppear {
                     if !isInit {
                         let calendar = Calendar.current
@@ -137,6 +141,7 @@ struct MainView: View {
                         isInit = true
                     }
                 }
+                */
             }
         }
     }
