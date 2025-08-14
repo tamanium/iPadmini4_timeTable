@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct ContentView: View {
+struct MainView: View {
     
     @StateObject private var model = ScheduleModel()
     @State var nowTime = Date()
