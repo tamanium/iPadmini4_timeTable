@@ -66,8 +66,8 @@ struct MainView: View {
                             ScrollView(.vertical) {
                                 Grid(alignment: .leading, horizontalSpacing: 32, verticalSpacing: 16){
                                     // 表示
-                                    ForEach(model.scheduleRows, id: \.id) { row in
-                                        ScheduleRowView(row: row, model: model)
+                                    ForEach(model.schedules, id: \.id) { row in
+                                        ScheduleView(row: row, model: model)
                                     }
                                 }
                                 // ScrollView内
@@ -120,13 +120,13 @@ struct MainView: View {
                         let calendar = Calendar.current
                         let nowDate = Date()
                         let currentHour = calendar.component(.hour, from: nowDate)
-                        model.scheduleRows = ((currentHour)*60..<(currentHour+1)*60).map { minute in
+                        model.schedules = ((currentHour)*60..<(currentHour+1)*60).map { minute in
                             let nameString = "団体\(minute - currentHour*60)"
                             let _hour = minute/60
                             let _minute = minute%60
                             let date = calendar.date(bySettingHour: _hour, minute: _minute, second: 0, of: nowDate)!
                             
-                            return ScheduleRow(
+                            return Schedule(
                                 id: UUID(),
                                 name: nameString,
                                 date:date,
@@ -143,8 +143,8 @@ struct MainView: View {
 }
 
 // 行の表示
-struct ScheduleRowView: View {
-    let row: ScheduleRow
+struct ScheduleView: View {
+    let schedule: Schedule
     @ObservedObject var model: ScheduleModel
     
     @State private var isEditMode = false
@@ -152,16 +152,16 @@ struct ScheduleRowView: View {
     @State private var newDate: Date = Date()
     
     var body: some View {
-        let opacity = Utils.setOpacity(row.nowStatus, base: .performing)
+        let opacity = Utils.setOpacity(schedule.nowStatus, base: .performing)
         HStack {
             GridRowView(
-                status: row.nowStatus.rawValue,
-                time: Utils.formatDate(row.date, format: "HH:mm"), 
-                name: row.name
+                status: schedule.nowStatus.rawValue,
+                time: Utils.formatDate(schedule.date, format: "HH:mm"), 
+                name: schedule.name
             )
         }
         .opacity(opacity)
-        .id(row.id)
+        .id(schedule.id)
     }
 }
 
