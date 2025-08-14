@@ -67,7 +67,7 @@ struct MainView: View {
                                 Grid(alignment: .leading, horizontalSpacing: 32, verticalSpacing: 16){
                                     // 表示
                                     ForEach(vm.schedules, id: \.id) { schedule in
-                                        ScheduleView(schedule: schedule/*, vm: vm*/)
+                                        ScheduleContainerView(schedule: schedule)
                                     }
                                 }
                                 // ScrollView内
@@ -143,24 +143,23 @@ struct MainView: View {
 }
 
 // 行の表示
-struct ScheduleView: View {
+struct ScheduleContainerView: View {
     let schedule: Schedule
     
     var body: some View {
-        let opacity = Utils.setOpacity(schedule.nowStatus, base: .performing)
         HStack {
-            GridRowView(
+            ScheduleGridRowView(
                 status: schedule.nowStatus.rawValue,
                 time: Utils.formatDate(schedule.date, format: "HH:mm"), 
                 name: schedule.name
             )
         }
-        .opacity(opacity)
+        .opacity(schedule.opacity(base:.performing))
         .id(schedule.id)
     }
 }
 
-struct GridRowView: View { 
+struct ScheduleGridRowView: View { 
     let status: String 
     let time: String
     let name: String 
