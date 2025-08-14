@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct EditView: View {
-    @ObservedObject var vm: ScheduleViewModel
+    @ObservedObject var vm: ViewModel
     @Environment(\.dismiss) var dismiss
     @State private var editedRows: [EditableRow] = []
     
