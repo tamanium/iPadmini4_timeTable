@@ -44,7 +44,7 @@ struct EditView: View {
             .padding()
         }
         .onAppear {
-            editedRows = model.scheduleRows.map {
+            editedRows = model.schedules.map {
                 EditableRow(
                     id: $0.id,
                     name: $0.name,
