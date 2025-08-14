@@ -3,7 +3,7 @@ import Combine
 
 // スケジュールモデル
 class ScheduleModel: ObservableObject {
-    @Published var scheduleRows: [ScheduleRow] = []
+    @Published var schedules: [Schedule] = []
     @Published var nowTime = Date()
     private var cancellable: AnyCancellable?
     // 前回時刻(分)
@@ -23,37 +23,37 @@ class ScheduleModel: ObservableObject {
     }
     // 行追加
     func addRow(name: String, date: Date) {
-        let newRow = ScheduleRow(
+        let newSchedule = Schedule(
             id: UUID(),
             name: name,
             date: date,
             nowStatus: .before,
             statusDates: nil
         )
-        scheduleRows.append(newRow)
+        schedules.append(newSchedule)
     }
     // 行更新
-    func updateRow(id: UUID, name: String, date: Date) {
-        if let index = scheduleRows.firstIndex(where: { $0.id == id }) {
-            scheduleRows[index].name = name
-            scheduleRows[index].date = date
+    func updateSchedule(id: UUID, name: String, date: Date) {
+        if let index = schedules.firstIndex(where: { $0.id == id }) {
+            schedules[index].name = name
+            schedules[index].date = date
         }
     }
     // 行削除
-    func deleteRow(id: UUID) {
-        scheduleRows.removeAll { $0.id == id }
+    func deleteSchedule(id: UUID) {
+        schedules.removeAll { $0.id == id }
     }
     // 引数ステータスの行IDを取得
     func getIdByStatus(_ status: Status) -> UUID? {
-        scheduleRows.first(where: { $0.nowStatus == status })?.id
+        schedules.first(where: { $0.nowStatus == status })?.id
     }
     // 引数ステータスを基準とする最上位行IDを取得
     func getTopIdByStatus(_ status: Status) -> UUID? {
-        guard let i = scheduleRows.firstIndex(where: { $0.nowStatus == status }) else {
+        guard let i = schedules.firstIndex(where: { $0.nowStatus == status }) else {
             return nil
         }
         let topIndex = max(0, i - (i > 1 ? 2 : 1))
-        return scheduleRows[topIndex].id
+        return schedules[topIndex].id
     }
     // ステータス更新・最上位行ID取得
     func updateStatuses(currentTime: Date) -> UUID? {
@@ -62,19 +62,19 @@ class ScheduleModel: ObservableObject {
         prevMinute = nowMinute
         var scrollID: UUID?
         
-        for i in scheduleRows.indices {
+        for i in schedules.indices {
             // 経過した行をdoneにする
-            if scheduleRows[i].date <= currentTime {
-                scheduleRows[i].setStatus(.done)
-                scrollID = scheduleRows[i].id
+            if schedules[i].date <= currentTime {
+                schedules[i].setStatus(.done)
+                scrollID = schedules[i].id
             } else {
                 // 直前の行を performing にする
                 if i > 0 {
-                    scheduleRows[i-1].setStatus(.performing)
+                    schedules[i-1].setStatus(.performing)
                 } 
                 // 最上位行IDを取得
                 let topIndex = max(0, i - (i > 1 ? 2 : 1))
-                scrollID = scheduleRows[topIndex].id
+                scrollID = schedules[topIndex].id
                 break
             }
         }
