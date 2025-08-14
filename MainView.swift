@@ -2,7 +2,7 @@ import SwiftUI
 
 struct MainView: View {
     
-    @StateObject private var model = ScheduleModel()
+    @StateObject private var vm = ScheduleViewModel()
     @State var nowTime = Date()
     private let timer = Timer.publish(every: 1, on: .main, in: .common)
         .autoconnect()
@@ -25,13 +25,13 @@ struct MainView: View {
                     // ヨコ配置
                     HStack(alignment: .lastTextBaseline, spacing: -8) {
                         // 時間
-                        Text(Utils.formatDate(model.nowTime, format: "HH")).font(timeFont)
+                        Text(Utils.formatDate(vm.nowTime, format: "HH")).font(timeFont)
                         // コロン
                         Text(":").font(timeFont)
                         // 分
-                        Text(Utils.formatDate(model.nowTime, format: "mm")).font(timeFont)
+                        Text(Utils.formatDate(vm.nowTime, format: "mm")).font(timeFont)
                         // 秒
-                        Text(Utils.formatDate(model.nowTime, format: "ss")).font(secondFont)
+                        Text(Utils.formatDate(vm.nowTime, format: "ss")).font(secondFont)
                     }
                     .minimumScaleFactor(0.5)    // 最小50%まで縮小
                     .lineLimit(1)               // 折り返し防止
@@ -66,13 +66,13 @@ struct MainView: View {
                             ScrollView(.vertical) {
                                 Grid(alignment: .leading, horizontalSpacing: 32, verticalSpacing: 16){
                                     // 表示
-                                    ForEach(model.schedules, id: \.id) { row in
-                                        ScheduleView(row: row, model: model)
+                                    ForEach(vm.schedules, id: \.id) { row in
+                                        ScheduleView(row: row, vm: vm)
                                     }
                                 }
                                 // ScrollView内
-                                .onChange(of: model.nowTime) {
-                                    if let scrollID = model.updateStatuses(currentTime: model.nowTime) {
+                                .onChange(of: vm.nowTime) {
+                                    if let scrollID = vm.updateStatuses(currentTime: vm.nowTime) {
                                         DispatchQueue.main.async{
                                             withAnimation {
                                                 scrollProxy.scrollTo(scrollID, anchor: .top)
@@ -84,9 +84,9 @@ struct MainView: View {
                                 .padding(.bottom, geometry.size.height * 0.5)
                             }
                             .onAppear{
-                                model.scrollToPerforming = {
+                                vm.scrollToPerforming = {
                                     // 最上位行IDを取得
-                                    if let topID = model.getTopIdByStatus(.performing){
+                                    if let topID = vm.getTopIdByStatus(.performing){
                                         // スクロール処理
                                         withAnimation(.easeInOut(duration: 0.5)) {
                                             scrollProxy.scrollTo(topID, anchor: .top)
@@ -101,14 +101,14 @@ struct MainView: View {
                     // -----------ボタン領域-----------
                     Button("追加") {
                         let newDate = Calendar.current.date(bySettingHour: 12, minute: 0, second: 0, of: Date())!
-                        model.addRow(name: "新しい団体", date: newDate)
+                        vm.addRow(name: "新しい団体", date: newDate)
                     }
                     Button("全体編集") {
                         path.append("edit")
                     }
                     .navigationDestination(for: String.self) { value in
                         if value == "edit" {
-                            EditView(model: model)
+                            EditView(vm: vm)
                         }
                     }
 
@@ -120,7 +120,7 @@ struct MainView: View {
                         let calendar = Calendar.current
                         let nowDate = Date()
                         let currentHour = calendar.component(.hour, from: nowDate)
-                        model.schedules = ((currentHour)*60..<(currentHour+1)*60).map { minute in
+                        vm.schedules = ((currentHour)*60..<(currentHour+1)*60).map { minute in
                             let nameString = "団体\(minute - currentHour*60)"
                             let _hour = minute/60
                             let _minute = minute%60
@@ -145,7 +145,7 @@ struct MainView: View {
 // 行の表示
 struct ScheduleView: View {
     let schedule: Schedule
-    @ObservedObject var model: ScheduleModel
+    @ObservedObject var vm: ScheduleViewModel
     
     @State private var isEditMode = false
     @State private var newName: String = ""
