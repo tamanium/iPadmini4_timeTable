@@ -36,7 +36,7 @@ struct EditView: View {
             Button("保存") {
                 for row in editedRows {
                     if let date = Utils.parseHHmm(row.timeString) {
-                        vm.updateRow(id: row.id, name: row.name, date: date)
+                        vm.updateSchedule(id: row.id, name: row.name, date: date)
                     }
                 }
                 dismiss()
