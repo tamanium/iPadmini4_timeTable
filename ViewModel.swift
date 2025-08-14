@@ -2,7 +2,7 @@ import Foundation
 import Combine
 
 // スケジュールモデル
-class ScheduleViewModel: ObservableObject {
+class ViewModel: ObservableObject {
     @Published var schedules: [Schedule] = []
     @Published var nowTime = Date()
     private var cancellable: AnyCancellable?
