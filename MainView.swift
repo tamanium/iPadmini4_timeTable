@@ -41,9 +41,9 @@ struct MainView: View {
                         alignment: .center      // 中央寄せ
                     )
                     .background(Color.black) /*
-                    .onReceive(timer) {input in // 1秒ごとに表示時間更新
-                        nowTime = input
-                    }*/
+                                              .onReceive(timer) {input in // 1秒ごとに表示時間更新
+                                              nowTime = input
+                                              }*/
                     // -------タイムテーブル領域--------
                     // データテーブル領域
                     VStack(spacing: 0){
@@ -51,14 +51,14 @@ struct MainView: View {
                         Text("演奏時刻")
                         // タップのイベント
                         /*
-                            .gesture(){
-                                print("title tap")
-                                DispatchQueue.main.async{
-                                    withAnimation {
-                                        scrollProxy.scrollTo(scrollID, anchor: .top)
-                                    }
-                                }
-                            }
+                         .gesture(){
+                         print("title tap")
+                         DispatchQueue.main.async{
+                         withAnimation {
+                         scrollProxy.scrollTo(scrollID, anchor: .top)
+                         }
+                         }
+                         }
                          */
                         // スクロール領域
                         ScrollViewReader { scrollProxy in
@@ -66,8 +66,8 @@ struct MainView: View {
                             ScrollView(.vertical) {
                                 Grid(alignment: .leading, horizontalSpacing: 32, verticalSpacing: 16){
                                     // 表示
-                                    ForEach(vm.schedules, id: \.id) { row in
-                                        ScheduleView(row: row, vm: vm)
+                                    ForEach(vm.schedules, id: \.id) { schedule in
+                                        ScheduleView(schedule: schedule/*, vm: vm*/)
                                     }
                                 }
                                 // ScrollView内
@@ -80,7 +80,7 @@ struct MainView: View {
                                         }
                                     }
                                 }
-
+                                
                                 .padding(.bottom, geometry.size.height * 0.5)
                             }
                             .onAppear{
@@ -111,7 +111,7 @@ struct MainView: View {
                             EditView(vm: vm)
                         }
                     }
-
+                    
                 }
                 .frame(maxWidth: .infinity)
                 // スケジュールデータ初期化
@@ -145,11 +145,6 @@ struct MainView: View {
 // 行の表示
 struct ScheduleView: View {
     let schedule: Schedule
-    @ObservedObject var vm: ViewModel
-    
-    @State private var isEditMode = false
-    @State private var newName: String = ""
-    @State private var newDate: Date = Date()
     
     var body: some View {
         let opacity = Utils.setOpacity(schedule.nowStatus, base: .performing)
