@@ -37,4 +37,8 @@ struct Schedule: Identifiable, Codable {
     mutating func nextStatus() {
         self.nowStatus = nowStatus.next
     }
+    // 表示透明度を算出数する
+    func opacity(base: Status) -> Double {
+        Utils.opacity(nowStatus, base: base)
+    }
 }
