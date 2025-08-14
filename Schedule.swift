@@ -22,7 +22,7 @@ import Foundation
  */
 
 // スケジュール行構造体
-struct ScheduleRow: Identifiable, Codable {
+struct Schedule: Identifiable, Codable {
     var id = UUID()    // ID
     var name: String   // 名前
     var date: Date     // 日時プロパティ
