@@ -8,15 +8,13 @@ class ViewModel: ObservableObject {
     private var cancellable: AnyCancellable?
     // 前回時刻(分)
     private var prevMinute = ""
-    // スクロール処理
-    //var scrollToPerforming: (() -> Void)? = nil
+    
     init() {
         cancellable = Timer.publish(every: 1, on: .main, in: .common)
-            .autoconnect()
-            .sink{
-                [weak self] time in
-                self?.nowTime = time
-            }
+        .autoconnect()
+        .sink{
+            [weak self] time in self?.nowTime = time
+        }
     }
     
     func initSchedules(){
@@ -39,10 +37,7 @@ class ViewModel: ObservableObject {
             )
         }
     }
-    
-    //func triggerScroll() {
-    //    scrollToPerforming?()
-    //}
+
     // 行追加
     func addRow(name: String, date: Date) {
         let newSchedule = Schedule(
@@ -69,6 +64,7 @@ class ViewModel: ObservableObject {
     func getIdByStatus(_ status: Status) -> UUID? {
         schedules.first(where: { $0.nowStatus == status })?.id
     }
+    /*
     // 引数ステータスを基準とする最上位行IDを取得
     func getTopIdByStatus(_ status: Status) -> UUID? {
         guard let i = schedules.firstIndex(where: { $0.nowStatus == status }) else {
@@ -76,12 +72,9 @@ class ViewModel: ObservableObject {
         }
         let topIndex = max(0, i - (i > 1 ? 2 : 1))
         return schedules[topIndex].id
-    }
+    }*/
     // ステータス更新・最上位行ID取得
     func updateStatuses(currentTime: Date) -> UUID? {
-        let nowMinute = Utils.formatDate(currentTime, format: "mm")
-        guard nowMinute != prevMinute else { return nil }
-        prevMinute = nowMinute
         var scrollID: UUID?
         
         for i in schedules.indices {
