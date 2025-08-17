@@ -54,9 +54,13 @@ struct MainView: View {
                             // 縦スクロール領域
                             ScrollView(.vertical) {
                                 Grid(alignment: .leading, horizontalSpacing: 32, verticalSpacing: 16){
-                                    // 表示
-                                    ForEach(vm.schedules, id: \.id) { schedule in
-                                        ScheduleContainerView(schedule: schedule)
+                                    if !vm.schedules.isEmpty {
+                                        // 表示
+                                        ForEach(vm.schedules, id: \.id) { schedule in
+                                            ScheduleView(schedule: schedule)
+                                        }
+                                    } else {
+                                        Text("データがありません")
                                     }
                                 }
                                 // ScrollView内
@@ -110,7 +114,7 @@ struct MainView: View {
 }
 
 // 行の表示
-struct ScheduleContainerView: View {
+struct ScheduleView: View {
     let schedule: Schedule
     
     var body: some View {
