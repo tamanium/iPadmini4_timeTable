@@ -9,7 +9,7 @@ class ViewModel: ObservableObject {
     // 前回時刻(分)
     private var prevMinute = ""
     // スクロール処理
-    var scrollToPerforming: (() -> Void)? = nil
+    //var scrollToPerforming: (() -> Void)? = nil
     init() {
         cancellable = Timer.publish(every: 1, on: .main, in: .common)
             .autoconnect()
@@ -18,13 +18,13 @@ class ViewModel: ObservableObject {
                 self?.nowTime = time
             }
     }
-
+    
     func initSchedules(){
         let calendar = Calendar.current
         let nowDate = Date()
         let currentHour = calendar.component(.hour, from: nowDate)
         
-        vm.schedules = ((currentHour)*60..<(currentHour+1)*60).map { minute in
+        schedules = ((currentHour)*60..<(currentHour+1)*60).map { minute in
             let nameString = "団体\(minute - currentHour*60)"
             let _hour = minute/60
             let _minute = minute%60
@@ -40,9 +40,9 @@ class ViewModel: ObservableObject {
         }
     }
     
-    func triggerScroll() {
-        scrollToPerforming?()
-    }
+    //func triggerScroll() {
+    //    scrollToPerforming?()
+    //}
     // 行追加
     func addRow(name: String, date: Date) {
         let newSchedule = Schedule(
