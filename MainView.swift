@@ -9,7 +9,6 @@ struct MainView: View {
     
     @State private var scrollToPerforming: (() -> Void)?
     @State private var path = NavigationPath()
-    //@State private var isInit = false
     
     var body: some View {
         NavigationStack(path: $path) {
@@ -40,26 +39,15 @@ struct MainView: View {
                         maxWidth: .infinity, // 幅：親画面幅
                         alignment: .center      // 中央寄せ
                     )
-                    .background(Color.black) /*
-                                              .onReceive(timer) {input in // 1秒ごとに表示時間更新
-                                              nowTime = input
-                                              }*/
+                    .background(Color.black) 
                     // -------タイムテーブル領域--------
                     // データテーブル領域
                     VStack(spacing: 0){
                         // ヘッダ行
                         Text("演奏時刻")
-                        // タップのイベント
-                        /*
-                         .gesture(){
-                         print("title tap")
-                         DispatchQueue.main.async{
-                         withAnimation {
-                         scrollProxy.scrollTo(scrollID, anchor: .top)
-                         }
-                         }
-                         }
-                         */
+                            .onTapGesture {
+                                scrollToPerforming?()
+                            }
                         // スクロール領域
                         ScrollViewReader { scrollProxy in
                             // 縦スクロール領域
@@ -80,11 +68,10 @@ struct MainView: View {
                                         }
                                     }
                                 }
-                                
                                 .padding(.bottom, geometry.size.height * 0.5)
                             }
                             .onAppear{
-                                vm.scrollToPerforming = {
+                                scrollToPerforming = {
                                     // 最上位行IDを取得
                                     if let topID = vm.getTopIdByStatus(.performing){
                                         // スクロール処理
@@ -119,29 +106,29 @@ struct MainView: View {
                 .frame(maxWidth: .infinity)
                 // スケジュールデータ初期化
                 /*
-                .onAppear {
-                    if !isInit {
-                        let calendar = Calendar.current
-                        let nowDate = Date()
-                        let currentHour = calendar.component(.hour, from: nowDate)
-                        vm.schedules = ((currentHour)*60..<(currentHour+1)*60).map { minute in
-                            let nameString = "団体\(minute - currentHour*60)"
-                            let _hour = minute/60
-                            let _minute = minute%60
-                            let date = calendar.date(bySettingHour: _hour, minute: _minute, second: 0, of: nowDate)!
-                            
-                            return Schedule(
-                                id: UUID(),
-                                name: nameString,
-                                date:date,
-                                nowStatus: Status.first,
-                                statusDates: nil
-                            )
-                        }
-                        isInit = true
-                    }
-                }
-                */
+                 .onAppear {
+                 if !isInit {
+                 let calendar = Calendar.current
+                 let nowDate = Date()
+                 let currentHour = calendar.component(.hour, from: nowDate)
+                 vm.schedules = ((currentHour)*60..<(currentHour+1)*60).map { minute in
+                 let nameString = "団体\(minute - currentHour*60)"
+                 let _hour = minute/60
+                 let _minute = minute%60
+                 let date = calendar.date(bySettingHour: _hour, minute: _minute, second: 0, of: nowDate)!
+                 
+                 return Schedule(
+                 id: UUID(),
+                 name: nameString,
+                 date:date,
+                 nowStatus: Status.first,
+                 statusDates: nil
+                 )
+                 }
+                 isInit = true
+                 }
+                 }
+                 */
             }
         }
     }
