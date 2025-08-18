@@ -33,14 +33,18 @@ struct EditView: View {
                         }
                     }
                 }
-                Button("保存") {
-                    for row in editedRows {
-                        if let date = Utils.parseHHmm(row.timeString) {
-                            vm.updateSchedule(id: row.id, name: row.name, date: date)
-                        }
+                .padding()
+            }
+            Button("保存") {
+                for row in editedRows {
+                    if let date = Utils.parseHHmm(row.timeString) {
+                        vm.updateSchedule(id: row.id, name: row.name, date: date)
                     }
-                    dismiss()
+
                 }
+                dismiss()
+            }
+            .padding()
         }
         .onAppear {
             // 完全に空の場合、空のスケジュールを追加する
