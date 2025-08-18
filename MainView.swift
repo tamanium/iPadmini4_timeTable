@@ -116,36 +116,32 @@ struct MainView: View {
     }
 }
 
-// 行の表示
+// テーブルの表示
 struct ScheduleView: View {
     let schedule: Schedule
     
     var body: some View {
         HStack {
-            ScheduleGridRowView(
-                status: schedule.status.rawValue,
-                time: Utils.formatDate(schedule.date, format: "HH:mm"), 
-                name: schedule.name
-            )
+            ScheduleGridRowView( schedule: schedule)
         }
         .opacity(schedule.opacity(base:.performing))
         .id(schedule.id)
     }
 }
-
+// 行の表示
 struct ScheduleGridRowView: View { 
-    let status: String 
-    let time: String
-    let name: String 
+    let schedule: Schedule
+    
     var body: some View { 
         GridRow{ 
-            Text(status) 
+            Text(schedule.status) 
                 .frame(width:70)
                 .font(.system(size:50)) 
+            let time = Utils.formatDate(schedule.date, format: "HH:mm")
             Text(time) 
                 .frame(width:180)
                 .font(.system(size: 50, design: .monospaced)) 
-            Text(name) 
+            Text(schedule.name) 
                 .frame(width:450, alignment: .leading)
                 .font(.system(size:50)) 
         } 
