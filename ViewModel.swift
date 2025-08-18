@@ -92,27 +92,4 @@ class ViewModel: ObservableObject {
         }
         return scrollID
     }
-    
-    // ステータス更新・最上位行ID取得
-    func updateStatuses(currentTime: Date) -> UUID? {
-        var scrollID: UUID?
-        
-        for i in schedules.indices {
-            // 経過した行をdoneにする
-            if schedules[i].date <= currentTime {
-                schedules[i].setStatus(.done)
-                scrollID = schedules[i].id
-            } else {
-                // 直前の行を performing にする
-                if i > 0 {
-                    schedules[i-1].setStatus(.performing)
-                } 
-                // 最上位行IDを取得
-                let topIndex = max(0, i - (i > 1 ? 2 : 1))
-                scrollID = schedules[topIndex].id
-                break
-            }
-        }
-        return scrollID
-    }
 }
