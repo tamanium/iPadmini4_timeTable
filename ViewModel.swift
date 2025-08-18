@@ -29,11 +29,9 @@ class ViewModel: ObservableObject {
             let date = calendar.date(bySettingHour: _hour, minute: _minute, second: 0, of: nowDate)!
             
             return Schedule(
-                //id: UUID(),
+                status: .performing,
                 name: nameString,
                 date:date
-                //nowStatus: Status.first,
-                //statusDates: nil
             )
         }
     }
@@ -41,11 +39,9 @@ class ViewModel: ObservableObject {
     // 行追加
     func addSchedule(name: String, date: Date) {
         let newSchedule = Schedule(
-            //id: UUID(),
+            status: .performing,
             name: name,
             date: date
-            //nowStatus: .before,
-            //statusDates: nil
         )
         schedules.append(newSchedule)
     }
