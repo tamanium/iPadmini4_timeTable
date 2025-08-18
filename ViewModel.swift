@@ -64,15 +64,6 @@ class ViewModel: ObservableObject {
     func getIdByStatus(_ status: Status) -> UUID? {
         schedules.first(where: { $0.nowStatus == status })?.id
     }
-    /*
-    // 引数ステータスを基準とする最上位行IDを取得
-    func getTopIdByStatus(_ status: Status) -> UUID? {
-        guard let i = schedules.firstIndex(where: { $0.nowStatus == status }) else {
-            return nil
-        }
-        let topIndex = max(0, i - (i > 1 ? 2 : 1))
-        return schedules[topIndex].id
-    }*/
     // ステータス更新・最上位行ID取得
     func updateStatuses(currentTime: Date) -> UUID? {
         var scrollID: UUID?
