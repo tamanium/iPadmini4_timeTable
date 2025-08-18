@@ -21,11 +21,14 @@ struct EditView: View {
                     ForEach($editedRows) { $row in
                         GridRow {
                             TextField("時刻", text: $row.timeString)
+                                .font(.system(size: 50, design: .monospaced)) 
                                 .keyboardType(.numberPad)
-                                .frame(width: 80)
+                                .frame(width: 180)
                                 .textFieldStyle(.roundedBorder)
                             
                             TextField("団体名", text: $row.name)
+                                .font(.system(size:50)) 
+                                .frame(width: 450)
                                 .textFieldStyle(.roundedBorder)
                         }
                     }
