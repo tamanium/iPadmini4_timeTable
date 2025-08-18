@@ -138,10 +138,16 @@ struct ScheduleGridRowView: View {
             Text(schedule.status.rawValue) 
                 .frame(width:70)
                 .font(.system(size:50)) 
-            let time = Utils.formatDate(schedule.statusDates[stdStatus], format: "HH:mm")
-            Text(time) 
-                .frame(width:180)
-                .font(.system(size: 50, design: .monospaced)) 
+            if let date = schedule.statusDates?[stdStatus] {
+                let time = Utils.formatDate(date, format: "HH:mm")
+                Text(time) 
+                    .frame(width:180)
+                    .font(.system(size: 50, design: .monospaced)) 
+            } else {
+                Text("00:00") 
+                    .frame(width:180)
+                    .font(.system(size: 50, design: .monospaced)) 
+            }
             Text(schedule.name) 
                 .frame(width:450, alignment: .leading)
                 .font(.system(size:50)) 
