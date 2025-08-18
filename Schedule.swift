@@ -28,14 +28,14 @@ struct Schedule: Identifiable, Codable {
     var date: Date     // 日時プロパティ
     var status: Status // 現在のステータス
     var statusDates: [Status: Date]? // ステータスと日時のマッピング
-
- // イニシャライザ
+    
+    // イニシャライザ
     init(name: String, date: Date) {
         self.id = UUID()
         self.name = name
         self.date = date
         self.status = .first
-     // とりあえず初期値
+        // とりあえず初期値
         self.statusDates = [.first: date]
     }
     
