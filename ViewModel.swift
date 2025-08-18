@@ -49,7 +49,10 @@ class ViewModel: ObservableObject {
     func updateSchedule(id: UUID, name: String, date: Date) {
         if let index = schedules.firstIndex(where: { $0.id == id }) {
             schedules[index].name = name
-            schedules[index].date = date
+            //schedules[index].date = date
+            if schedules[index].statusDates?[.performing] != nil {
+                schedules[index].statusDates?[.performing] = date
+            }
         }
     }
     // 行削除
@@ -75,8 +78,9 @@ class ViewModel: ObservableObject {
         var scrollID: UUID?
         
         for i in schedules.indices {
+            guard let date = schedules[i].statusDates?[status] else { continue }
             // 経過した行をdoneにする
-            if schedules[i].date <= currentTime {
+            if date <= currentTime {
                 schedules[i].setStatus(.done)
                 scrollID = schedules[i].id
             } else {
