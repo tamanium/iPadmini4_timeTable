@@ -28,13 +28,25 @@ class ViewModel: ObservableObject {
             let _minute = minute%60
             let date = calendar.date(bySettingHour: _hour, minute: _minute, second: 0, of: nowDate)!
             
-            return Schedule(name: nameString, date:date)
+            return Schedule(
+                //id: UUID(),
+                name: nameString,
+                date:date
+                //nowStatus: Status.first,
+                //statusDates: nil
+            )
         }
     }
 
     // 行追加
     func addSchedule(name: String, date: Date) {
-        let newSchedule = Schedule( name: name, date: date)
+        let newSchedule = Schedule(
+            //id: UUID(),
+            name: name,
+            date: date
+            //nowStatus: .before,
+            //statusDates: nil
+        )
         schedules.append(newSchedule)
     }
     // 行更新
@@ -52,6 +64,15 @@ class ViewModel: ObservableObject {
     func getIdByStatus(_ status: Status) -> UUID? {
         schedules.first(where: { $0.status == status })?.id
     }
+    /*
+    // 引数ステータスを基準とする最上位行IDを取得
+    func getTopIdByStatus(_ status: Status) -> UUID? {
+        guard let i = schedules.firstIndex(where: { $0.nowStatus == status }) else {
+            return nil
+        }
+        let topIndex = max(0, i - (i > 1 ? 2 : 1))
+        return schedules[topIndex].id
+    }*/
     // ステータス更新・最上位行ID取得
     func updateStatuses(currentTime: Date) -> UUID? {
         var scrollID: UUID?
