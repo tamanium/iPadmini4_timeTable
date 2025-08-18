@@ -34,9 +34,9 @@ struct Schedule: Identifiable, Codable {
         self.id = UUID()
         self.name = name
         self.date = date
-        self.status = .before
+        self.status = .first
      // とりあえず初期値
-        self.statusDates = [.before: date]
+        self.statusDates = [.first: date]
     }
     
     // 【Setter】ステータス
