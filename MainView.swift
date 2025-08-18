@@ -77,7 +77,7 @@ struct MainView: View {
                             .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/)
                             .onAppear{
                                 scrollToPerforming = {
-                                    if let scrollID = vm.updateStatuses(currentTime: vm.nowTime) {
+                                    if let scrollID = vm.updateStatuses(state: .performing, currentTime: vm.nowTime) {
                                         print(scrollID)
                                         DispatchQueue.main.async{
                                             withAnimation {
