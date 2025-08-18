@@ -55,7 +55,7 @@ struct EditView: View {
                 EditableRow(
                     id: $0.id,
                     name: $0.name,
-                    timeString: Utils.formatDate($0.date, format: "HHmm")
+                    timeString: Utils.formatDate($0.statusDates?[.performing] ?? Date(),  format: "HHmm")
                 )
             }
         }
