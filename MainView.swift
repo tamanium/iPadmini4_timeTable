@@ -51,9 +51,10 @@ struct MainView: View {
                         }
                         // スクロール領域
                         ScrollViewReader { scrollProxy in
+                            Spacer()
                             // 縦スクロール領域
                             ScrollView(.vertical) {
-                                Grid(alignment: .leading, horizontalSpacing: 32, verticalSpacing: 16){
+                                Grid(alignment: .trailing, horizontalSpacing: 32, verticalSpacing: 16){
                                     if !vm.schedules.isEmpty {
                                         // 表示
                                         ForEach(vm.schedules, id: \.id) { schedule in
@@ -73,6 +74,7 @@ struct MainView: View {
                                 }
                                 .padding(.bottom, geometry.size.height * 0.5)
                             }
+                            .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/)
                             .onAppear{
                                 scrollToPerforming = {
                                     if let scrollID = vm.updateStatuses(currentTime: vm.nowTime) {
@@ -86,6 +88,7 @@ struct MainView: View {
                                 }
                             }
                         }
+                        
                     }
                     .background(Color.black)
                     .frame(maxWidth: .infinity)
@@ -137,10 +140,13 @@ struct ScheduleGridRowView: View {
     var body: some View { 
         GridRow{ 
             Text(status) 
+                .frame(width:70)
                 .font(.system(size:50)) 
             Text(time) 
+                .frame(width:180)
                 .font(.system(size: 50, design: .monospaced)) 
             Text(name) 
+                .frame(width:450, alignment: .leading)
                 .font(.system(size:50)) 
         } 
     } 
