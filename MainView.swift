@@ -46,9 +46,9 @@ struct MainView: View {
                     VStack(spacing: 0) {
                         // ヘッダ行
                         Text("演奏時刻")
-                        .onTapGesture {
-                            scrollToPerforming?()
-                        }
+                            .onTapGesture {
+                                scrollToPerforming?()
+                            }
                         // スクロール領域
                         ScrollViewReader { scrollProxy in
                             Spacer()
@@ -88,7 +88,6 @@ struct MainView: View {
                                 }
                             }
                         }
-                        
                     }
                     .background(Color.black)
                     .frame(maxWidth: .infinity)
@@ -134,7 +133,7 @@ struct ScheduleGridRowView: View {
     
     var body: some View { 
         GridRow{ 
-            Text(schedule.status) 
+            Text(schedule.status.rawValue) 
                 .frame(width:70)
                 .font(.system(size:50)) 
             let time = Utils.formatDate(schedule.date, format: "HH:mm")
