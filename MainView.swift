@@ -123,7 +123,7 @@ struct ScheduleView: View {
     var body: some View {
         HStack {
             ScheduleGridRowView(
-                status: schedule.nowStatus.rawValue,
+                status: schedule.status.rawValue,
                 time: Utils.formatDate(schedule.date, format: "HH:mm"), 
                 name: schedule.name
             )
