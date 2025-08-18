@@ -39,7 +39,7 @@ class ViewModel: ObservableObject {
     }
 
     // 行追加
-    func addRow(name: String, date: Date) {
+    func addSchedule(name: String, date: Date) {
         let newSchedule = Schedule(
             id: UUID(),
             name: name,
