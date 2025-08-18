@@ -30,13 +30,13 @@ struct Schedule: Identifiable, Codable {
     var statusDates: [Status: Date]? // ステータスと日時のマッピング
     
     // イニシャライザ
-    init(name: String, date: Date) {
+    init(status: Status, name: String, date: Date) {
         self.id = UUID()
         self.name = name
         self.date = date
         self.status = .first
         // とりあえず初期値
-        self.statusDates = [.first: date]
+        self.statusDates = [status: date]
     }
     
     // 【Setter】ステータス
