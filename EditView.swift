@@ -47,6 +47,10 @@ struct EditView: View {
             .padding()
         }
         .onAppear {
+            // 完全に空の場合、空のスケジュールを追加する
+            if vm.schedules.isEmpty {
+                vm.addSchedule(name: "", date: Date())
+            }
             editedRows = vm.schedules.map {
                 EditableRow(
                     id: $0.id,
