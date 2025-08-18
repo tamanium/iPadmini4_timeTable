@@ -58,7 +58,7 @@ struct MainView: View {
                                     if !vm.schedules.isEmpty {
                                         // 表示
                                         ForEach(vm.schedules, id: \.id) { schedule in
-                                            ScheduleView(schedule: schedule)
+                                            ScheduleView(schedule: schedule, stdStatus: .performing)
                                         }
                                     } else {
                                         Text("データがありません")
@@ -118,10 +118,11 @@ struct MainView: View {
 // テーブルの表示
 struct ScheduleView: View {
     let schedule: Schedule
+    let stdStatus: Status
     
     var body: some View {
         HStack {
-            ScheduleGridRowView( schedule: schedule)
+            ScheduleGridRowView(schedule: schedule, stdStatus: .performing)
         }
         .opacity(schedule.opacity(base:.performing))
         .id(schedule.id)
@@ -130,13 +131,14 @@ struct ScheduleView: View {
 // 行の表示
 struct ScheduleGridRowView: View { 
     let schedule: Schedule
+    let stdStatus: Status
     
     var body: some View { 
         GridRow{ 
             Text(schedule.status.rawValue) 
                 .frame(width:70)
                 .font(.system(size:50)) 
-            let time = Utils.formatDate(schedule.date, format: "HH:mm")
+            let time = Utils.formatDate(schedule.statusDates[stdStatus], format: "HH:mm")
             Text(time) 
                 .frame(width:180)
                 .font(.system(size: 50, design: .monospaced)) 
