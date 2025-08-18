@@ -26,19 +26,29 @@ struct Schedule: Identifiable, Codable {
     var id = UUID()    // ID
     var name: String   // 名前
     var date: Date     // 日時プロパティ
-    var nowStatus: Status // 現在のステータス
+    var status: Status // 現在のステータス
     var statusDates: [Status: Date]? // ステータスと日時のマッピング
+
+ // イニシャライザ
+    init(name: String, date: Date) {
+        self.id = UUID()
+        self.name = name
+        self.date = date
+        self.status = .before
+     // とりあえず初期値
+        self.statusDates = [.before: date]
+    }
     
     // 【Setter】ステータス
     mutating func setStatus(_ status: Status) {
-        self.nowStatus = status
+        self.status = status
     }
     // ステータスを進める
     mutating func nextStatus() {
-        self.nowStatus = nowStatus.next
+        self.status = nowStatus.next
     }
     // 表示透明度を算出数する
     func opacity(base: Status) -> Double {
-        Utils.opacity(nowStatus, base: base)
+        Utils.opacity(status, base: base)
     }
 }
