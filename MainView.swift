@@ -95,7 +95,7 @@ struct MainView: View {
                     // -----------ボタン領域-----------
                     Button("追加") {
                         let newDate = Calendar.current.date(bySettingHour: 12, minute: 0, second: 0, of: Date())!
-                        vm.addRow(name: "新しい団体", date: newDate)
+                        vm.addSchedule(name: "新しい団体", date: newDate)
                     }
                     Button("全体編集") {
                         path.append("edit")
