@@ -50,7 +50,7 @@ class ViewModel: ObservableObject {
     }
     // 引数ステータスの行IDを取得
     func getIdByStatus(_ status: Status) -> UUID? {
-        schedules.first(where: { $0.nowStatus == status })?.id
+        schedules.first(where: { $0.status == status })?.id
     }
     // ステータス更新・最上位行ID取得
     func updateStatuses(currentTime: Date) -> UUID? {
