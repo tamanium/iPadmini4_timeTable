@@ -28,25 +28,13 @@ class ViewModel: ObservableObject {
             let _minute = minute%60
             let date = calendar.date(bySettingHour: _hour, minute: _minute, second: 0, of: nowDate)!
             
-            return Schedule(
-                id: UUID(),
-                name: nameString,
-                date:date,
-                nowStatus: Status.first,
-                statusDates: nil
-            )
+            return Schedule(name: nameString, date:date)
         }
     }
 
     // 行追加
     func addSchedule(name: String, date: Date) {
-        let newSchedule = Schedule(
-            id: UUID(),
-            name: name,
-            date: date,
-            nowStatus: .before,
-            statusDates: nil
-        )
+        let newSchedule = Schedule( name: name, date: date)
         schedules.append(newSchedule)
     }
     // 行更新
