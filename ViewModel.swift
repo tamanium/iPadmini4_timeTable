@@ -95,11 +95,11 @@ class ViewModel: ObservableObject {
             if scheduleDate <= currentTime {
                 // もう予定時刻を超えている場合
                 // ステータス：済
-                schedules[i].setStatus(.done)
+                schedules[i].setStatus(stdStatus.prev)
             } else {
                 // まだ予定時刻を超えていない場合
                 // ステータス：未
-                schedules[i].setStatus(.before)
+                schedules[i].setStatus(stdStatus.next)
                 //　初めての予定時刻を超えていない行だった場合
                 if isInit {
                     // フラグ下ろす
