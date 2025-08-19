@@ -37,6 +37,15 @@ class ViewModel: ObservableObject {
     }
     
     // 行追加
+    func addSchedule(status: Status, name: String, date: Date) {
+        let newSchedule = Schedule(
+            status: status,
+            name: name,
+            date: date
+        )
+        schedules.append(newSchedule)
+    }
+    // 行追加
     func addSchedule(name: String, date: Date) {
         let newSchedule = Schedule(
             status: .performing,
