@@ -82,9 +82,42 @@ class ViewModel: ObservableObject {
      return schedules[topIndex].id
      }*/
 
+    // スケジュールのソート（基準ステータス時刻昇順）
+    func sortSchedules(stdStatus: Status) {
+        let sortedSchedules = schedules.sorted {$0.statusDates?[stdStatus] <$1.statusDates?[stdStatus] }
+        schedules = sortedSchedules
+    }
+    // 全スケジュールのステータス更新・表示最上位行ID取得
+    func updateAllStatus(stdStatus: Status, currentTime: Date) -> UUID? {
+        // 全スケジュールのステータス更新
+        for i in schedules.indices {
+            guard let statusDates = schedules[i].statusDates else { continue }
+            // 時刻順にソート
+            let sortedStatusDates = statusDates.sorted { $0.value < $1.value }
+            var nowStatus = .before
+            for (status, date) in sortedStatusDates {
+                // 予定時刻に達していない場合、処理終了
+                if date > currentTime { break }
+                // 予定時刻を超えている場合、ステータス取得
+                nowStatus = status
+            }
+            // 現在ステータスを更新
+            schedules[i].status = status
+        }
+        // 表示最上位行ID取得
+        var scrollID: UUID?
+        for i in schedules.indices {
+            if schedules[i].status == stdStatus {
+                scrollID = schedules[max(0, i-1)].id
+                break
+            }
+        }
+        return scrollID
+    }
     
     // ステータス更新・最上位行ID取得
-    func updateStatusesNew(stdStatus: Status, currentTime: Date) -> UUID? {
+    func updateStatus
+    esNew(stdStatus: Status, currentTime: Date) -> UUID? {
         var scrollID: UUID?
 
         var isInit = true
