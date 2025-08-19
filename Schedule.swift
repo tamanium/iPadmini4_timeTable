@@ -25,7 +25,6 @@ import Foundation
 struct Schedule: Identifiable, Codable {
     var id = UUID()    // ID
     var name: String   // 名前
-    var date: Date     // 日時プロパティ
     var status: Status // 現在のステータス
     var statusDates: [Status: Date]? // ステータスと日時のマッピング
     
@@ -33,7 +32,6 @@ struct Schedule: Identifiable, Codable {
     init(status: Status, name: String, date: Date) {
         self.id = UUID()
         self.name = name
-        self.date = date
         self.status = .first
         // とりあえず初期値
         self.statusDates = [status: date]
