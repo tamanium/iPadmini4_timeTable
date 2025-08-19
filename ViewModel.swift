@@ -123,25 +123,6 @@ class ViewModel: ObservableObject {
                 }
             }
         }
-        /*
-        for i in schedules.indices {
-            guard let date = schedules[i].statusDates?[stdStatus] else { continue }
-            // 経過した行をdoneにする
-            if date <= currentTime {
-                schedules[i].setStatus(.done)
-                scrollID = schedules[i].id
-            } else {
-                // 直前の行を performing にする
-                if i > 0 {
-                    schedules[i-1].setStatus(stdStatus)
-                } 
-                // 最上位行IDを取得
-                let topIndex = max(0, i - (i > 1 ? 2 : 1))
-                scrollID = schedules[topIndex].id
-                break
-            }
-        }
-        */
         return scrollID
     }
     
