@@ -99,7 +99,7 @@ class ViewModel: ObservableObject {
             } else {
                 // まだ予定時刻を超えていない場合
                 // ステータス：未
-                schedules[i].setStatus(.yet)
+                schedules[i].setStatus(.before)
                 //　初めての予定時刻を超えていない行だった場合
                 if isInit {
                     // フラグ下ろす
@@ -109,12 +109,12 @@ class ViewModel: ObservableObject {
                         continue
                     } else {
                         // ひとつ前の行の日時を取得
-                        let date = schedules[i-1].statusDates?[stdStatus]
+                        let yetDate = schedules[i-1].statusDates?[stdStatus]
                         for j in stride(from: i-1, through: 0, by: -1) {
                             // 日付取得
                             let tmpDate = schedules[j].statusDates?[stdStatus]
                             // 日時が異なる場合、処理終了
-                            if scheduleDate != tmpDate { break }
+                            if tmpDate != yetDate { break }
                             // ステータス変更
                             schedules[j].setStatus(stdStatus)
                             scrollID = schedules[j].id
