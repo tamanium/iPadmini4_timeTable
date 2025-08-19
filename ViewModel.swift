@@ -117,7 +117,7 @@ class ViewModel: ObservableObject {
                             if tmpDate != yetDate { break }
                             // ステータス変更
                             schedules[j].setStatus(stdStatus)
-                            scrollID = schedules[j].id
+                            scrollID = schedules[max(0, j-1)].id
                         }
                     }
                 }
