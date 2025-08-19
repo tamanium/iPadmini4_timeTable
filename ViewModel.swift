@@ -81,6 +81,69 @@ class ViewModel: ObservableObject {
      let topIndex = max(0, i - (i > 1 ? 2 : 1))
      return schedules[topIndex].id
      }*/
+
+    
+    // ステータス更新・最上位行ID取得
+    func updateStatusesNew(stdStatus: Status, currentTime: Date) -> UUID? {
+        var scrollID: UUID?
+
+        var isInit = true
+
+        for i in schedules.indices {
+            guard let scheduleDate = schedules[i].statusDates?[stdStatus] else { continue }
+            
+            if scheduleDate <= currentTime {
+                // もう予定時刻を超えている場合
+                // ステータス：済
+                schedules[i].setStatus(.done)
+            } else {
+                // まだ予定時刻を超えていない場合
+                // ステータス：未
+                schedules[i].setStatus(.yet)
+                //　初めての予定時刻を超えていない行だった場合
+                if isInit {
+                    // フラグ下ろす
+                    isInit = false
+                    if i == 0 {
+                        scrollID = schedules[0].id
+                        continue
+                    } else {
+                        // ひとつ前の行の日時を取得
+                        let date = schedules[i-1].statusDates?[stdStatus]
+                        for j in stride(from: i-1, through: 0, by: -1) {
+                            // 日付取得
+                            let tmpDate = schedules[j].statusDates?[stdStatus]
+                            // 日時が異なる場合、処理終了
+                            if scheduleDate != tmpDate { break }
+                            // ステータス変更
+                            schedules[j].setStatus(stdStatus)
+                            scrollID = schedules[j].id
+                        }
+                    }
+                }
+            }
+        }
+        /*
+        for i in schedules.indices {
+            guard let date = schedules[i].statusDates?[stdStatus] else { continue }
+            // 経過した行をdoneにする
+            if date <= currentTime {
+                schedules[i].setStatus(.done)
+                scrollID = schedules[i].id
+            } else {
+                // 直前の行を performing にする
+                if i > 0 {
+                    schedules[i-1].setStatus(stdStatus)
+                } 
+                // 最上位行IDを取得
+                let topIndex = max(0, i - (i > 1 ? 2 : 1))
+                scrollID = schedules[topIndex].id
+                break
+            }
+        }
+        */
+        return scrollID
+    }
     
     // ステータス更新・最上位行ID取得
     func updateStatuses(stdStatus: Status, currentTime: Date) -> UUID? {
