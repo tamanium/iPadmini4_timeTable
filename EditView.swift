@@ -62,7 +62,6 @@ struct EditView: View {
                     if let date = Utils.parseHHmm(row.timeString) {
                         vm.updateSchedule(id: row.id, name: row.name, date: date)
                     }
-                    
                 }
                 dismiss()
             }
