@@ -74,10 +74,10 @@ struct MainView: View {
                                 }
                                 .padding(.bottom, geometry.size.height * 0.5)
                             }
-                            .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/)
+                            .frame(maxWidth: .infinity)
                             .onAppear{
                                 scrollToPerforming = {
-                                    if let scrollID = vm.updateStatuses(status: .performing, currentTime: vm.nowTime) {
+                                    if let scrollID = vm.updateStatuses(stdStatus: .performing, currentTime: vm.nowTime) {
                                         print(scrollID)
                                         DispatchQueue.main.async{
                                             withAnimation {
