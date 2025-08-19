@@ -25,13 +25,18 @@ struct MainView: View {
                     // ヨコ配置
                     HStack(alignment: .lastTextBaseline, spacing: -8) {
                         // 時間
-                        Text(Utils.formatDate(vm.nowTime, format: "HH")).font(timeFont)
+                        Text(Utils.formatDate(vm.nowTime, format: "HH"))
+                        .font(timeFont)
                         // コロン
-                        Text(":").font(timeFont)
+                        Text(":")
+                        .font(timeFont)
+                        .padding(.horizontal, -8) 
                         // 分
-                        Text(Utils.formatDate(vm.nowTime, format: "mm")).font(timeFont)
+                        Text(Utils.formatDate(vm.nowTime, format: "mm"))
+                        .font(timeFont)
                         // 秒
-                        Text(Utils.formatDate(vm.nowTime, format: "ss")).font(secondFont)
+                        Text(Utils.formatDate(vm.nowTime, format: "ss"))
+                        .font(secondFont)
                     }
                     .minimumScaleFactor(0.5)    // 最小50%まで縮小
                     .lineLimit(1)               // 折り返し防止
