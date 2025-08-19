@@ -80,8 +80,7 @@ class ViewModel: ObservableObject {
      }
      let topIndex = max(0, i - (i > 1 ? 2 : 1))
      return schedules[topIndex].id
-     }*/
-    /*
+     }
     // スケジュールのソート（基準ステータス時刻昇順）
     func sortSchedules(stdStatus: Status) {
         let sortedSchedules = schedules.sorted {$0.statusDates?[stdStatus]? < $1.statusDates?[stdStatus]? }
