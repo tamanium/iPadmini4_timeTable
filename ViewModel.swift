@@ -81,11 +81,11 @@ class ViewModel: ObservableObject {
      let topIndex = max(0, i - (i > 1 ? 2 : 1))
      return schedules[topIndex].id
      }
-    // スケジュールのソート（基準ステータス時刻昇順）
-    func sortSchedules(stdStatus: Status) {
-        let sortedSchedules = schedules.sorted {$0.statusDates?[stdStatus]? < $1.statusDates?[stdStatus]? }
-        schedules = sortedSchedules
-    }*/
+     // スケジュールのソート（基準ステータス時刻昇順）
+     func sortSchedules(stdStatus: Status) {
+     let sortedSchedules = schedules.sorted {$0.statusDates?[stdStatus]? < $1.statusDates?[stdStatus]? }
+     schedules = sortedSchedules
+     }*/
     // 全スケジュールのステータス更新・表示最上位行ID取得
     func updateAllStatus(stdStatus: Status, currentTime: Date) -> UUID? {
         // 全スケジュールのステータス更新
@@ -113,15 +113,15 @@ class ViewModel: ObservableObject {
         }
         return scrollID
     }
-
+    
     // ステータス更新・最上位行ID取得
     func updateStatusSimple(stdStatus: Status, currentTime: Date) -> UUID? {
         var scrollID: UUID?
         var isInit = true
         for i in schedules.indices {
             guard let scheduleDate = schedules[i].statusDates?[stdStatus] else { continue }
-
-            let result = compareTimeOnly(scheduleDate, currentTime)
+            
+            let result = Utils.compareHHmm(scheduleDate, currentTime)
             
             if result != .orderedDescending {
                 // もう予定時刻を超えている、または同じ場合
