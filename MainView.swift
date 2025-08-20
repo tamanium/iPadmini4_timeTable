@@ -26,17 +26,17 @@ struct MainView: View {
                     HStack(alignment: .lastTextBaseline, spacing: -8) {
                         // 時間
                         Text(Utils.formatDate(vm.nowTime, format: "HH"))
-                        .font(timeFont)
+                            .font(timeFont)
                         // コロン
                         Text(":")
-                        .font(timeFont)
-                        .padding(.horizontal, -8) 
+                            .font(timeFont)
+                            .padding(.horizontal, -30) 
                         // 分
                         Text(Utils.formatDate(vm.nowTime, format: "mm"))
-                        .font(timeFont)
+                            .font(timeFont)
                         // 秒
                         Text(Utils.formatDate(vm.nowTime, format: "ss"))
-                        .font(secondFont)
+                            .font(secondFont)
                     }
                     .minimumScaleFactor(0.5)    // 最小50%まで縮小
                     .lineLimit(1)               // 折り返し防止
@@ -82,7 +82,7 @@ struct MainView: View {
                             .frame(maxWidth: .infinity)
                             .onAppear{
                                 scrollToPerforming = {
-                                    if let scrollID = vm.updateStatuses(stdStatus: .performing, currentTime: vm.nowTime) {
+                                    if let scrollID = vm.updateStatusSimple(stdStatus: .performing, currentTime: vm.nowTime) {
                                         print(scrollID)
                                         DispatchQueue.main.async{
                                             withAnimation {
@@ -159,4 +159,3 @@ struct ScheduleGridRowView: View {
         } 
     } 
 }
-
