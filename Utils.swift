@@ -35,19 +35,19 @@ struct Utils {
     // 時分比較
     static func compareHHmm(_ date1: Date, _ date2: Date) -> ComparisonResult {
         let calendar = Calendar.current
-        let comp1 = calendar.dateCompornents([.hour, .minute], from: date1)
-        let comp2 = calendar.dateCompornents([.hour, .minute], from: date2)
-
-        if let hour1 = comp1.hour, let min1 = comp1.minute, let hour2 = comp2.hour, let min2 = comp.minute {
-            if hour1 < hour2 || (hour1 == hour2 && minute1 < minute2) {
+        let comp1 = calendar.dateComponents([.hour, .minute], from: date1)
+        let comp2 = calendar.dateComponents([.hour, .minute], from: date2)
+        
+        if let hour1 = comp1.hour, let min1 = comp1.minute, let hour2 = comp2.hour, let min2 = comp2.minute {
+            if hour1 < hour2 || (hour1 == hour2 && min1 < min2) {
                 // 左 < 右 の場合
-                return .orderdAscending
-            } else if hour1 == hour2 && minute1 == minute2 {
+                return .orderedAscending
+            } else if hour1 == hour2 && min1 == min2 {
                 // 左 == 右の場合
                 return .orderedSame
             } else {
                 // 左 > 右 の場合
-                return .orderdDescending
+                return .orderedDescending
             }
         }
         // 比較不可の場合は同じとする
