@@ -113,6 +113,48 @@ class ViewModel: ObservableObject {
         }
         return scrollID
     }
+
+    // ステータス更新・最上位行ID取得
+    func updateStatusSimple(stdStatus: Status, currentTime: Date) -> UUID? {
+        var scrollID: UUID?
+        var isInit = true
+        for i in schedules.indices {
+            guard let scheduleDate = schedules[i].statusDates?[stdStatus] else { continue }
+
+            let result = compareTimeOnly(scheduleDate, currentTime)
+            
+            if result != .orderedDescending {
+                // もう予定時刻を超えている、または同じ場合
+                // ステータス：済
+                schedules[i].setStatus(.done)
+            } else {
+                // まだ予定時刻を超えていない場合
+                // ステータス：未
+                schedules[i].setStatus(.before)
+                //　初めての予定時刻を超えていない行だった場合
+                if isInit {
+                    // フラグ下ろす
+                    isInit = false
+                    if i == 0 {
+                        scrollID = schedules[0].id
+                    } else {
+                        // ひとつ前の行の日時を取得
+                        let yetDate = schedules[i-1].statusDates?[stdStatus]
+                        for j in stride(from: i-1, through: 0, by: -1) {
+                            // 日付取得
+                            let tmpDate = schedules[j].statusDates?[stdStatus]
+                            // 日時が異なる場合、処理終了
+                            if tmpDate != yetDate { break }
+                            // ステータス変更
+                            schedules[j].setStatus(stdStatus)
+                            scrollID = schedules[max(0, j-1)].id
+                        }
+                    }
+                }
+            }
+        }
+        return scrollID
+    }
     
     // ステータス更新・最上位行ID取得
     func updateStatusesNew(stdStatus: Status, currentTime: Date) -> UUID? {
@@ -137,7 +179,6 @@ class ViewModel: ObservableObject {
                     isInit = false
                     if i == 0 {
                         scrollID = schedules[0].id
-                        continue
                     } else {
                         // ひとつ前の行の日時を取得
                         let yetDate = schedules[i-1].statusDates?[stdStatus]
