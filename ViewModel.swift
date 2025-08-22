@@ -224,8 +224,9 @@ class ViewModel: ObservableObject {
         }
         return scrollID
     }
-
+    
     // スケジュールの外部保存・更新
+    /*
     func saveSchedules(_ schedules: [Schedule], to filename: String) {
         let encoder = JSONEncoder()
         encoder.outputFormatting = .prettyPrinted
@@ -238,7 +239,7 @@ class ViewModel: ObservableObject {
             print("保存失敗: \(error)")
         }
     }
-
+    
     // スケジュールの外部取得
     func loadSchedules(from filename: String) -> [Schedule]? {
         let url = getDocumentsDirectory().appendingPathComponent(filename)
@@ -252,7 +253,7 @@ class ViewModel: ObservableObject {
             return nil
         }
     }
-    
+    */
     // URLからjsonを読み込む関数
     func loadSchedules(from url: URL) {
         do {
@@ -280,5 +281,4 @@ class ViewModel: ObservableObject {
             return nil
         }
     }
-
 }
