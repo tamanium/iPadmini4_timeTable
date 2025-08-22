@@ -13,6 +13,25 @@ struct MainView: View {
     @State private var showPicker = false
     @State private var showExporter = false
     @State private var exportData: Data?
+
+    // 時計表示を出力
+    func clockView(viewWidth: CGFloat) p> some View {
+        let timeFont = Font.system(size: viewWidth * 0.3, weight: .medium, design: .monospaced)
+        let secFont = Font.system(size: viewWidth * 0.08, weight: .light, design: .monospaced)
+
+        return HStack(alignment: .lastTextBaseLine, spacing: -8) {
+            // 時間
+            Text(Utils.formatDate(vm.nowTime, format: "HH")).font(timeFont)
+            // コロン
+            Text(":").font(timeFont).padding(.horizontal, -30)
+            // 分
+            Text(Utils.formatDate(vm.nowTime, format: "mm")).font(timeFont)
+            // 秒
+            Text(Utils.formatDate(vm.nowTime, format: "ss")).font(secFont)
+        }
+        .frame(maxWidth: .infinity, alignment: .center)
+        .background(Color.black)
+    }
     
     var body: some View {
         NavigationStack(path: $path) {
@@ -25,6 +44,9 @@ struct MainView: View {
                 // タテ配置
                 VStack {
                     // ----------時計表示領域----------
+                    clockView(viewWidth: geometry.size.width)
+                    .frame(height: geometry.size.width * 0.4)
+                    /*
                     // ヨコ配置
                     HStack(alignment: .lastTextBaseline, spacing: -8) {
                         // 時間
@@ -49,6 +71,7 @@ struct MainView: View {
                         alignment: .center      // 中央寄せ
                     )
                     .background(Color.black) 
+                    */
                     // -------タイムテーブル領域--------
                     // データテーブル領域
                     VStack(spacing: 0) {
