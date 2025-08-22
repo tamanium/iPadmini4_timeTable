@@ -10,7 +10,9 @@ struct MainView: View {
     
     @State private var scrollToPerforming: (() -> Void)?
     @State private var path = NavigationPath()
-    
+    @State private var showPicker = false
+    @State private var showExporter = false
+
     var body: some View {
         NavigationStack(path: $path) {
             GeometryReader { geometry in
@@ -97,9 +99,18 @@ struct MainView: View {
                     .background(Color.black)
                     .frame(maxWidth: .infinity)
                     // -----------ボタン領域-----------
+                    /*
                     Button("追加") {
                         let newDate = Calendar.current.date(bySettingHour: 12, minute: 0, second: 0, of: Date())!
                         vm.addSchedule(name: "新しい団体", date: newDate)
+                    }
+                    */
+                    Button("読込") {
+                        showPicker = true
+                    }
+                    Button("保存") {
+                        exportData = vm.encodeSchedules()
+                        showExporter = true
                     }
                     Button("全体編集") {
                         path.append("edit")
@@ -117,6 +128,17 @@ struct MainView: View {
                 .frame(maxWidth: .infinity)
             }
         }
+        .sheet(isPresented: $showPicker) {
+            DocumentPicker { url in
+                vm.loadSchedules(from: url)
+            }
+        }
+        .sheet(isPresented: $showExporter) {
+            if let data = exportData {
+                DocumentExporter(data: data, fileName: "schedules.json")
+            }
+        }
+
     }
 }
 

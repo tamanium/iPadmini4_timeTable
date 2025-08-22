@@ -1,5 +1,8 @@
 import Foundation
 import Combine
+import UIKit
+import UniformTypeIdentifiers
+
 
 // スケジュールモデル
 class ViewModel: ObservableObject {
@@ -221,4 +224,61 @@ class ViewModel: ObservableObject {
         }
         return scrollID
     }
+
+    // スケジュールの外部保存・更新
+    func saveSchedules(_ schedules: [Schedule], to filename: String) {
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = .prettyPrinted
+        do {
+            let data = try encoder.encode(schedules)
+            let url = getDocumentsDirectory().appendingPathComponent(filename)
+            try data.write(to: url)
+            print("保存成功: \(url)")
+        } catch {
+            print("保存失敗: \(error)")
+        }
+    }
+
+    // スケジュールの外部取得
+    func loadSchedules(from filename: String) -> [Schedule]? {
+        let url = getDocumentsDirectory().appendingPathComponent(filename)
+        do {
+            let data = try Data(contentsOf: url)
+            let decoder = JSONDecoder()
+            let schedules = try decoder.decode([Schedule].self, from: data)
+            return schedules
+        } catch {
+            print("読み込み失敗: \(error)")
+            return nil
+        }
+    }
+    
+    // URLからjsonを読み込む関数
+    func loadSchedules(from url: URL) {
+        do {
+            let data = try Data(contentsOf: url)
+            let decoder = JSONDecoder()
+            decoder.dateDecodingStrategy = .iso8601
+            let loadedSchedules = try decoder.decode([Schedule].self, from: data)
+            DispatchQueue.main.async {
+                self.schedules = loadedSchedules
+            }
+        } catch {
+            print("読み込み失敗: \(error)")
+        }
+    }
+    
+    // jsonをURLへ保存する関数
+    func encodeSchedules() -> Data? {
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = .prettyPrinted
+        encoder.dateEncodingStrategy = .iso8601
+        do {
+            return try encoder.encode(schedules)
+        } catch {
+            print("エンコード失敗: \(error)")
+            return nil
+        }
+    }
+
 }
