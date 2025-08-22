@@ -13,13 +13,13 @@ struct MainView: View {
     @State private var showPicker = false
     @State private var showExporter = false
     @State private var exportData: Data?
-
+    
     // 時計表示
-    func clockView(viewWidth: CGFloat) p> some View {
+    func clockView(viewWidth: CGFloat) -> some View {
         let timeFont = Font.system(size: viewWidth * 0.3, weight: .medium, design: .monospaced)
         let secFont = Font.system(size: viewWidth * 0.08, weight: .light, design: .monospaced)
-
-        return HStack(alignment: .lastTextBaseLine, spacing: -8) {
+        
+        return HStack(alignment: .lastTextBaseline, spacing: -8) {
             // 時間
             Text(Utils.formatDate(vm.nowTime, format: "HH")).font(timeFont)
             // コロン
@@ -32,7 +32,7 @@ struct MainView: View {
         .frame(maxWidth: .infinity, alignment: .center)
         .background(Color.black)
     }
-
+    
     // タイムテーブル表示
     func timeTableView(geometry: GeometryProxy) -> some View {
         VStack(spacing: 0) {
@@ -83,19 +83,19 @@ struct MainView: View {
         }
         .background(Color.black)
     }
-
+    
     // ボタン領域表示
     var buttonArea: some View {
         VStack(spacing: 8) {
             Button("読込") {
-                          showPicker = true
+                showPicker = true
             }
             Button("保存") {
                 exportData = vm.encodeSchedules()
                 showExporter = true
             }
             Button("全体編集") {
-                            path.append("edit")
+                path.append("edit")
             }
             Button("スケジュール初期化") {
                 vm.initSchedules()
@@ -107,121 +107,123 @@ struct MainView: View {
     var body: some View {
         NavigationStack(path: $path) {
             GeometryReader { geometry in
+                /*
                 let viewWidth = geometry.size.width
                 // 時計フォント
                 let timeFont = Font.system(size: viewWidth * 0.3, weight: .medium, design: .monospaced)
                 // 秒フォント
                 let secondFont = Font.system(size: viewWidth * 0.08, weight: .light, design: .monospaced)
+                 */
                 // タテ配置
                 VStack {
                     // ----------時計表示領域----------
                     clockView(viewWidth: geometry.size.width)
                         .frame(height: geometry.size.width * 0.4)
                     /*
-                    // ヨコ配置
-                    HStack(alignment: .lastTextBaseline, spacing: -8) {
-                        // 時間
-                        Text(Utils.formatDate(vm.nowTime, format: "HH"))
-                            .font(timeFont)
-                        // コロン
-                        Text(":")
-                            .font(timeFont)
-                            .padding(.horizontal, -30) 
-                        // 分
-                        Text(Utils.formatDate(vm.nowTime, format: "mm"))
-                            .font(timeFont)
-                        // 秒
-                        Text(Utils.formatDate(vm.nowTime, format: "ss"))
-                            .font(secondFont)
-                    }
-                    .minimumScaleFactor(0.5)    // 最小50%まで縮小
-                    .lineLimit(1)               // 折り返し防止
-                    .layoutPriority(1)          // レイアウト優先
-                    .frame(
-                        maxWidth: .infinity, // 幅：親画面幅
-                        alignment: .center      // 中央寄せ
-                    )
-                    .background(Color.black) 
-                    */
+                     // ヨコ配置
+                     HStack(alignment: .lastTextBaseline, spacing: -8) {
+                     // 時間
+                     Text(Utils.formatDate(vm.nowTime, format: "HH"))
+                     .font(timeFont)
+                     // コロン
+                     Text(":")
+                     .font(timeFont)
+                     .padding(.horizontal, -30) 
+                     // 分
+                     Text(Utils.formatDate(vm.nowTime, format: "mm"))
+                     .font(timeFont)
+                     // 秒
+                     Text(Utils.formatDate(vm.nowTime, format: "ss"))
+                     .font(secondFont)
+                     }
+                     .minimumScaleFactor(0.5)    // 最小50%まで縮小
+                     .lineLimit(1)               // 折り返し防止
+                     .layoutPriority(1)          // レイアウト優先
+                     .frame(
+                     maxWidth: .infinity, // 幅：親画面幅
+                     alignment: .center      // 中央寄せ
+                     )
+                     .background(Color.black) 
+                     */
                     // -------タイムテーブル領域--------
                     timeTableView(geometry: geometry)
                         .frame(maxHeight: .infinity)
                     // データテーブル領域
                     /*
-                    VStack(spacing: 0) {
-                        // ヘッダ行
-                        Text("演奏時刻")
-                            .onTapGesture {
-                                scrollToPerforming?()
-                            }
-                        // スクロール領域
-                        ScrollViewReader { scrollProxy in
-                            Spacer()
-                            // 縦スクロール領域
-                            ScrollView(.vertical) {
-                                Grid(alignment: .trailing, horizontalSpacing: 32, verticalSpacing: 16){
-                                    if !vm.schedules.isEmpty {
-                                        // 表示
-                                        ForEach(vm.schedules, id: \.id) { schedule in
-                                            ScheduleView(schedule: schedule, stdStatus: .performing)
-                                        }
-                                    } else {
-                                        Text("データがありません")
-                                    }
-                                }
-                                // ScrollView内
-                                .onChange(of: vm.nowTime) {
-                                    let nowMinute = Utils.formatDate(vm.nowTime, format: "mm")
-                                    if(prevMinute != nowMinute) {
-                                        prevMinute = nowMinute
-                                        scrollToPerforming?()
-                                    }
-                                }
-                                .padding(.bottom, geometry.size.height * 0.5)
-                            }
-                            .frame(maxWidth: .infinity)
-                            .onAppear{
-                                scrollToPerforming = {
-                                    if let scrollID = vm.updateStatusSimple(stdStatus: .performing, currentTime: vm.nowTime) {
-                                        print(scrollID)
-                                        DispatchQueue.main.async{
-                                            withAnimation {
-                                                scrollProxy.scrollTo(scrollID, anchor: .top)
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    .background(Color.black)
-                    .frame(maxWidth: .infinity)
-                    */
+                     VStack(spacing: 0) {
+                     // ヘッダ行
+                     Text("演奏時刻")
+                     .onTapGesture {
+                     scrollToPerforming?()
+                     }
+                     // スクロール領域
+                     ScrollViewReader { scrollProxy in
+                     Spacer()
+                     // 縦スクロール領域
+                     ScrollView(.vertical) {
+                     Grid(alignment: .trailing, horizontalSpacing: 32, verticalSpacing: 16){
+                     if !vm.schedules.isEmpty {
+                     // 表示
+                     ForEach(vm.schedules, id: \.id) { schedule in
+                     ScheduleView(schedule: schedule, stdStatus: .performing)
+                     }
+                     } else {
+                     Text("データがありません")
+                     }
+                     }
+                     // ScrollView内
+                     .onChange(of: vm.nowTime) {
+                     let nowMinute = Utils.formatDate(vm.nowTime, format: "mm")
+                     if(prevMinute != nowMinute) {
+                     prevMinute = nowMinute
+                     scrollToPerforming?()
+                     }
+                     }
+                     .padding(.bottom, geometry.size.height * 0.5)
+                     }
+                     .frame(maxWidth: .infinity)
+                     .onAppear{
+                     scrollToPerforming = {
+                     if let scrollID = vm.updateStatusSimple(stdStatus: .performing, currentTime: vm.nowTime) {
+                     print(scrollID)
+                     DispatchQueue.main.async{
+                     withAnimation {
+                     scrollProxy.scrollTo(scrollID, anchor: .top)
+                     }
+                     }
+                     }
+                     }
+                     }
+                     }
+                     }
+                     .background(Color.black)
+                     .frame(maxWidth: .infinity)
+                     */
                     // -----------ボタン領域-----------
                     buttonArea
                         .padding()
                         .background(Color.gray.opacity(0.2))
                     /*
-                    Button("読込") {
-                        showPicker = true
-                    }
-                    Button("保存") {
-                        exportData = vm.encodeSchedules()
-                        showExporter = true
-                    }
-                    Button("全体編集") {
-                        path.append("edit")
-                    }
-                    .navigationDestination(for: String.self) { value in
-                        if value == "edit" {
-                            EditView(vm: vm)
-                        }
-                    }
-                    Button("スケジュール初期化") {
-                        vm.initSchedules()
-                        scrollToPerforming?()
-                    }
-                    */
+                     Button("読込") {
+                     showPicker = true
+                     }
+                     Button("保存") {
+                     exportData = vm.encodeSchedules()
+                     showExporter = true
+                     }
+                     Button("全体編集") {
+                     path.append("edit")
+                     }
+                     .navigationDestination(for: String.self) { value in
+                     if value == "edit" {
+                     EditView(vm: vm)
+                     }
+                     }
+                     Button("スケジュール初期化") {
+                     vm.initSchedules()
+                     scrollToPerforming?()
+                     }
+                     */
                 }
                 .frame(maxWidth: .infinity)
             }
