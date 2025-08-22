@@ -14,7 +14,7 @@ struct MainView: View {
     @State private var showExporter = false
     @State private var exportData: Data?
 
-    // 時計表示を出力
+    // 時計表示
     func clockView(viewWidth: CGFloat) p> some View {
         let timeFont = Font.system(size: viewWidth * 0.3, weight: .medium, design: .monospaced)
         let secFont = Font.system(size: viewWidth * 0.08, weight: .light, design: .monospaced)
@@ -32,6 +32,77 @@ struct MainView: View {
         .frame(maxWidth: .infinity, alignment: .center)
         .background(Color.black)
     }
+
+    // タイムテーブル表示
+    func timeTableView(geometry: GeometryProxy) -> some View {
+        VStack(spacing: 0) {
+            // ヘッダ行
+            Text("演奏時刻")
+                .onTapGesture {
+                    scrollToPerforming?()
+                }
+            // スクロール領域
+            ScrollViewReader { scrollProxy in
+                Spacer()
+                // 縦スクロール領域
+                ScrollView(.vertical) {
+                    Grid(alignment: .trailing, horizontalSpacing: 32, verticalSpacing: 16){
+                        if !vm.schedules.isEmpty {
+                            // 表示
+                            ForEach(vm.schedules, id: \.id) { schedule in
+                                ScheduleView(schedule: schedule, stdStatus: .performing)
+                            }
+                        } else {
+                            Text("データがありません")
+                        }
+                    }
+                    // ScrollView内
+                    .onChange(of: vm.nowTime) {
+                        let nowMinute = Utils.formatDate(vm.nowTime, format: "mm")
+                        if(prevMinute != nowMinute) {
+                            prevMinute = nowMinute
+                            scrollToPerforming?()
+                        }
+                    }
+                    .padding(.bottom, geometry.size.height * 0.5)
+                }
+                .frame(maxWidth: .infinity)
+                .onAppear{
+                    scrollToPerforming = {
+                        if let scrollID = vm.updateStatusSimple(stdStatus: .performing, currentTime: vm.nowTime) {
+                            print(scrollID)
+                            DispatchQueue.main.async{
+                                withAnimation {
+                                    scrollProxy.scrollTo(scrollID, anchor: .top)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        .background(Color.black)
+    }
+
+    // ボタン領域表示
+    var buttonArea: some View {
+        VStack(spacing: 8) {
+            Button("読込") {
+                          showPicker = true
+            }
+            Button("保存") {
+                exportData = vm.encodeSchedules()
+                showExporter = true
+            }
+            Button("全体編集") {
+                            path.append("edit")
+            }
+            Button("スケジュール初期化") {
+                vm.initSchedules()
+                scrollToPerforming?()
+            }
+        }
+    }
     
     var body: some View {
         NavigationStack(path: $path) {
@@ -45,7 +116,7 @@ struct MainView: View {
                 VStack {
                     // ----------時計表示領域----------
                     clockView(viewWidth: geometry.size.width)
-                    .frame(height: geometry.size.width * 0.4)
+                        .frame(height: geometry.size.width * 0.4)
                     /*
                     // ヨコ配置
                     HStack(alignment: .lastTextBaseline, spacing: -8) {
@@ -73,7 +144,10 @@ struct MainView: View {
                     .background(Color.black) 
                     */
                     // -------タイムテーブル領域--------
+                    timeTableView(geometry: geometry)
+                        .frame(maxHeight: .infinity)
                     // データテーブル領域
+                    /*
                     VStack(spacing: 0) {
                         // ヘッダ行
                         Text("演奏時刻")
@@ -122,13 +196,12 @@ struct MainView: View {
                     }
                     .background(Color.black)
                     .frame(maxWidth: .infinity)
+                    */
                     // -----------ボタン領域-----------
+                    buttonArea
+                        .padding()
+                        .background(Color.gray.opacity(0.2))
                     /*
-                     Button("追加") {
-                     let newDate = Calendar.current.date(bySettingHour: 12, minute: 0, second: 0, of: Date())!
-                     vm.addSchedule(name: "新しい団体", date: newDate)
-                     }
-                     */
                     Button("読込") {
                         showPicker = true
                     }
@@ -148,6 +221,7 @@ struct MainView: View {
                         vm.initSchedules()
                         scrollToPerforming?()
                     }
+                    */
                 }
                 .frame(maxWidth: .infinity)
             }
