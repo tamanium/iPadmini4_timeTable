@@ -12,7 +12,8 @@ struct MainView: View {
     @State private var path = NavigationPath()
     @State private var showPicker = false
     @State private var showExporter = false
-
+    @State private var exportData: Data?
+    
     var body: some View {
         NavigationStack(path: $path) {
             GeometryReader { geometry in
@@ -100,11 +101,11 @@ struct MainView: View {
                     .frame(maxWidth: .infinity)
                     // -----------ボタン領域-----------
                     /*
-                    Button("追加") {
-                        let newDate = Calendar.current.date(bySettingHour: 12, minute: 0, second: 0, of: Date())!
-                        vm.addSchedule(name: "新しい団体", date: newDate)
-                    }
-                    */
+                     Button("追加") {
+                     let newDate = Calendar.current.date(bySettingHour: 12, minute: 0, second: 0, of: Date())!
+                     vm.addSchedule(name: "新しい団体", date: newDate)
+                     }
+                     */
                     Button("読込") {
                         showPicker = true
                     }
@@ -138,7 +139,7 @@ struct MainView: View {
                 DocumentExporter(data: data, fileName: "schedules.json")
             }
         }
-
+        
     }
 }
 
