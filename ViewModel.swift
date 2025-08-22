@@ -256,6 +256,13 @@ class ViewModel: ObservableObject {
     */
     // URLからjsonを読み込む関数
     func loadSchedules(from url: URL) {
+        guard url.startAccessingSecurityScopedResource() else {
+            print("セキュリティスコープのアクセスに失敗しました")
+            return
+        }
+        defer {
+            url.stopAccessingSecurityScopedResource()
+        }
         do {
             let data = try Data(contentsOf: url)
             let decoder = JSONDecoder()
