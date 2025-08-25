@@ -20,13 +20,17 @@ import Foundation
  }
  }
  */
-
+struct TotalSchedule {
+    var statusTemplate: [Status]
+    var schedules: [Schedules]
+}
 // スケジュール行構造体
 struct Schedule: Identifiable, Codable {
     var id = UUID()    // ID
     var name: String   // 名前
     var status: Status // 現在のステータス
-    var statusDates: [Status: Date]? // ステータスと日時のマッピング
+    var statusDates: [Status: Date] = []// ステータスと日時のマッピング
+    var dates: [Date] = [] // 日付配列
     
     // イニシャライザ
     init(status: Status, name: String, date: Date) {
@@ -35,6 +39,7 @@ struct Schedule: Identifiable, Codable {
         self.status = .first
         // とりあえず初期値
         self.statusDates = [status: date]
+        self.dates = [date]
     }
     
     // 【Setter】ステータス
