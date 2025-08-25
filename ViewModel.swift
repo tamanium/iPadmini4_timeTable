@@ -3,7 +3,6 @@ import Combine
 import UIKit
 import UniformTypeIdentifiers
 
-
 // スケジュールモデル
 class ViewModel: ObservableObject {
     @Published var schedules: [Schedule] = []
@@ -61,8 +60,8 @@ class ViewModel: ObservableObject {
     func updateSchedule(id: UUID, name: String, date: Date) {
         if let index = schedules.firstIndex(where: { $0.id == id }) {
             schedules[index].name = name
-            if schedules[index].statusDates?[.performing] != nil {
-                schedules[index].statusDates?[.performing] = date
+            if schedules[index].statusDates[.performing] != nil {
+                schedules[index].statusDates[.performing] = date
             }
         }
     }
@@ -92,7 +91,8 @@ class ViewModel: ObservableObject {
     func updateAllStatus(stdStatus: Status, currentTime: Date) -> UUID? {
         // 全スケジュールのステータス更新
         for i in schedules.indices {
-            guard let statusDates = schedules[i].statusDates else { continue }
+            //guard let statusDates = schedules[i].statusDates else { continue }
+            let statusDates = schedules[i].statusDates
             // 時刻順にソート
             let sortedStatusDates = statusDates.sorted { $0.value < $1.value }
             var nowStatus = Status.before
@@ -121,8 +121,7 @@ class ViewModel: ObservableObject {
         var scrollID: UUID?
         var isInit = true
         for i in schedules.indices {
-            guard let scheduleDate = schedules[i].statusDates?[stdStatus] else { continue }
-            
+            let scheduleDate = schedules[i].statusDates[stdStatus]!
             let result = Utils.compareHHmm(scheduleDate, currentTime)
             
             if result != .orderedDescending {
@@ -141,10 +140,10 @@ class ViewModel: ObservableObject {
                         scrollID = schedules[0].id
                     } else {
                         // ひとつ前の行の日時を取得
-                        let yetDate = schedules[i-1].statusDates?[stdStatus]
+                        let yetDate = schedules[i-1].statusDates[stdStatus]!
                         for j in stride(from: i-1, through: 0, by: -1) {
                             // 日付取得
-                            let tmpDate = schedules[j].statusDates?[stdStatus]
+                            let tmpDate = schedules[j].statusDates[stdStatus]!
                             // 日時が異なる場合、処理終了
                             if tmpDate != yetDate { break }
                             // ステータス変更
@@ -165,7 +164,7 @@ class ViewModel: ObservableObject {
         var isInit = true
         
         for i in schedules.indices {
-            guard let scheduleDate = schedules[i].statusDates?[stdStatus] else { continue }
+            let scheduleDate = schedules[i].statusDates[stdStatus]!
             
             if scheduleDate <= currentTime {
                 // もう予定時刻を超えている場合
@@ -183,10 +182,10 @@ class ViewModel: ObservableObject {
                         scrollID = schedules[0].id
                     } else {
                         // ひとつ前の行の日時を取得
-                        let yetDate = schedules[i-1].statusDates?[stdStatus]
+                        let yetDate = schedules[i-1].statusDates[stdStatus]!
                         for j in stride(from: i-1, through: 0, by: -1) {
                             // 日付取得
-                            let tmpDate = schedules[j].statusDates?[stdStatus]
+                            let tmpDate = schedules[j].statusDates[stdStatus]!
                             // 日時が異なる場合、処理終了
                             if tmpDate != yetDate { break }
                             // ステータス変更
@@ -205,7 +204,7 @@ class ViewModel: ObservableObject {
         var scrollID: UUID?
         
         for i in schedules.indices {
-            guard let date = schedules[i].statusDates?[stdStatus] else { continue }
+             let date = schedules[i].statusDates[stdStatus]!
             // 経過した行をdoneにする
             if date <= currentTime {
                 schedules[i].setStatus(.done)
