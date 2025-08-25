@@ -115,11 +115,11 @@ class ViewModel: ObservableObject {
         }
         return scrollID
     }
-
+    
     // ステータス更新・最上位行ID取得
     func updateStatusSimpleNew(stdStatus: Status, nowTime: Date) -> UUID? {
         var topID: UUID?
-
+        
         for i in schedules.indices {
             // 日付時刻を取得
             guard let dateTime = schedules[i].statusDates[stdStatus] else { continue }
@@ -127,23 +127,22 @@ class ViewModel: ObservableObject {
             let result = Utils.compareHHmm(dateTime, nowTime)
             // 更新後のステータス宣言
             var newStatus: Status
-            
             // すでに予定時刻を超えているor同じ場合
             if result != .orderedDescending {
                 // 次のインデックスが存在する && すでに予定時刻を超えているor同じ
                 if (i+1) < schedules.count,
-                    let nextDateTime = schedules[i+1].statusDates[stdStatus],
-                    Utils.compareHHmm(nextDateTime, nowTime) == .orderedDescending {
+                   let nextDateTime = schedules[i+1].statusDates[stdStatus],
+                   Utils.compareHHmm(nextDateTime, nowTime) == .orderedDescending {
                     newStatus = stdStatus
                 } else{
                     newStatus = .done
-                    if i==0 {
-                        topID = schedules[i].id
-                    }
                 }
             } else {
                 // 予定時刻に達していない場合
-                newStatus = Status.yet
+                newStatus = .before
+                if i==0 {
+                    topID = schedules[i].id
+                }
             }
             schedules[i].setStatus(newStatus)
             // スクロールする上で最上位行のidを取得
@@ -264,33 +263,33 @@ class ViewModel: ObservableObject {
     
     // スケジュールの外部保存・更新
     /*
-    func saveSchedules(_ schedules: [Schedule], to filename: String) {
-        let encoder = JSONEncoder()
-        encoder.outputFormatting = .prettyPrinted
-        do {
-            let data = try encoder.encode(schedules)
-            let url = getDocumentsDirectory().appendingPathComponent(filename)
-            try data.write(to: url)
-            print("保存成功: \(url)")
-        } catch {
-            print("保存失敗: \(error)")
-        }
-    }
-    
-    // スケジュールの外部取得
-    func loadSchedules(from filename: String) -> [Schedule]? {
-        let url = getDocumentsDirectory().appendingPathComponent(filename)
-        do {
-            let data = try Data(contentsOf: url)
-            let decoder = JSONDecoder()
-            let schedules = try decoder.decode([Schedule].self, from: data)
-            return schedules
-        } catch {
-            print("読み込み失敗: \(error)")
-            return nil
-        }
-    }
-    */
+     func saveSchedules(_ schedules: [Schedule], to filename: String) {
+     let encoder = JSONEncoder()
+     encoder.outputFormatting = .prettyPrinted
+     do {
+     let data = try encoder.encode(schedules)
+     let url = getDocumentsDirectory().appendingPathComponent(filename)
+     try data.write(to: url)
+     print("保存成功: \(url)")
+     } catch {
+     print("保存失敗: \(error)")
+     }
+     }
+     
+     // スケジュールの外部取得
+     func loadSchedules(from filename: String) -> [Schedule]? {
+     let url = getDocumentsDirectory().appendingPathComponent(filename)
+     do {
+     let data = try Data(contentsOf: url)
+     let decoder = JSONDecoder()
+     let schedules = try decoder.decode([Schedule].self, from: data)
+     return schedules
+     } catch {
+     print("読み込み失敗: \(error)")
+     return nil
+     }
+     }
+     */
     // URLからjsonを読み込む関数
     func loadSchedules(from url: URL) {
         guard url.startAccessingSecurityScopedResource() else {
@@ -326,3 +325,4 @@ class ViewModel: ObservableObject {
         }
     }
 }
+
