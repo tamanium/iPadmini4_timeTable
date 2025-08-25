@@ -26,23 +26,6 @@ struct MainView: View {
                     timeTableView(geometry: geometry)
                         .frame(maxHeight: .infinity)
                     // -----------ボタン領域-----------
-                    // HStack {
-                    //     Button("📂読込") {
-                    //         showPicker = true
-                    //     }
-                    //     Button("💾保存") {
-                    //         exportData = vm.encodeSchedules()
-                    //         showExporter = true
-                    //     }
-                    //     Button("📝編集") {
-                    //         path.append("edit")
-                    //     }
-                    //     Button("➕新規(debug)") {
-                    //         vm.initSchedules()
-                    //         scrollToPerforming?()
-                    //     }
-                    // }
-                    //.padding()
                     HStack(spacing: 0) {
                         ForEach(["📂読込", "💾保存", "📝編集", "➕新規(debug)"], id: \.self) { title in
                             Button(title) {
@@ -68,7 +51,6 @@ struct MainView: View {
                         }
                     }
                     .frame(maxWidth: .infinity)
-                    .background(Color.gray.opacity(0.2))
                     .navigationDestination(for: String.self) { value in
                         if value == "edit" {
                             EditView(vm: vm)
@@ -160,27 +142,6 @@ struct MainView: View {
         }
         .background(Color.black)
     }
-    /*
-     // ボタン領域表示
-     var buttonArea: some View {
-     VStack(spacing: 8) {
-     Button("読込") {
-     showPicker = true
-     }
-     Button("保存") {
-     exportData = vm.encodeSchedules()
-     showExporter = true
-     }
-     Button("全体編集") {
-     path.append("edit")
-     }
-     Button("スケジュール初期化") {
-     vm.initSchedules()
-     scrollToPerforming?()
-     }
-     }
-     }
-     */
 }
 
 // テーブルの表示
