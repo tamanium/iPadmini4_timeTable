@@ -26,9 +26,30 @@ struct MainView: View {
                     timeTableView(geometry: geometry)
                         .frame(maxHeight: .infinity)
                     // -----------ボタン領域-----------
-                    buttonArea
-                        .padding()
-                        .background(Color.gray.opacity(0.2))
+                    //buttonArea
+                    VStack {
+                        Button("読込") {
+                            showPicker = true
+                        }
+                        Button("保存") {
+                            exportData = vm.encodeSchedules()
+                            showExporter = true
+                        }
+                        Button("全体編集") {
+                            path.append("edit")
+                        }
+                        .navigationDestination(for: String.self) { value in
+                            if value == "edit" {
+                                EditView(vm: vm)
+                            }
+                        }
+                        Button("スケジュール初期化") {
+                            vm.initSchedules()
+                            scrollToPerforming?()
+                        }
+                    }
+                    //.padding()
+                    .background(Color.gray.opacity(0.2))
                 }
                 .frame(maxWidth: .infinity)
             }
@@ -120,7 +141,7 @@ struct MainView: View {
         }
         .background(Color.black)
     }
-    
+    /*
     // ボタン領域表示
     var buttonArea: some View {
         VStack(spacing: 8) {
@@ -140,6 +161,7 @@ struct MainView: View {
             }
         }
     }
+    */
 }
 
 // テーブルの表示

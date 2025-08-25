@@ -74,6 +74,7 @@ struct EditView: View {
             }
             .padding()
         }
+        .navigationTitle("全体編集")
         .onAppear {
             // 完全に空の場合、空のスケジュールを追加する
             if vm.schedules.isEmpty {
