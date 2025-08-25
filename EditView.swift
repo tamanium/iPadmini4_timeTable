@@ -33,7 +33,7 @@ struct EditView: View {
                                     // 入力制限
                                     .onChange(of: row.timeString) { newValue in
                                         row.timeString = String(newValue.prefix(4).filter{
-                                            "0123456789", contains($0)
+                                            "0123456789".contains($0)
                                         })
                                     }
                                 TextField("団体名", text: $row.name)
@@ -53,7 +53,7 @@ struct EditView: View {
                                     // 入力制限
                                     .onChange(of: row.timeString) { newValue in
                                         row.timeString = String(newValue.prefix(4).filter{
-                                            "0123456789", contains($0)
+                                            "0123456789".contains($0)
                                         })
                                     }
                             }
