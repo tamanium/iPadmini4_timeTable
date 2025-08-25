@@ -115,6 +115,44 @@ class ViewModel: ObservableObject {
         }
         return scrollID
     }
+
+    // ステータス更新・最上位行ID取得
+    func updateStatusSimpleNew(stdStatus: Status, nowTime: Date) -> UUID? {
+        var topID: UUID?
+
+        for i in schedules.indices {
+            // 日付時刻を取得
+            guard let dateTime = schedules[i].statusDates[stdStatus] else { continue }
+            // 日付時刻をシステム日時と比較
+            let result = Utils.compareHHmm(dateTime, nowTime)
+            // 更新後のステータス宣言
+            var newStatus: Status
+            
+            // すでに予定時刻を超えているor同じ場合
+            if result != .orderedDescending {
+                // 次のインデックスが存在する && すでに予定時刻を超えているor同じ
+                if (i+1) < schedules.count,
+                    let nextDateTime = schedules[i+1].statusDates[stdStatus],
+                    Utils.compareHHmm(nextDateTime, nowTime) == .orderedDescending {
+                    newStatus = stdStatus
+                } else{
+                    newStatus = .done
+                    if i==0 {
+                        topID = schedules[i].id
+                    }
+                }
+            } else {
+                // 予定時刻に達していない場合
+                newStatus = Status.yet
+            }
+            schedules[i].setStatus(newStatus)
+            // スクロールする上で最上位行のidを取得
+            if topID == nil, newStatus == stdStatus {
+                topID = schedules[max(0, i-1)].id
+            }
+        }
+        return topID
+    }
     
     // ステータス更新・最上位行ID取得
     func updateStatusSimple(stdStatus: Status, currentTime: Date) -> UUID? {
