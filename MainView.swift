@@ -26,41 +26,36 @@ struct MainView: View {
                     timeTableView(geometry: geometry)
                         .frame(maxHeight: .infinity)
                     // -----------ボタン領域-----------
-                    buttonArea
-                    /*
-                    VStack {
-                        Button("読込") {
+                    //buttonArea
+                    HStack {
+                        Button("📂読込") {
                             showPicker = true
                         }
-                        Button("保存") {
+                        Button("💾保存") {
                             exportData = vm.encodeSchedules()
                             showExporter = true
                         }
-                        Button("全体編集") {
+                        Button("📝編集") {
                             path.append("edit")
                         }
-                        .navigationDestination(for: String.self) { value in
-                            if value == "edit" {
-                                EditView(vm: vm)
-                            }
-                        }
-                        Button("スケジュール初期化") {
+                        Button("➕新規")
+                        /*
+                        Button("デバッグ用初期化") {
                             vm.initSchedules()
                             scrollToPerforming?()
-                        }
+                        }*/
                     }
                     //.padding()
-                     */
                     .background(Color.gray.opacity(0.2))
                 }
                 .frame(maxWidth: .infinity)
             }
-        }/*
-        .navigationDestination(for: String.self) { str in
-            if str == "edit" {
+        }
+        .navigationDestination(for: String.self) { value in
+            if value == "edit" {
                 EditView(vm: vm)
             }
-        }*/
+        }
         .sheet(isPresented: $showPicker) {
             DocumentPicker { url in
                 vm.loadSchedules(from: url)
@@ -129,8 +124,7 @@ struct MainView: View {
                 .frame(maxWidth: .infinity)
                 .onAppear{
                     scrollToPerforming = {
-                        if let scrollID = vm.updateStatusSimpleNew(stdStatus: .performing, nowTime: vm.nowTime) {
-                        //if let scrollID = vm.updateStatusSimple(stdStatus: .performing, currentTime: vm.nowTime) {
+                        if let scrollID = vm.updateStatusSimple(stdStatus: .performing, currentTime: vm.nowTime) {
                             print(scrollID)
                             DispatchQueue.main.async{
                                 withAnimation {
@@ -144,32 +138,27 @@ struct MainView: View {
         }
         .background(Color.black)
     }
-    
-     // ボタン領域表示
-     var buttonArea: some View {
-     VStack(spacing: 8) {
-     Button("読込") {
-     showPicker = true
-     }
-     Button("保存") {
-     exportData = vm.encodeSchedules()
-     showExporter = true
-     }
-     Button("全体編集") {
-     path.append("edit")
-     }
-     .navigationDestination(for: String.self) { value in
-         if value == "edit" {
-             EditView(vm: vm)
-         }
-     }
-     Button("スケジュール初期化") {
-     vm.initSchedules()
-     scrollToPerforming?()
-     }
-     }
-     }
-     
+    /*
+    // ボタン領域表示
+    var buttonArea: some View {
+        VStack(spacing: 8) {
+            Button("読込") {
+                showPicker = true
+            }
+            Button("保存") {
+                exportData = vm.encodeSchedules()
+                showExporter = true
+            }
+            Button("全体編集") {
+                path.append("edit")
+            }
+            Button("スケジュール初期化") {
+                vm.initSchedules()
+                scrollToPerforming?()
+            }
+        }
+    }
+    */
 }
 
 // テーブルの表示
@@ -195,7 +184,7 @@ struct ScheduleGridRowView: View {
             Text(schedule.status.rawValue) 
                 .frame(width:70)
                 .font(.system(size:50)) 
-            if let date = schedule.statusDates[stdStatus] {
+            if let date = schedule.statusDates?[stdStatus] {
                 let time = Utils.formatDate(date, format: "HH:mm")
                 Text(time) 
                     .frame(width:180)
