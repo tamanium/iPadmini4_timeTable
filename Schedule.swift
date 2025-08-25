@@ -22,14 +22,14 @@ import Foundation
  */
 struct TotalSchedule {
     var statusTemplate: [Status]
-    var schedules: [Schedules]
+    var schedules: [Schedule]
 }
 // スケジュール行構造体
 struct Schedule: Identifiable, Codable {
     var id = UUID()    // ID
     var name: String   // 名前
     var status: Status // 現在のステータス
-    var statusDates: [Status: Date] = []// ステータスと日時のマッピング
+    var statusDates: [Status: Date] = [:]// ステータスと日時のマッピング
     var dates: [Date] = [] // 日付配列
     
     // イニシャライザ
