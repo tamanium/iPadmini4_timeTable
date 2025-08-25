@@ -21,11 +21,30 @@ struct MainView: View {
                 VStack {
                     // ----------時計表示領域----------
                     clockView(viewWidth: geometry.size.width)
-                        .frame(height: geometry.size.width * 0.4)
+                        .frame(height: geometry.size.width * 0.3)
                     // -------タイムテーブル領域--------
                     timeTableView(geometry: geometry)
-                        .frame(maxHeight: .infinity)
+                       // .frame(maxHeight: .infinity)
+                        .padding(.bottom)
+                    //Spacer(minLength: /*@START_MENU_TOKEN@*/0/*@END_MENU_TOKEN@*/)
                     // -----------ボタン領域-----------
+                    // HStack {
+                    //     Button("📂読込") {
+                    //         showPicker = true
+                    //     }
+                    //     Button("💾保存") {
+                    //         exportData = vm.encodeSchedules()
+                    //         showExporter = true
+                    //     }
+                    //     Button("📝編集") {
+                    //         path.append("edit")
+                    //     }
+                    //     Button("➕新規(debug)") {
+                    //         vm.initSchedules()
+                    //         scrollToPerforming?()
+                    //     }
+                    // }
+                    //.padding()
                     HStack(spacing: 0) {
                         ForEach(["📂読込", "💾保存", "📝編集", "➕新規(debug)"], id: \.self) { title in
                             Button(title) {
@@ -50,8 +69,8 @@ struct MainView: View {
                             .border(Color.black)
                         }
                     }
-                    .frame(maxWidth: .infinity)
-                    .background(Color.gray.opacity(0.2))
+                    //.frame(maxWidth: .infinity)
+                    //.background(Color.gray.opacity(0.2))
                     .navigationDestination(for: String.self) { value in
                         if value == "edit" {
                             EditView(vm: vm)
@@ -103,7 +122,7 @@ struct MainView: View {
                 }
             // スクロール領域
             ScrollViewReader { scrollProxy in
-                Spacer()
+                //Spacer()
                 // 縦スクロール領域
                 ScrollView(.vertical) {
                     Grid(alignment: .trailing, horizontalSpacing: 32, verticalSpacing: 16){
@@ -143,6 +162,27 @@ struct MainView: View {
         }
         .background(Color.black)
     }
+    /*
+     // ボタン領域表示
+     var buttonArea: some View {
+     VStack(spacing: 8) {
+     Button("読込") {
+     showPicker = true
+     }
+     Button("保存") {
+     exportData = vm.encodeSchedules()
+     showExporter = true
+     }
+     Button("全体編集") {
+     path.append("edit")
+     }
+     Button("スケジュール初期化") {
+     vm.initSchedules()
+     scrollToPerforming?()
+     }
+     }
+     }
+     */
 }
 
 // テーブルの表示
