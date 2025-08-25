@@ -12,7 +12,7 @@ struct MainView: View {
     @State private var showPicker = false
     @State private var showExporter = false
     @State private var exportData: Data?
-
+    
     // メイン表示
     var body: some View {
         NavigationStack(path: $path) {
@@ -34,8 +34,7 @@ struct MainView: View {
             }
         }
         .navigationDestination(for: String.self) { str in
-            switch str {
-                case "edit":
+            if str == "edit" {
                 EditView(vm: vm)
             }
         }
