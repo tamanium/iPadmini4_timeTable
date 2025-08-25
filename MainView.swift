@@ -129,7 +129,8 @@ struct MainView: View {
                 .frame(maxWidth: .infinity)
                 .onAppear{
                     scrollToPerforming = {
-                        if let scrollID = vm.updateStatusSimple(stdStatus: .performing, currentTime: vm.nowTime) {
+                        if let scrollID = vm.updateStatusSimpleNew(stdStatus: .performing, nowTime: vm.nowTime) {
+                        //if let scrollID = vm.updateStatusSimple(stdStatus: .performing, currentTime: vm.nowTime) {
                             print(scrollID)
                             DispatchQueue.main.async{
                                 withAnimation {
