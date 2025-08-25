@@ -26,36 +26,56 @@ struct MainView: View {
                     timeTableView(geometry: geometry)
                         .frame(maxHeight: .infinity)
                     // -----------ボタン領域-----------
-                    //buttonArea
-                    HStack {
-                        Button("📂読込") {
-                            showPicker = true
-                        }
-                        Button("💾保存") {
-                            exportData = vm.encodeSchedules()
-                            showExporter = true
-                        }
-                        Button("📝編集") {
-                            path.append("edit")
-                        }
-                        Button("➕新規"){
-                            path.append("edit")
-                        }
-                        /*
-                         Button("デバッグ用初期化") {
-                         vm.initSchedules()
-                         scrollToPerforming?()
-                         }*/
-                    }
+                    // HStack {
+                    //     Button("📂読込") {
+                    //         showPicker = true
+                    //     }
+                    //     Button("💾保存") {
+                    //         exportData = vm.encodeSchedules()
+                    //         showExporter = true
+                    //     }
+                    //     Button("📝編集") {
+                    //         path.append("edit")
+                    //     }
+                    //     Button("➕新規(debug)") {
+                    //         vm.initSchedules()
+                    //         scrollToPerforming?()
+                    //     }
+                    // }
                     //.padding()
+                    HStack(spacing: 0) {
+                        ForEach(["📂読込", "💾保存", "📝編集", "➕新規(debug)"], id: \.self) { title in
+                            Button(title) {
+                                switch title {
+                                    case "📂読込":
+                                        showPicker = true
+                                    case "💾保存":
+                                        exportData = vm.encodeSchedules()
+                                        showExporter = true
+                                    case "📝編集":
+                                        path.append("edit")
+                                    case "➕新規(debug)":
+                                        vm.initSchedules()
+                                        scrollToPerforming?()
+                                    default:
+                                        break
+                                }
+                            }
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(Color.gray)
+                            .border(Color.black)
+                        }
+                    }
+                    .frame(maxWidth: .infinity)
                     .background(Color.gray.opacity(0.2))
+                    .navigationDestination(for: String.self) { value in
+                        if value == "edit" {
+                            EditView(vm: vm)
+                        }
+                    }
                 }
                 .frame(maxWidth: .infinity)
-            }
-        }
-        .navigationDestination(for: String.self) { value in
-            if value == "edit" {
-                EditView(vm: vm)
             }
         }
         .sheet(isPresented: $showPicker) {
