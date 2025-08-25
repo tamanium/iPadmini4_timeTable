@@ -18,9 +18,7 @@ struct EditView: View {
                 .font(.title)
                 .padding()
             Button("←→") {
-                //withAnimation(.easeInOut(duration:0.5)) {
-                    isSwapped.toggle()
-                //}
+                isSwapped.toggle()
             }
             ScrollView {
                 Grid(alignment: .leading, horizontalSpacing: 32, verticalSpacing: 16) {
@@ -32,27 +30,34 @@ struct EditView: View {
                                     .keyboardType(.numberPad)
                                     .frame(width: 180)
                                     .textFieldStyle(.roundedBorder)
-                                    //.transition(.move(edge: .leading))
+                                    // 入力制限
+                                    .onChange(of: row.timeString) { newValue in
+                                        row.timeString = String(newValue.prefix(4).filter{
+                                            "0123456789", contains($0)
+                                        })
+                                    }
                                 TextField("団体名", text: $row.name)
                                     .font(.system(size:50)) 
                                     .frame(width: 450)
                                     .textFieldStyle(.roundedBorder)
-                                    //.transition(.move(edge: .trailing))
                             } else {
                                 TextField("団体名", text: $row.name)
                                     .font(.system(size:50)) 
                                     .frame(width: 450)
                                     .textFieldStyle(.roundedBorder)
-                                    //.transition(.move(edge: .leading))
                                 TextField("時刻", text: $row.timeString)
                                     .font(.system(size: 50, design: .monospaced)) 
                                     .keyboardType(.numberPad)
                                     .frame(width: 180)
                                     .textFieldStyle(.roundedBorder)
-                                    //.transition(.move(edge: .trailing))
+                                    // 入力制限
+                                    .onChange(of: row.timeString) { newValue in
+                                        row.timeString = String(newValue.prefix(4).filter{
+                                            "0123456789", contains($0)
+                                        })
+                                    }
                             }
                         }
-                        //.animation(.easeInOut(duration: 0.5), value: isSwapped)
                     }
                 }
                 .padding()
@@ -61,6 +66,8 @@ struct EditView: View {
                 for row in editedRows {
                     if let date = Utils.parseHHmm(row.timeString) {
                         vm.updateSchedule(id: row.id, name: row.name, date: date)
+                    } else {
+                        print("無効な時刻: \(row.timeString)")
                     }
                 }
                 dismiss()

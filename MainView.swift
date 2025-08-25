@@ -3,8 +3,7 @@ import SwiftUI
 struct MainView: View {
     
     @StateObject private var vm = ViewModel()
-    @State var nowTime = Date()
-    @State var prevMinute = "60"
+    @State var prevMinute = Utils.formatDate(Date(), format: "mm")
     private let timer = Timer.publish(every: 1, on: .main, in: .common)
         .autoconnect()
     
@@ -32,6 +31,12 @@ struct MainView: View {
                         .background(Color.gray.opacity(0.2))
                 }
                 .frame(maxWidth: .infinity)
+            }
+        }
+        .navigationDestination(for: String.self) { str in
+            switch str {
+                case "edit":
+                EditView(vm: vm)
             }
         }
         .sheet(isPresented: $showPicker) {
