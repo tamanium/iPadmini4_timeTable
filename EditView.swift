@@ -65,11 +65,19 @@ struct EditView: View {
                 .padding()
             }
             Button("保存") {
+                var errorFlg = false
+                // エラーチェック
                 for row in editedRows {
-                    if let date = Utils.parseHHmm(row.timeString) {
-                        vm.updateSchedule(id: row.id, name: row.name, date: date)
-                    } else {
+                    guard let date = Utils.parseHHmm(row.timeString) else {
                         print("無効な時刻: \(row.timeString)")
+                        errorFlg = true
+                    }
+                }
+                if !errorFlg {
+                    // vmに上書き
+                    for row in editedRows {
+                        guard let date = Utils.parseHHmm(row.timeString) else { break }
+                        vm.updateSchedule(id: row.id, name: row.name, date: date)
                     }
                 }
                 dismiss()
