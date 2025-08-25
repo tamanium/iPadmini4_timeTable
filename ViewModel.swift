@@ -61,7 +61,6 @@ class ViewModel: ObservableObject {
     func updateSchedule(id: UUID, name: String, date: Date) {
         if let index = schedules.firstIndex(where: { $0.id == id }) {
             schedules[index].name = name
-            //schedules[index].date = date
             if schedules[index].statusDates?[.performing] != nil {
                 schedules[index].statusDates?[.performing] = date
             }
