@@ -47,18 +47,18 @@ struct MainView: View {
                         ForEach(["📂読込", "💾保存", "📝編集", "➕新規(debug)"], id: \.self) { title in
                             Button(title) {
                                 switch title {
-                                    case "📂読込":
-                                        showPicker = true
-                                    case "💾保存":
-                                        exportData = vm.encodeSchedules()
-                                        showExporter = true
-                                    case "📝編集":
-                                        path.append("edit")
-                                    case "➕新規(debug)":
-                                        vm.initSchedules()
-                                        scrollToPerforming?()
-                                    default:
-                                        break
+                                case "📂読込":
+                                    showPicker = true
+                                case "💾保存":
+                                    exportData = vm.encodeSchedules()
+                                    showExporter = true
+                                case "📝編集":
+                                    path.append("edit")
+                                case "➕新規(debug)":
+                                    vm.initSchedules()
+                                    scrollToPerforming?()
+                                default:
+                                    break
                                 }
                             }
                             .frame(maxWidth: .infinity)
@@ -67,7 +67,7 @@ struct MainView: View {
                             .border(Color.black)
                         }
                     }
-                    .frame(maxWidth: .infinity)
+                    //.frame(maxWidth: .infinity)
                     .background(Color.gray.opacity(0.2))
                     .navigationDestination(for: String.self) { value in
                         if value == "edit" {
